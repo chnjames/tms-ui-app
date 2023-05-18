@@ -48,10 +48,13 @@
     <u-gap height="10" bgColor="#f3f3f3"></u-gap>
 
     <u-cell-group class="fun-list">
-      <u-cell class="fun-item" :border="false" icon="gift" title="分销中心" isLink></u-cell>
-      <u-cell class="fun-item" :border="false" icon="tags" title="领券中心" isLink></u-cell>
-      <u-cell class="fun-item" :border="false" icon="coupon" title="我的优惠券" isLink></u-cell>
-      <u-cell class="fun-item" :border="false" icon="map" title="收货地址" @click="pageRouter('/pages/address/list')" isLink></u-cell>
+      <u-cell class="fun-item" :border="false" icon="integral" title="任务绩效" isLink></u-cell>
+      <u-cell class="fun-item" :border="false" icon="order" title="本月/累计完成任务总数" isLink></u-cell>
+      <u-cell class="fun-item" :border="false" icon="hourglass" title="本月/累计工时投入" isLink></u-cell>
+      <u-cell class="fun-item" :border="false" icon="calendar" title="入职日期" isLink></u-cell>
+      <u-gap height="10" bgColor="#f3f3f3"></u-gap>
+      <!-- <u-cell class="fun-item" :border="false" icon="map" title="收货地址" @click="pageRouter('/pages/address/list')" isLink></u-cell> -->
+      <u-cell class="fun-item" :border="false" icon="edit-pen" title="休假设置" @click="pageRouter('/pages/leave/leave')" isLink></u-cell>
     </u-cell-group>
   </view>
 </template>
@@ -94,6 +97,7 @@ export default {
   },
   methods: {
     pageRouter(pageUrl, param) {
+      uni.$u.route(pageUrl)
       if (!this.hasLogin) {
         uni.$u.route('/pages/login/social')
       } else if (pageUrl === this.orderPage) {

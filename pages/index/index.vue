@@ -4,43 +4,27 @@
     <view class="district" blurEffect="light">
       <u-row justify="space-between" gutter="10">
         <u-col span="3" v-for="(item, index) in districtList" :key="index" align="center" textAlign="center">
-          <u--image :src="item.icon" width="40px" height="40px"></u--image>
-          <u--text margin="10px 10px 0" align="center" :text="item.name"></u--text>
+          <u--image :src="item.icon" width="80rpx" height="80rpx"></u--image>
+          <u--text margin="20rpx 20rpx 0" size="24rpx" align="center" :text="item.name"></u--text>
         </u-col>
       </u-row>
     </view>
-    <!--搜索栏-->
-    <u-sticky style="top: 0" offset-top="0">
-      <view class="search-wrap">
-        <u-search placeholder="搜索" disabled height="32" :show-action="false" @click="handleSearchClick"></u-search>
-      </view>
-    </u-sticky>
-
-    <!--轮播图-->
-    <yd-banner :banner-list="bannerList"></yd-banner>
+    <!-- 任务列表 -->
+    <u-swipe-action>
+      <u-swipe-action-item class="swipe-item" :options="item.options" v-for="(item, index) in taskList" :name="item.id"
+        :key="index" @click="bindSwiperItem">
+        <view class="swipe-action">
+          <view class="swipe-action__content">
+            <view class="swipe-action__content__text">{{ item.name }}</view>
+            <view class="swipe-action__content__text">{{ item.type }}</view>
+            <view class="swipe-action__content__text">{{ item.date }}</view>
+          </view>
+        </view>
+      </u-swipe-action-item>
+    </u-swipe-action>
 
     <u-gap height="20px"></u-gap>
 
-    <!--宫格菜单按钮-->
-    <u-grid :border="false" col="4">
-      <u-grid-item v-for="(item, index) in menuList" :key="index">
-        <u-icon :name="item.icon" :size="40"></u-icon>
-        <text class="grid-title">{{ item.title }}</text>
-      </u-grid-item>
-    </u-grid>
-
-    <u-gap height="15px"></u-gap>
-
-    <!--消息滚动栏-->
-    <u-notice-bar style="padding: 13px 12px" :text="noticeList" mode="link" direction="column"
-      @click="click"></u-notice-bar>
-
-    <!--商品展示栏-->
-    <yd-product-box :product-list="productList" :title="'每日上新'" show-type="normal"></yd-product-box>
-    <yd-product-box :product-list="productList" :title="'热卖商品'" show-type="half"></yd-product-box>
-    <yd-product-more :product-list="productList" :more-status="moreStatus"></yd-product-more>
-
-    <u-gap height="5px"></u-gap>
   </view>
 </template>
 
@@ -67,82 +51,76 @@
           name: '设备信息',
           icon: require("../../static/images/icons/equipment.png")
         }],
-        bannerList: [{
-            id: 1,
-            title: '山不在高，有仙则名',
-            url: 'https://cdn.uviewui.com/uview/swiper/swiper1.png'
-          },
-          {
-            id: 2,
-            title: '水不在深，有龙则灵',
-            url: 'https://cdn.uviewui.com/uview/swiper/swiper2.png'
-          },
-          {
-            id: 3,
-            title: '斯是陋室，惟吾德馨',
-            url: 'https://cdn.uviewui.com/uview/swiper/swiper3.png'
-          }
-        ],
-        menuList: [{
-            icon: 'gift',
-            title: '热门推荐'
-          },
-          {
-            icon: 'star',
-            title: '收藏转发'
-          },
-          {
-            icon: 'thumb-up',
-            title: '点赞投币'
-          },
-          {
-            icon: 'heart',
-            title: '感谢支持'
-          }
-        ],
-        noticeList: ['寒雨连江夜入吴', '平明送客楚山孤', '洛阳亲友如相问', '一片冰心在玉壶'],
-        productList: [{
-            id: 1,
-            image: 'https://cdn.uviewui.com/uview/album/1.jpg',
-            title: '山不在高，有仙则名。水不在深，有龙则灵。斯是陋室，惟吾德馨。',
-            desc: '山不在于高，有了神仙就会有名气。水不在于深，有了龙就会有灵气。这是简陋的房子，只是我品德好就感觉不到简陋了。',
-            price: '13.00'
-          },
-          {
-            id: 2,
-            image: 'https://cdn.uviewui.com/uview/album/2.jpg',
-            title: '商品222',
-            desc: '',
-            price: '23.00'
-          },
-          {
-            id: 3,
-            image: 'https://cdn.uviewui.com/uview/album/3.jpg',
-            title: '商品333',
-            desc: '商品描述信息2',
-            price: '33.00'
-          },
-          {
-            id: 4,
-            image: 'https://cdn.uviewui.com/uview/album/4.jpg',
-            title: '商品444',
-            desc: '商品描述信息4',
-            price: '43.00'
-          },
-          {
-            id: 5,
-            image: 'https://cdn.uviewui.com/uview/album/5.jpg',
-            title: '商品555',
-            desc: '商品描述信息5',
-            price: '53.00'
-          }
-        ],
-        moreStatus: 'nomore'
+        taskList: [{
+          id: 1,
+          name: '0237458 加注机设备',
+          type: '备件更换',
+          date: '10月3日截止',
+          options: [{
+            text: '立即领取',
+            style: {
+              backgroundColor: '#2979ff'
+            }
+          }, {
+            text: '忽略',
+            style: {
+              backgroundColor: '#fa3534'
+            }
+          }]
+        }, {
+          id: 2,
+          name: '0237458 加注机设备',
+          type: '备件更换',
+          date: '10月3日截止',
+          options: [{
+            text: '立即领取',
+            style: {
+              backgroundColor: '#2979ff'
+            }
+          }, {
+            text: '忽略',
+            style: {
+              backgroundColor: '#fa3534'
+            }
+          }]
+        }, {
+          id: 3,
+          name: '0237458 加注机设备',
+          type: '备件更换',
+          date: '10月3日截止',
+          options: [{
+            text: '立即领取',
+            style: {
+              backgroundColor: '#2979ff'
+            }
+          }, {
+            text: '忽略',
+            style: {
+              backgroundColor: '#fa3534'
+            }
+          }]
+        }, {
+          id: 4,
+          name: '0237458 加注机设备',
+          type: '备件更换',
+          date: '10月3日截止',
+          options: [{
+            text: '立即领取',
+            style: {
+              backgroundColor: '#2979ff'
+            }
+          }, {
+            text: '忽略',
+            style: {
+              backgroundColor: '#fa3534'
+            }
+          }]
+        }]
       }
     },
     onLoad() {
-      this.loadBannerData()
-      this.loadNoticeData()
+      // this.loadBannerData()
+      // this.loadNoticeData()
     },
     methods: {
       loadBannerData() {
@@ -155,37 +133,49 @@
           this.noticeList = res.data
         })
       },
-      handleSearchClick(e) {
-        uni.$u.route('/pages/search/search')
-      }
-    },
-    computed: {
-      noticeTextList() {
-        return this.noticeList.map(item => {
-          if (item.title) {
-            return item.title
-          }
-        })
+      // 任务操作
+      bindSwiperItem({
+        name,
+        index
+      }) {
+        console.log(`name${name}`, `index${index}`)
       }
     }
   }
 </script>
 
 <style lang="scss" scoped>
-  .search-wrap {
-    background: $custom-bg-color;
-    padding: 20rpx;
+
+  .district {
+    border-radius: 20rpx;
+    margin: 10rpx 32rpx 32rpx;
+    padding: 40rpx;
+    text-align: center;
+    background-color: rgba(255, 255, 255, .05);
+    box-shadow: 0 0 10rpx 0 rgba(0, 0, 0, .1);
   }
 
-  .grid-title {
-    line-height: 50rpx;
-    font-size: 26rpx;
+  .swipe-item {
+    margin: 32rpx;
+    border-radius: 10rpx;
+    overflow: hidden;
+    background-color: #FFFFFF;
+    box-shadow: 0 0 10rpx 0 rgba(0, 0, 0, .1);
+
+    /deep/ .u-swipe-action-item__right {}
   }
-  .district {
-    border-radius: 10px;
-    margin: 10px;
-    padding: 20px;
-    text-align: center;
-    background-color: rgba(0, 0, 0, .05);
+
+  .swipe-action {
+    &__content {
+      padding: 25rpx 0;
+      background-color: #FFFFFF;
+      z-index: 20;
+
+      &__text {
+        font-size: 30rpx;
+        color: $u-main-color;
+        padding-left: 32rpx;
+      }
+    }
   }
 </style>

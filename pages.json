@@ -9,7 +9,13 @@
     {
       "path": "pages/task/task",
       "style": {
-      "navigationBarTitleText": "task"
+        "navigationBarTitleText": "task"
+      }
+    },
+    {
+      "path": "pages/leave/leave",
+      "style": {
+        "navigationBarTitleText": "休假设置"
       }
     },
     {
@@ -125,27 +131,27 @@
   ],
   "tabBar": {
     "blurEffect": "extralight",
-    "selectedColor": "#333333",
+    "selectedColor": "#4988fd",
     "color": "#bfbfbf",
-    "spacing": "5px",
-    "height": "50px",
+    "fontSize": "12px",
+    "iconWidth": "26px",
     "list": [{
         "pagePath": "pages/index/index",
         "text": "首页",
-        "iconPath": "/static/images/tabbar/index.png",
-        "selectedIconPath": "/static/images/tabbar/index-active.png"
+        "iconPath": "/static/images/tabbar/icon-home.png",
+        "selectedIconPath": "/static/images/tabbar/icon-home-active.png"
       },
       {
         "pagePath": "pages/task/task",
         "text": "我的",
-        "iconPath": "/static/images/tabbar/user.png",
-        "selectedIconPath": "/static/images/tabbar/user-active.png"
+        "iconPath": "/static/images/tabbar/icon-task.png",
+        "selectedIconPath": "/static/images/tabbar/icon-task-active.png"
       },
       {
         "pagePath": "pages/user/user",
         "text": "我",
-        "iconPath": "/static/images/tabbar/user.png",
-        "selectedIconPath": "/static/images/tabbar/user-active.png"
+        "iconPath": "/static/images/tabbar/icon-user.png",
+        "selectedIconPath": "/static/images/tabbar/icon-user-active.png"
       }
     ]
   },
