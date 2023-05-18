@@ -15,62 +15,27 @@
 
     <u-gap height="10" bgColor="#f3f3f3"></u-gap>
 
-    <view>
-      <view class="order-header">
-        <text class="order-title">我的订单</text>
-        <view class="see-all" @click="pageRouter(orderPage, -1)">
-          <text>查看全部</text>
-          <u-icon name="arrow-right"></u-icon>
-        </view>
-      </view>
-
-      <view class="order-status-box">
-        <u-grid :border="false" :col="orderStatusList.length">
-          <u-grid-item v-for="(item, index) in orderStatusList" :key="index" @click="pageRouter(orderPage, item.status)">
-            <u-icon :name="item.icon" :size="32"></u-icon>
-            <text class="grid-title">{{ item.name }}</text>
-          </u-grid-item>
-        </u-grid>
-      </view>
-    </view>
-
-    <u-gap height="10" bgColor="#f3f3f3"></u-gap>
-
-    <view class="stat-box">
-      <u-grid :border="false" col="3">
-        <u-grid-item v-for="(item, index) in statList" :key="index">
-          <text class="grid-value">{{ item.value }}</text>
-          <text class="grid-title">{{ item.title }}</text>
-        </u-grid-item>
-      </u-grid>
-    </view>
-
-    <u-gap height="10" bgColor="#f3f3f3"></u-gap>
-
     <u-cell-group class="fun-list">
-      <u-cell class="fun-item" :border="false" icon="integral" title="任务绩效" isLink></u-cell>
-      <u-cell class="fun-item" :border="false" icon="order" title="本月/累计完成任务总数" isLink></u-cell>
-      <u-cell class="fun-item" :border="false" icon="hourglass" title="本月/累计工时投入" isLink></u-cell>
-      <u-cell class="fun-item" :border="false" icon="calendar" title="入职日期" isLink></u-cell>
+      <u-cell class="fun-item" icon="integral" title="任务绩效" value="111111分"></u-cell>
+      <u-cell class="fun-item" icon="order" title="本月/累计完成任务总数" value="231/8374条"></u-cell>
+      <u-cell class="fun-item" icon="hourglass" title="本月/累计工时投入" value="12/193h"></u-cell>
+      <u-cell class="fun-item" :border="false" icon="calendar" title="入职日期" value="2022/01/21"></u-cell>
       <u-gap height="10" bgColor="#f3f3f3"></u-gap>
-      <!-- <u-cell class="fun-item" :border="false" icon="map" title="收货地址" @click="pageRouter('/pages/address/list')" isLink></u-cell> -->
-      <u-cell class="fun-item" :border="false" icon="edit-pen" title="休假设置" @click="pageRouter('/pages/leave/leave')" isLink></u-cell>
+      <u-cell class="fun-item" :border="false" icon="edit-pen" title="休假设置" @click="pageRouter('/pages/leave/leave')" isLink>
+        <text slot="value" class="leave-name">程珂</text>
+      </u-cell>
     </u-cell-group>
+
+    <u-button v-if="hasLogin" type="primary" text="退出账号" class="logout"></u-button>
   </view>
 </template>
 
 <script>
-import orderStatus from '@/common/orderStatus'
 
 export default {
   data() {
     return {
-      orderPage: '/pages/order/list',
-      statList: [
-        { value: '0', title: '我的收藏' },
-        { value: '0', title: '我的消息' },
-        { value: '0', title: '我的足迹' }
-      ]
+      orderPage: '/pages/order/list'
     }
   },
   onLoad() {
@@ -84,15 +49,6 @@ export default {
     },
     hasLogin() {
       return this.$store.getters.hasLogin
-    },
-    orderStatusList() {
-      let orderStatusList = []
-      for (let status in orderStatus) {
-        if (status !== '40') {
-          orderStatusList.push({ name: orderStatus[status].name, status: status, icon: orderStatus[status].icon })
-        }
-      }
-      return orderStatusList
     }
   },
   methods: {
@@ -159,49 +115,22 @@ export default {
   }
 }
 
-.order-header {
-  @include flex-space-between;
-  padding: 20rpx 30rpx;
-  border-bottom: $custom-border-style;
-
-  .order-title {
-    color: #333333;
-    font-size: 34rpx;
-  }
-
-  .see-all {
-    height: 40rpx;
-    @include flex-right;
-    color: #666666;
-    font-size: 26rpx;
-  }
-}
-
-.order-status-box {
-  padding: 40rpx 0;
-}
-
-.stat-box {
-  padding: 20rpx 0;
-}
-
-.grid-title {
-  line-height: 50rpx;
-  font-size: 26rpx;
-}
-
-.grid-value {
-  line-height: 50rpx;
-  font-size: 36rpx;
-  font-weight: 700;
-  color: #2b85e4;
-}
-
 .fun-list {
   .fun-item {
     padding-top: 10rpx;
     padding-bottom: 10rpx;
     border-bottom: $custom-border-style;
+    .leave-name {
+      color: #4988fd;
+    }
   }
+}
+// 退出登录
+.logout {
+  width: 600rpx;
+  position: fixed;
+  bottom: 250rpx;
+  left: 50%;
+  transform: translateX(-50%);
 }
 </style>

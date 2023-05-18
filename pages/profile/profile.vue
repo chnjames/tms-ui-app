@@ -61,6 +61,7 @@ export default {
     },
     handleAvatarClick() {
       uni.chooseImage({
+        count: 1,
         success: chooseImageRes => {
           const tempFilePaths = chooseImageRes.tempFilePaths
           updateAvatar(tempFilePaths[0]).then(res => {
