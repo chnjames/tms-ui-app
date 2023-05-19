@@ -1,32 +1,34 @@
 /* 页面公共scss */
 .container {
-	background-color: $custom-bg-color;
+	// background-color: $custom-bg-color;
   margin: 0;
   padding: 0;
 	box-sizing: border-box;
-	// height: 100%;
+	height: 100%;
 }
-
-uni-page {
+page {
   background-color: $custom-bg-color;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  // height: 100%;
 }
+// uni-page {
+//   background-color: $custom-bg-color;
+//   margin: 0;
+//   padding: 0;
+//   box-sizing: border-box;
+//   // height: 100%;
+// }
 
-uni-page-wrapper {
-  background-color: $custom-bg-color;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  // height: 100%;
-}
+// uni-page-wrapper {
+//   background-color: $custom-bg-color;
+//   margin: 0;
+//   padding: 0;
+//   box-sizing: border-box;
+//   // height: 100%;
+// }
 
-uni-page-body {
-  background-color: $custom-bg-color;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  height: auto;
-}
+// uni-page-body {
+//   background-color: $custom-bg-color;
+//   margin: 0;
+//   padding: 0;
+//   box-sizing: border-box;
+//   height: auto;
+// }

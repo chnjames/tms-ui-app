@@ -14,7 +14,7 @@
       </view>
     </view>
     <!-- 查看更多 -->
-    <u-loadmore :status="status" :load-text="loadText" @loadmore="bindLoadMore" />
+    <u-loadmore :status="status" :load-text="loadText" :marginBottom="100" @loadmore="bindLoadMore" />
     <!-- 快速创建 -->
     <view class="add-img">
       <u-icon name="plus" color="#FFFFFF" size="56rpx"></u-icon>
@@ -127,7 +127,7 @@ export default {
     }, 2000)
   },
   methods: {
-    click(item) {
+    cellClick(item) {
       console.log('item', item);
     },
     // 加载更多
@@ -167,7 +167,8 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-
+  -webkit-overflow-scrolling: touch;
+  overflow: scroll;
 }
 .add-img, .scan-img {
   width: 80rpx;
