@@ -116,10 +116,10 @@ export default {
 }
 
 .fun-list {
+  background-color: #FFFFFF;
   .fun-item {
     padding-top: 10rpx;
     padding-bottom: 10rpx;
-    border-bottom: $custom-border-style;
     .leave-name {
       color: #4988fd;
     }

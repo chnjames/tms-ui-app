@@ -1,8 +1,20 @@
 <template>
-  <view>
+  <view class="container">
     <u-sticky bgColor="#fff">
       <u-tabs itemStyle="width: 150rpx;height: 60rpx" :scrollable="false" :list="list1" @click="click"></u-tabs>
     </u-sticky>
+    <!-- 我的任务 -->
+    <view class="task">
+      <view v-for="(item, index) in mineTaskList" :key="index" @click="cellClick(item)">
+        <view class="task-item">
+          <view>{{ item.name }}</view>
+          <view>{{ item.task }}</view>
+          <view>{{ item.time }} {{ item.progress }}</view>
+        </view>
+      </view>
+    </view>
+    <!-- 查看更多 -->
+    <u-loadmore :status="status" :load-text="loadText" @loadmore="bindLoadMore" />
     <!-- 快速创建 -->
     <view class="add-img">
       <u-icon name="plus" color="#FFFFFF" size="56rpx"></u-icon>
@@ -15,68 +27,179 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        addImg: require('../../static/images/icons/add.png'),
-        outgoingImg: require('../../static/images/icons/outgoing.png'),
-        list1: [{
-          name: '进行中'
-        }, {
-          name: '已逾期',
-          badge: {
-            value: 6
-          }
-        }, {
-          name: '已完成'
-        }, {
-          name: '我关注',
-          badge: {
-            value: 1
-          }
-        }]
-      }
-    },
-    methods: {
-      click(item) {
-        console.log('item', item);
+export default {
+  data() {
+    return {
+      addImg: require('../../static/images/icons/add.png'),
+      outgoingImg: require('../../static/images/icons/outgoing.png'),
+      list1: [{
+        name: '进行中'
+      }, {
+        name: '已逾期',
+        badge: {
+          value: 6
+        }
+      }, {
+        name: '已完成'
+      }, {
+        name: '我关注',
+        badge: {
+          value: 1
+        }
+      }],
+      status: 'loadmore',
+      loadText: {
+        loadmore: '轻轻上拉',
+        loading: '努力加载中',
+        nomore: '实在没有了'
       },
-      // 扫码
-      bindScan() {
-        // 允许从相机和相册扫码
-        uni.scanCode({
-          autoDecodeCharset: false,
-        	success: function (res) {
-        		console.log('条码类型：' + res.scanType);
-        		console.log('条码内容：' + res.result);
-        	},
-          fail: function (err) {
-            console.log('err', err)
-          }
+      pageNo: 1,
+      pageSize: 10,
+      mineTaskList: [{
+        name: '紧急 华为贴标机设备',
+        task: '收款任务：首付款30%，20000元',
+        time: '10月3日截止',
+        progress: '30%'
+      }, {
+        name: '紧急 华为贴标机设备',
+        task: '收款任务：首付款30%，20000元',
+        time: '10月3日截止',
+        progress: '30%'
+      }, {
+        name: '紧急 华为贴标机设备',
+        task: '收款任务：首付款30%，20000元',
+        time: '10月3日截止',
+        progress: '30%'
+      }, {
+        name: '紧急 华为贴标机设备',
+        task: '收款任务：首付款30%，20000元',
+        time: '10月3日截止',
+        progress: '30%'
+      }, {
+        name: '紧急 华为贴标机设备',
+        task: '收款任务：首付款30%，20000元',
+        time: '10月3日截止',
+        progress: '30%'
+      }, {
+        name: '紧急 华为贴标机设备',
+        task: '收款任务：首付款30%，20000元',
+        time: '10月3日截止',
+        progress: '30%'
+      }, {
+        name: '紧急 华为贴标机设备',
+        task: '收款任务：首付款30%，20000元',
+        time: '10月3日截止',
+        progress: '30%'
+      }, {
+        name: '紧急 华为贴标机设备',
+        task: '收款任务：首付款30%，20000元',
+        time: '10月3日截止',
+        progress: '30%'
+      }, {
+        name: '紧急 华为贴标机设备',
+        task: '收款任务：首付款30%，20000元',
+        time: '10月3日截止',
+        progress: '30%'
+      }, {
+        name: '紧急 华为贴标机设备',
+        task: '收款任务：首付款30%，20000元',
+        time: '10月3日截止',
+        progress: '30%'
+      }]
+    }
+  },
+  onReachBottom() {
+    if (this.pageNo >= 3) return;
+    this.status = 'loading';
+    this.pageNo = ++this.pageNo;
+    setTimeout(() => {
+      for (let i = 1; i <= 10; i++) {
+        this.mineTaskList.push({
+          name: '紧急 华为贴标机设备' + i,
+          task: '收款任务：首付款30%，20000元',
+          time: '10月3日截止',
+          progress: '30%'
         });
       }
+      console.log('this.mineTaskList', this.mineTaskList);
+      if (this.pageNo >= 3) this.status = 'nomore';
+      else this.status = 'loading';
+    }, 2000)
+  },
+  methods: {
+    click(item) {
+      console.log('item', item);
+    },
+    // 加载更多
+    bindLoadMore() {
+      this.status = 'loading';
+      this.pageNo = ++this.pageNo;
+      setTimeout(() => {
+        for (let i = 1; i <= 10; i++) {
+          this.mineTaskList.push({
+            name: '紧急 华为贴标机设备' + i,
+            task: '收款任务：首付款30%，20000元',
+            time: '10月3日截止',
+            progress: '30%'
+          });
+        }
+        if (this.pageNo >= 3) this.status = 'nomore';
+        else this.status = 'loading';
+      }, 2000)
+    },
+    // 扫码
+    bindScan() {
+      // 允许从相机和相册扫码
+      uni.scanCode({
+        autoDecodeCharset: false,
+        success: function (res) {
+          console.log('条码类型：' + res.scanType);
+          console.log('条码内容：' + res.result);
+        },
+        fail: function (err) {
+          console.log('err', err)
+        }
+      });
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>
-  .add-img, .scan-img {
-    width: 80rpx;
-    height: 80rpx;
-    background-color: #4988fd;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .add-img {
-    position: fixed;
-    bottom: 200rpx;
-    left: 30rpx;
-  }
-  .scan-img {
-    position: fixed;
-    bottom: 200rpx;
-    right: 30rpx;
-  }
+.container {
+
+}
+.add-img, .scan-img {
+  width: 80rpx;
+  height: 80rpx;
+  background-color: #4988fd;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-img {
+  position: fixed;
+  bottom: 200rpx;
+  left: 30rpx;
+}
+
+.scan-img {
+  position: fixed;
+  bottom: 200rpx;
+  right: 30rpx;
+}
+
+// 任务列表
+.task {
+  padding: 20rpx;
+}
+.task-item {
+  background-color: #fff;
+  border-radius: 10rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 0 10rpx #eee;
+}
 </style>
