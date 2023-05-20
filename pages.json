@@ -128,7 +128,70 @@
         "navigationBarTitleText": "修改地址"
       }
     }
-  ],
+      ,{
+            "path" : "pages/commonTask/commonTask",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "快速创建任务[普通]",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/deviceTask/deviceTask",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "快速创建任务[设备]",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/receiveTask/receiveTask",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "领取任务",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/acceptance/acceptance",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "收货验收",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/receipt/receipt",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "入库操作",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/outgoing/outgoing",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "扫码出库",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/equipment/equipment",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "设备信息",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
   "tabBar": {
     "blurEffect": "extralight",
     "selectedColor": "#4988fd",
@@ -159,6 +222,6 @@
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "yudao-ui-app",
     "navigationBarBackgroundColor": "#ffffff",
-    "backgroundColor": "#ffffff"
+    "backgroundColor": "#F5F5F5"
   }
 }

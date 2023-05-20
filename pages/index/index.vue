@@ -3,7 +3,7 @@
     <!-- 金刚区 -->
     <view class="district" blurEffect="light">
       <u-row justify="space-between" gutter="10">
-        <u-col span="3" v-for="(item, index) in districtList" :key="index" align="center" textAlign="center">
+        <u-col span="3" v-for="(item, index) in districtList" :key="index" align="center" textAlign="center" @click="bindDistrict(item)">
           <u--image :src="item.icon" width="80rpx" height="80rpx"></u--image>
           <u--text margin="20rpx 20rpx 0" size="24rpx" align="center" :text="item.name"></u--text>
         </u-col>
@@ -13,7 +13,7 @@
     <u-swipe-action>
       <u-swipe-action-item class="swipe-item" :options="item.options" v-for="(item, index) in taskList" :name="item.id"
         :key="index" @click="bindSwiperItem">
-        <view class="swipe-action">
+        <view class="swipe-action" @click="bindTask(item, index)">
           <view class="swipe-action__content">
             <view class="swipe-action__content__text">{{ item.name }}</view>
             <view class="swipe-action__content__text">{{ item.type }}</view>
@@ -40,16 +40,20 @@ export default {
     return {
       districtList: [{
         name: '到货验收',
-        icon: require("../../static/images/icons/acceptance.png")
+        icon: require("../../static/images/icons/acceptance.png"),
+        url: '/pages/acceptance/acceptance'
       }, {
         name: '入库操作',
-        icon: require("../../static/images/icons/receipt.png")
+        icon: require("../../static/images/icons/receipt.png"),
+        url: '/pages/receipt/receipt'
       }, {
         name: '扫码出库',
-        icon: require("../../static/images/icons/outgoing.png")
+        icon: require("../../static/images/icons/outgoing.png"),
+        url: '/pages/outgoing/outgoing'
       }, {
         name: '设备信息',
-        icon: require("../../static/images/icons/equipment.png")
+        icon: require("../../static/images/icons/equipment.png"),
+        url: '/pages/equipment/equipment'
       }],
       taskList: [{
         id: 1,
@@ -133,12 +137,24 @@ export default {
         this.noticeList = res.data
       })
     },
+    // 金刚区
+    bindDistrict(item) {
+      const { url } = item
+      uni.navigateTo({
+        url
+      })
+    },
     // 任务操作
-    bindSwiperItem({
-      name,
-      index
-    }) {
+    bindSwiperItem({ name, index }) {
       console.log(`name${name}`, `index${index}`)
+    },
+    // 领取任务
+    bindTask(item, index) {
+      console.log(item, index)
+      const { id, type } = item
+      uni.navigateTo({
+        url: `/pages/receiveTask/receiveTask?id=${id}&type=${type}`
+      })
     }
   }
 }
