@@ -1,5 +1,6 @@
 {
-  "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+  "pages": [
+    //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
     {
       "path": "pages/index/index",
       "style": {
@@ -127,78 +128,65 @@
       "style": {
         "navigationBarTitleText": "修改地址"
       }
+    },
+    {
+      "path": "pages/commonTask/commonTask",
+      "style": {
+        "navigationBarTitleText": "快速创建任务[普通]",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/deviceTask/deviceTask",
+      "style": {
+        "navigationBarTitleText": "快速创建任务[设备]",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/receiveTask/receiveTask",
+      "style": {
+        "navigationBarTitleText": "领取任务",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/acceptance/acceptance",
+      "style": {
+        "navigationBarTitleText": "收货验收",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/receipt/receipt",
+      "style": {
+        "navigationBarTitleText": "入库操作",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/outgoing/outgoing",
+      "style": {
+        "navigationBarTitleText": "扫码出库",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/equipment/equipment",
+      "style": {
+        "navigationBarTitleText": "设备信息",
+        "enablePullDownRefresh": false
+      }
     }
-      ,{
-            "path" : "pages/commonTask/commonTask",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "快速创建任务[普通]",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/deviceTask/deviceTask",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "快速创建任务[设备]",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/receiveTask/receiveTask",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "领取任务",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/acceptance/acceptance",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "收货验收",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/receipt/receipt",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "入库操作",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/outgoing/outgoing",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "扫码出库",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/equipment/equipment",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "设备信息",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+  ],
   "tabBar": {
     "blurEffect": "extralight",
     "selectedColor": "#4988fd",
     "color": "#bfbfbf",
     "fontSize": "12px",
     "iconWidth": "26px",
-    "list": [{
+    "list": [
+      {
         "pagePath": "pages/index/index",
         "text": "首页",
         "iconPath": "/static/images/tabbar/icon-home.png",

@@ -7,9 +7,8 @@
   "transformPx": false,
   /* 5+App特有相关 */
   "app-plus": {
-    "renderer": "native",
     "usingComponents": true,
-    "nvueCompiler": "uni-app",
+    "nvueStyleCompiler": "uni-app",
     "compilerVersion": 3,
     "splashscreen": {
       "alwaysShowBeforeRender": true,
@@ -58,8 +57,7 @@
   "mp-weixin": {
     "appid": "wx48d7c38b46f2e81c",
     "setting": {
-      "urlCheck": false,
-      "es6": true
+      "urlCheck": false
     },
     "usingComponents": true
   },

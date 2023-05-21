@@ -152,9 +152,9 @@ export default {
     bindTask(item, index) {
       console.log(item, index)
       const { id, type } = item
-      uni.navigateTo({
-        url: `/pages/receiveTask/receiveTask?id=${id}&type=${type}`
-      })
+      // uni.navigateTo({
+      //   url: `/pages/receiveTask/receiveTask?id=${id}&type=${type}`
+      // })
     }
   }
 }
