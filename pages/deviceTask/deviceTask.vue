@@ -57,6 +57,8 @@
     <!-- 操作人选择器 -->
     <u-picker :show="accountShow" :columns="accountColumns" @cancel="bindClose" @close="bindClose"
       @confirm="confirmAccount"></u-picker>
+    <!-- 提醒 -->
+    <u-toast ref="uToast"></u-toast>
   </view>
 </template>
 
