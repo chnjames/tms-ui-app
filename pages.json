@@ -178,7 +178,16 @@
         "enablePullDownRefresh": false
       }
     }
-  ],
+      ,{
+            "path" : "pages/taskDetail/taskDetail",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "任务详情",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
   "tabBar": {
     "blurEffect": "extralight",
     "selectedColor": "#4988fd",

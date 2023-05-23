@@ -239,4 +239,5 @@ export default {
   .u-icon {
     margin-left: 20rpx;
   }
-}</style>
+}
+</style>

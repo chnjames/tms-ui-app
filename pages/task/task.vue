@@ -149,6 +149,9 @@ export default {
     // 任务详情
     bindTask(item) {
       console.log('item', item);
+      uni.navigateTo({
+        url: '/pages/taskDetail/taskDetail'
+      });
     },
     // 加载更多
     bindLoadMore() {

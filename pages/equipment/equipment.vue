@@ -22,14 +22,14 @@
             <u-gap height="20rpx"></u-gap>
             <view>{{ item.task }} {{ item.description }}</view>
           </view>
-          <u-album :urls="item.imgList" singleSize="60" multipleSize="70" multipleMode="aspectFill" singleMode="scaleToFill" :maxCount="2" :rowCount="2"></u-album>
+          <u-album :urls="item.imgList" singleMode="scaleToFill" singleSize="70" :maxCount="2" :rowCount="2"></u-album>
         </view>
       </view>
     </view>
     <view v-if="currentIndex === 1">
       <view v-for="(item, index) in docList" :key="index">
         <view class="task-item" @click="bindDocument(item.url)">
-          <view style="padding: 30rpx 0;">{{ item.name }}</view>
+          <view class="doc-name">{{ item.name }}</view>
         </view>
       </view>
     </view>
@@ -37,125 +37,132 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        currentIndex: 0,
-        tabList: [{
-          name: '设备履历'
-        }, {
-          name: '设备文档'
-        }],
-        mineTaskList: [{
-          time: '2022/11/12 12:00:21',
-          task: '日常点检',
-          description: '温度异常(60℃)',
-          imgList: ['https://img.yzcdn.cn/vant/cat.jpeg', 'https://img.yzcdn.cn/vant/cat.jpeg',
-            'https://img.yzcdn.cn/vant/cat.jpeg'
-          ]
-        }, {
-          time: '2022/11/12 12:00:21',
-          task: '日常点检',
-          imgList: ['https://img.yzcdn.cn/vant/cat.jpeg', 'https://img.yzcdn.cn/vant/cat.jpeg',
-            'https://img.yzcdn.cn/vant/cat.jpeg'
-          ]
-        }, {
-          time: '2022/11/12 12:00:21',
-          task: '日常点检',
-          description: '温度异常(60℃)'
-        }, {
-          time: '2022/11/12 12:00:21',
-          task: '日常点检',
-          description: '温度异常(60℃)',
-          imgList: ['https://cdn.uviewui.com/uview/album/1.jpg']
-        }, {
-          time: '2022/11/12 12:00:21',
-          task: '日常点检',
-          description: '温度异常(60℃)',
-          imgList: ['https://img.yzcdn.cn/vant/cat.jpeg', 'https://img.yzcdn.cn/vant/cat.jpeg']
-        }],
-        docList: [{
-          url: 'http://www.gov.cn/zhengce/pdfFile/2023_PDF.pdf',
-          name: '加注机设备图纸.pdf'
-        }, {
-          url: 'http://www.gov.cn/zhengce/pdfFile/2023_PDF.pdf',
-          name: '加注机设备图纸.pdf'
-        }]
-      };
+export default {
+  data() {
+    return {
+      currentIndex: 0,
+      tabList: [{
+        name: '设备履历'
+      }, {
+        name: '设备文档'
+      }],
+      mineTaskList: [{
+        time: '2022/11/12 12:00:21',
+        task: '日常点检',
+        description: '温度异常(60℃)',
+        imgList: ['https://img.yzcdn.cn/vant/cat.jpeg', 'https://img.yzcdn.cn/vant/cat.jpeg',
+          'https://img.yzcdn.cn/vant/cat.jpeg'
+        ]
+      }, {
+        time: '2022/11/12 12:00:21',
+        task: '日常点检',
+        imgList: ['https://img.yzcdn.cn/vant/cat.jpeg', 'https://img.yzcdn.cn/vant/cat.jpeg',
+          'https://img.yzcdn.cn/vant/cat.jpeg'
+        ]
+      }, {
+        time: '2022/11/12 12:00:21',
+        task: '日常点检',
+        description: '温度异常(60℃)',
+        imgList: ['https://img.yzcdn.cn/vant/cat.jpeg']
+      }, {
+        time: '2022/11/12 12:00:21',
+        task: '日常点检',
+        description: '温度异常(60℃)',
+        imgList: ['https://cdn.uviewui.com/uview/album/1.jpg']
+      }, {
+        time: '2022/11/12 12:00:21',
+        task: '日常点检',
+        description: '温度异常(60℃)',
+        imgList: ['https://img.yzcdn.cn/vant/cat.jpeg', 'https://img.yzcdn.cn/vant/cat.jpeg']
+      }],
+      docList: [{
+        url: 'http://www.gov.cn/zhengce/pdfFile/2023_PDF.pdf',
+        name: '加注机设备图纸.pdf'
+      }, {
+        url: 'http://www.gov.cn/zhengce/pdfFile/2023_PDF.pdf',
+        name: '加注机设备图纸.pdf'
+      }]
+    };
+  },
+  methods: {
+    // tab切换
+    bindTab({
+      name,
+      index
+    }) {
+      console.log(name, index)
+      this.currentIndex = index
     },
-    methods: {
-      // tab切换
-      bindTab({
-        name,
-        index
-      }) {
-        console.log(name, index)
-        this.currentIndex = index
-      },
-      // 文档查看
-      bindDocument(url) {
-        uni.downloadFile({
-          url,
-          success: function(res) {
-            var filePath = res.tempFilePath;
-            uni.openDocument({
-              filePath: filePath,
-              showMenu: true,
-              success: function(res) {
-                console.log('打开文档成功');
-              }
-            });
-          }
-        });
+    // 文档查看
+    bindDocument(url) {
+      uni.downloadFile({
+        url,
+        success: function (res) {
+          var filePath = res.tempFilePath;
+          uni.openDocument({
+            filePath: filePath,
+            showMenu: true,
+            success: function (res) {
+              console.log('打开文档成功');
+            }
+          });
+        }
+      });
 
-      },
     },
-  }
+  },
+}
 </script>
 
 <style lang="scss" scoped>
-  .container {
-    padding: 20rpx;
+.container {
+  padding: 20rpx;
+}
+
+.coding {
+  @include flex-space-between;
+}
+
+.coding-name {
+  flex: 1;
+  background-color: #ffffff;
+  border-radius: 10rpx;
+  margin-right: 20rpx;
+
+  .title {
+    color: #303133;
+    font-size: 24rpx;
+    font-weight: bold;
   }
+}
 
-  .coding {
-    @include flex-space-between;
+// 任务列表
+.task {
+  // padding: 20rpx;
+  -webkit-overflow-scrolling: touch;
+  overflow-y: scroll;
+}
+
+.task-item {
+  background-color: #fff;
+  border-radius: 10rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 0 10rpx #eee;
+
+  @include flex-space-between;
+
+  .doc-name {
+    padding: 16rpx 0;
   }
+}
 
-  .coding-name {
-    flex: 1;
-    background-color: #ffffff;
-    border-radius: 10rpx;
-    margin-right: 20rpx;
-
-    .title {
-      color: #303133;
-      font-size: 24rpx;
-      font-weight: bold;
+/deep/ .u-album {
+  .u-album__row__wrapper {
+    uni-image {
+      height: 140rpx !important;
     }
   }
 
-  // 任务列表
-  .task {
-    // padding: 20rpx;
-    -webkit-overflow-scrolling: touch;
-    overflow-y: scroll;
-  }
-
-  .task-item {
-    height: 140rpx;
-    background-color: #fff;
-    border-radius: 10rpx;
-    padding: 20rpx;
-    margin-bottom: 20rpx;
-    box-shadow: 0 0 10rpx #eee;
-
-    @include flex-space-between;
-
-    .u-button {
-      width: 120rpx;
-      height: 60rpx;
-      margin: 0;
-    }
-  }
+}
 </style>
