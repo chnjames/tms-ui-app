@@ -1,8 +1,11 @@
 <template>
   <view class="container">
-    <u-sticky bgColor="#fff" :offset-top="offsetTop" customNavHeight="60rpx">
-      <u-tabs itemStyle="width: 150rpx;height: 60rpx" :list="tabList" @change="bindTab"></u-tabs>
-    </u-sticky>
+    <view class="sticky">
+      <u-tabs itemStyle="width: 150rpx" :list="tabList" @change="bindTab"></u-tabs>
+    </view>
+<!--    <u-sticky bgColor="#fff" :offset-top="offsetTop">-->
+<!--      <u-tabs itemStyle="width: 150rpx" :list="tabList" @change="bindTab"></u-tabs>-->
+<!--    </u-sticky>-->
     <!-- 我的任务 -->
     <view class="task">
       <view v-for="(item, index) in mineTaskList" :key="index" @click="bindTask(item)">
@@ -112,14 +115,7 @@ export default {
   onLoad() {
     uni.getSystemInfo({
       success: (e) => {
-        console.log(e);
-        // // #ifdef MP-WEIXIN
-        // let custom = wx.getMenuButtonBoundingClientRect();
-        // const height = custom.bottom + custom.top - e.statusBarHeight + 48;
-        // console.log(height);
-        // // #endif
-        // const height = e.statusBarHeight + 48;
-        // console.log('height', height)
+        this.offsetTop = e.statusBarHeight;
       },
     });
   },
@@ -201,6 +197,17 @@ export default {
 .container {
   // -webkit-overflow-scrolling: touch;
   // overflow: scroll;
+  .sticky {
+    position: sticky;
+    top: 0;
+    height: 60rpx;
+    // 垂直居中
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    background-color: #fff;
+  }
 }
 
 .add-img,
