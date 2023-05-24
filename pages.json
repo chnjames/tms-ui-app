@@ -177,9 +177,82 @@
         "navigationBarTitleText": "设备信息",
         "enablePullDownRefresh": false
       }
+    },
+    {
+      "path": "pages/taskDetail/taskDetail",
+      "style": {
+        "navigationBarTitleText": "任务详情",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/deviceTaskDetail/deviceTaskDetail",
+      "style": {
+        "navigationBarTitleText": "任务详情",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/replaceTaskDetail/replaceTaskDetail",
+      "style": {
+        "navigationBarTitleText": "任务详情",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/inventory/inventory",
+      "style": {
+        "navigationBarTitleText": "任务详情",
+        "enablePullDownRefresh": false
+      }
     }
       ,{
-            "path" : "pages/taskDetail/taskDetail",
+            "path" : "pages/executeTask/executeTask",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "任务详情",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/outboundTask/outboundTask",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "任务详情",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/inventoryTask/inventoryTask",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "任务详情",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/inventoryTaskDetail/inventoryTaskDetail",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "物料盘点",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/outboundTaskDetail/outboundTaskDetail",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "任务详情",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/replaceTask/replaceTask",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "任务详情",

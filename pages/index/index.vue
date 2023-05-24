@@ -3,7 +3,8 @@
     <!-- 金刚区 -->
     <view class="district" blurEffect="light">
       <u-row justify="space-between" gutter="10">
-        <u-col span="3" v-for="(item, index) in districtList" :key="index" align="center" textAlign="center" @click="bindDistrict(item)">
+        <u-col span="3" v-for="(item, index) in districtList" :key="index" align="center" textAlign="center"
+          @click="bindDistrict(item)">
           <u--image :src="item.icon" width="80rpx" height="80rpx"></u--image>
           <u--text margin="20rpx 20rpx 0" size="24rpx" align="center" :text="item.name"></u--text>
         </u-col>
@@ -22,9 +23,6 @@
         </view>
       </u-swipe-action-item>
     </u-swipe-action>
-
-    <u-gap height="20px"></u-gap>
-
   </view>
 </template>
 
@@ -125,6 +123,14 @@ export default {
   onLoad() {
     this.loadBannerData()
     // this.loadNoticeData()
+    uni.setTabBarBadge({
+      index: 0,
+      text: '4'
+    })
+    // 当角标数值为 0 时，可以通过传空字符串或数字 0 的方式，将角标清除
+    // uni.removeTabBarBadge({
+    //   index: 0
+    // })
   },
   methods: {
     loadBannerData() {

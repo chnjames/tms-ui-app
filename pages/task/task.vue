@@ -3,9 +3,9 @@
     <view class="sticky">
       <u-tabs itemStyle="width: 150rpx" :list="tabList" @change="bindTab"></u-tabs>
     </view>
-<!--    <u-sticky bgColor="#fff" :offset-top="offsetTop">-->
-<!--      <u-tabs itemStyle="width: 150rpx" :list="tabList" @change="bindTab"></u-tabs>-->
-<!--    </u-sticky>-->
+   <!-- <u-sticky bgColor="#fff" :offset-top="offsetTop">
+     <u-tabs itemStyle="width: 150rpx" :list="tabList" @change="bindTab"></u-tabs>
+   </u-sticky> -->
     <!-- 我的任务 -->
     <view class="task">
       <view v-for="(item, index) in mineTaskList" :key="index" @click="bindTask(item)">
@@ -63,26 +63,31 @@ export default {
         name: '紧急 华为贴标机设备',
         task: '收款任务：首付款30%，20000元',
         time: '10月3日截止',
+        type: 1,
         progress: '30%'
       }, {
         name: '紧急 华为贴标机设备',
         task: '收款任务：首付款30%，20000元',
         time: '10月3日截止',
+        type: 2,
         progress: '30%'
       }, {
         name: '紧急 华为贴标机设备',
         task: '收款任务：首付款30%，20000元',
         time: '10月3日截止',
+        type: 3,
         progress: '30%'
       }, {
         name: '紧急 华为贴标机设备',
         task: '收款任务：首付款30%，20000元',
         time: '10月3日截止',
+        type: 4,
         progress: '30%'
       }, {
         name: '紧急 华为贴标机设备',
         task: '收款任务：首付款30%，20000元',
         time: '10月3日截止',
+        type: 5,
         progress: '30%'
       }, {
         name: '紧急 华为贴标机设备',
@@ -145,9 +150,39 @@ export default {
     // 任务详情
     bindTask(item) {
       console.log('item', item);
-      uni.navigateTo({
-        url: '/pages/taskDetail/taskDetail'
-      });
+      const { type } = item;
+      switch (type) {
+        // 项目&&生产任务
+        case 1:
+          uni.navigateTo({
+            url: '/pages/taskDetail/taskDetail'
+          });
+          break;
+        // 设备管理任务
+        case 2:
+          uni.navigateTo({
+            url: '/pages/deviceTaskDetail/deviceTaskDetail'
+          });
+          break;
+        // 更换备件任务(命名简写)
+        case 3:
+          uni.navigateTo({
+            url: '/pages/replaceTaskDetail/replaceTaskDetail'
+          });
+          break;
+        // 物料盘点任务
+        case 4:
+          uni.navigateTo({
+            url: '/pages/inventoryTaskDetail/inventoryTaskDetail'
+          });
+          break;
+        // 出库任务
+        case 5:
+          uni.navigateTo({
+            url: '/pages/outboundTaskDetail/outboundTaskDetail'
+          });
+          break;
+      }
     },
     // 加载更多
     bindLoadMore() {
@@ -223,13 +258,13 @@ export default {
 
 .add-img {
   position: fixed;
-  bottom: 200rpx;
+  bottom: calc(var(--window-bottom) + 100rpx);
   left: 30rpx;
 }
 
 .scan-img {
   position: fixed;
-  bottom: 200rpx;
+  bottom: calc(var(--window-bottom) + 100rpx);
   right: 30rpx;
 }
 
