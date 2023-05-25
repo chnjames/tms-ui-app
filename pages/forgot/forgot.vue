@@ -1,45 +1,38 @@
 <template>
   <view class="container">
+    <u-gap height="120rpx"></u-gap>
     <view class="unp-header">
-      <view class="unp-logo">
-        <!-- <u-avatar size="80" icon="github-circle-fill" fontSize="80"></u-avatar> -->
-        <u--image :showLoading="true" mode="widthFix" :src="logoImg" width="150px" height="118px"></u--image>
-      </view>
+      <u--image :showLoading="true" mode="widthFix" :src="logoImg" width="160px"></u--image>
     </view>
 
     <view class="unp-box">
       <u--form class="unp-form" labelPosition="left" :model="formData" :rules="rules" ref="form">
         <u-form-item prop="username" borderBottom ref="item-username">
-          <u-input type="text" maxlength="20" v-model="formData.username" prefixIcon="phone-fill" clearable placeholder="账号由数字和字母组成" border="none" @change="handleUsernameChange"></u-input>
+          <u-input type="text" maxlength="20" v-model="formData.username" prefixIconStyle="color:#cccccc" prefixIcon="phone-fill" clearable placeholder="输入手机号" border="none" @change="handleUsernameChange"></u-input>
         </u-form-item>
 
-        <u-gap height="20"></u-gap>
+        <u-gap height="40rpx"></u-gap>
 
         <u-form-item prop="code" labelWidth="80" borderBottom>
-          <u--input type="number" maxlength="6" v-model="formData.code" prefixIcon="more-circle-fill" border="none" placeholder="请填写验证码"></u--input>
+          <u--input type="number" maxlength="6" v-model="formData.code" prefixIconStyle="color:#cccccc" prefixIcon="more-circle-fill" border="none" placeholder="短信验证码"></u--input>
           <u-button slot="right" @tap="getCode" :text="tips" type="success" size="mini" :disabled="codeDisabled"></u-button>
           <u-code ref="uCode" @change="codeChange" seconds="60" @start="codeDisabled = true" @end="codeDisabled = false"></u-code>
         </u-form-item>
 
-        <u-gap height="20"></u-gap>
+        <u-gap height="40rpx"></u-gap>
 
         <u-form-item prop="password" borderBottom ref="item-password">
-          <u-input :type="inputType" maxlength="20" v-model="formData.password" prefixIcon="lock-fill" placeholder="新密码由数字、字母和符号组成" border="none" @change="handlePasswordChange">
+          <u-input :type="inputType" maxlength="20" v-model="formData.password" prefixIconStyle="color:#cccccc" prefixIcon="lock-fill" placeholder="输入新的登录密码" border="none" @change="handlePasswordChange">
             <template slot="suffix">
-              <u-icon v-if="inputType === 'password'" size="20" color="#666666" name="eye-fill" @click="inputType = 'text'"></u-icon>
-              <u-icon v-if="inputType === 'text'" size="20" color="#666666" name="eye-off" @click="inputType = 'password'"></u-icon>
+              <u-icon v-if="inputType === 'password'" size="20" color="#cccccc" name="eye-fill" @click="inputType = 'text'"></u-icon>
+              <u-icon v-if="inputType === 'text'" size="20" color="#cccccc" name="eye-off" @click="inputType = 'password'"></u-icon>
             </template>
           </u-input>
         </u-form-item>
 
-        <view class="lk-group">
-          <!-- 占位 -->
-        </view>
+        <u-gap height="100rpx"></u-gap>
 
-        <u-button type="error" text="重置密码" customStyle="margin-top: 50px" @click="handleSubmit"></u-button>
-
-        <u-gap height="20"></u-gap>
-        <u-button type="info" text="返回" @click="navigateBack()"></u-button>
+        <u-button class="auth-btn" color="#214579" @click="handleSubmit">确 定</u-button>
       </u--form>
     </view>
   </view>
@@ -123,9 +116,6 @@ export default {
         .then(res => {
           uni.$u.toast('点击了重置密码')
         })
-    },
-    navigateBack() {
-      uni.navigateBack()
     }
   }
 }
@@ -133,11 +123,7 @@ export default {
 
 <style lang="scss" scoped>
 .unp-header {
-  height: 400rpx;
   @include flex-center;
-  .unp-logo {
-    @include flex-center;
-  }
 }
 
 .unp-box {
@@ -145,15 +131,5 @@ export default {
   .unp-form {
     width: 560rpx;
   }
-}
-
-.lk-group {
-  height: 40rpx;
-  margin-top: 40rpx;
-  @include flex-space-between;
-  font-size: 12rpx;
-
-  color: $u-primary;
-  text-decoration: $u-primary;
 }
 </style>

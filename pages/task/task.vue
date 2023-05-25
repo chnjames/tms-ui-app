@@ -1,18 +1,20 @@
 <template>
   <view class="container">
     <view class="sticky">
-      <u-tabs itemStyle="width: 150rpx" :list="tabList" @change="bindTab"></u-tabs>
+      <u-tabs itemStyle="width: 140rpx;height: 90rpx" lineColor="#214579" activeStyle="color: #214579" inactiveStyle="color: #666666" :list="tabList" @change="bindTab"></u-tabs>
     </view>
-   <!-- <u-sticky bgColor="#fff" :offset-top="offsetTop">
-     <u-tabs itemStyle="width: 150rpx" :list="tabList" @change="bindTab"></u-tabs>
-   </u-sticky> -->
     <!-- 我的任务 -->
     <view class="task">
       <view v-for="(item, index) in mineTaskList" :key="index" @click="bindTask(item)">
         <view class="task-item">
-          <view>{{ item.name }}</view>
-          <view>{{ item.task }}</view>
-          <view>{{ item.time }} {{ item.progress }}</view>
+          <u--text size="28rpx" color="#666666" :text="item.name"></u--text>
+          <u-gap height="10rpx"></u-gap>
+          <u--text size="28rpx" color="#666666" :text="item.task"></u--text>
+          <u-gap height="20rpx"></u-gap>
+          <view class="task-item-start">
+            <view class="task-item-time">{{ item.time }}</view>
+            <view class="task-item-progress">{{ item.progress }}</view>
+          </view>
         </view>
       </view>
     </view>
@@ -20,11 +22,11 @@
     <u-loadmore :status="status" :load-text="loadText" :marginBottom="80" @loadmore="bindLoadMore" />
     <!-- 快速创建 -->
     <view class="add-img" @click="bindAdd">
-      <u-icon name="plus" color="#FFFFFF" size="56rpx"></u-icon>
+      <u-icon name="plus" bold color="#FFFFFF" size="40rpx"></u-icon>
     </view>
     <!-- 扫码 -->
     <view class="scan-img" @click="bindScan">
-      <u-icon name="scan" color="#FFFFFF" size="56rpx"></u-icon>
+      <u-icon name="scan" bold color="#FFFFFF" size="50rpx"></u-icon>
     </view>
   </view>
 </template>
@@ -34,8 +36,6 @@ export default {
   data() {
     return {
       offsetTop: 0,
-      addImg: require('../../static/images/icons/add.png'),
-      outgoingImg: require('../../static/images/icons/outgoing.png'),
       tabList: [{
         name: '进行中'
       }, {
@@ -236,20 +236,18 @@ export default {
     position: sticky;
     top: 0;
     height: 60rpx;
-    // 垂直居中
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 999;
-    background-color: #fff;
   }
 }
 
 .add-img,
 .scan-img {
-  width: 80rpx;
-  height: 80rpx;
-  background-color: #4988fd;
+  width: 70rpx;
+  height: 70rpx;
+  background-color: $custom-content-color;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -270,7 +268,7 @@ export default {
 
 // 任务列表
 .task {
-  padding: 20rpx;
+  padding: 30rpx;
   -webkit-overflow-scrolling: touch;
   overflow-y: scroll;
 }
@@ -281,5 +279,19 @@ export default {
   padding: 20rpx;
   margin-bottom: 20rpx;
   box-shadow: 0 0 10rpx #eee;
+
+  &-start {
+    @include flex-left;
+  }
+
+  &-time {
+    font-size: 24rpx;
+    color: #666666;
+    margin-right: 60rpx;
+  }
+  &-progress {
+    font-size: 24rpx;
+    color: #108ee9;
+  }
 }
 </style>

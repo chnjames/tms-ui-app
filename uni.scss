@@ -23,6 +23,24 @@ $custom-bg-color: #F5F5F5;
 /* 边框样式 */
 $custom-border-style: 1rpx solid #f3f3f3;
 
+/* 一级内容颜色 */
+$custom-content-color: #214579;
+
+/* 二级内容颜色 */
+$custom-content-sub-color: #007bed;
+
+/* 主要文字颜色 */
+$custom-text-color: #333333;
+
+/* 次要文字颜色 */
+$custom-text-sub-color: #666666;
+
+/* 辅助文字颜色 */
+$custom-text-assist-color: #aaaaaa;
+
+/* 危险文字颜色 */
+$custom-text-danger-color: #f04844;
+
 
 @mixin flex-left($direction: row) {
   display: flex;

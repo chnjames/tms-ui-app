@@ -1,18 +1,27 @@
 <template>
   <view class="container">
     <u-toast ref="uToast"></u-toast>
-    <u--textarea v-model="value1" placeholder="请输入任务内容" count height="200rpx" :maxlength="300"></u--textarea>
+    <u--textarea v-model="value1" placeholder="请输入任务内容" border="none" count height="200rpx"
+      :maxlength="300"></u--textarea>
     <u-gap height="20rpx"></u-gap>
-    <u-cell-group class="user">
-      <u-cell icon="account-fill" title="陈逸飞"></u-cell>
-      <u-cell icon="calendar-fill" title="2022/11/13  前截止"></u-cell>
+    <u-cell-group class="user" :border="false">
+      <u-cell icon="share-fill" :border="false" iconStyle="color: #aaaaaa;">
+        <view slot="title" class="title">
+          <text>陈逸飞</text> 关注
+        </view>
+      </u-cell>
+      <u-cell icon="calendar-fill" :border="false" iconStyle="color: #aaaaaa;">
+        <view slot="title" class="title">
+          <text>2022/11/13</text> 前截止
+        </view>
+      </u-cell>
     </u-cell-group>
     <u-row class="btn-group" gutter="20rpx" justify="space-around">
       <u-col span="3">
-        <u-button text="立即创建" type="primary" shape="circle" @click="bindCreate"></u-button>
+        <u-button text="立即创建" color="#214579" shape="circle" @click="bindCreate"></u-button>
       </u-col>
       <u-col span="3">
-        <u-button text="添加附件" color="#909399" shape="circle" @click="bindPhoto"></u-button>
+        <u-button text="添加附件" color="#aaaaaa" shape="circle" @click="bindPhoto"></u-button>
       </u-col>
     </u-row>
   </view>
@@ -52,10 +61,21 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  padding: 20rpx;
+  padding: 30rpx;
+
+  /deep/ .u-textarea {
+    background-color: transparent;
+  }
 
   .user {
-    background-color: #FFFFFF;
+    .title {
+      color: $custom-text-assist-color;
+      font-size: 24rpx;
+
+      text {
+        margin-right: 20rpx;
+      }
+    }
   }
 
   .btn-group {
@@ -64,5 +84,9 @@ export default {
     right: 0;
     left: 0;
   }
+}
+
+/deep/ .u-cell__body {
+  padding: 10rpx 0;
 }
 </style>

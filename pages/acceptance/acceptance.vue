@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <u--text text="采购单号"></u--text>
+    <u--text color="#aaaaaa" text="采购单号"></u--text>
     <u-gap height="20rpx"></u-gap>
     <view class="PN">
       <u-cell class="PN-name" :border="false" isLink arrow-direction="down" @click="bindPN">
@@ -8,7 +8,7 @@
           <text>PN202303948853</text>
         </view>
       </u-cell>
-      <u-icon name="scan" color="#2979ff" size="28" @click="bindScan"></u-icon>
+      <u-icon name="scan" color="#214579" size="28" @click="bindScan"></u-icon>
     </view>
     <u-gap height="20rpx"></u-gap>
     <!-- 收货任务 -->
@@ -20,13 +20,13 @@
             <u-gap height="20rpx"></u-gap>
             <view>数量：{{ item.quantity }}</view>
           </view>
-          <u-button plain type="primary" text="收货"></u-button>
+          <u-button color="#108ee9" text="收货"></u-button>
         </view>
       </view>
     </view>
-    <u-button class="receive" text="确 定" type="primary" shape="circle" @click="bindReceive"></u-button>
+    <u-button class="receive" text="确 定" color="#214579" shape="circle" @click="bindReceive"></u-button>
     <!-- PN号选择器 -->
-    <u-picker :show="PNShow" :columns="PNColumns" @cancel="bindClose" @close="bindClose" @confirm="confirmPN"></u-picker>
+    <u-picker :show="PNShow" :columns="PNColumns" cancelColor="#aaaaaa" confirmColor="#214579" @cancel="bindClose" @close="bindClose" @confirm="confirmPN"></u-picker>
   </view>
 </template>
 
@@ -91,7 +91,7 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  padding: 20rpx;
+  padding: 30rpx;
 
   .PN {
     @include flex-space-between;
@@ -104,9 +104,8 @@ export default {
     margin-right: 20rpx;
 
     .title {
-      color: #303133;
-      font-size: 24rpx;
-      font-weight: bold;
+      color: $custom-content-color;
+      font-size: 26rpx;
     }
   }
 }
@@ -121,7 +120,9 @@ export default {
 .task-item {
   background-color: #fff;
   border-radius: 10rpx;
-  padding: 20rpx;
+  color: $custom-text-sub-color;
+  font-size: 26rpx;
+  padding: 30rpx;
   margin-bottom: 20rpx;
   box-shadow: 0 0 10rpx #eee;
 

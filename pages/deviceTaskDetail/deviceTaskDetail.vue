@@ -79,7 +79,7 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  padding: 20rpx;
+  padding: 30rpx;
 
   .user {
     background-color: #FFFFFF;

@@ -4,13 +4,15 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "首页"
+        "navigationBarTitleText": ""
+        // "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/task/task",
       "style": {
-        "navigationBarTitleText": "task"
+        "navigationBarTitleText": ""
+        // "navigationStyle": "custom"
       }
     },
     {
@@ -42,7 +44,8 @@
     {
       "path": "pages/user/user",
       "style": {
-        "navigationBarTitleText": "我的"
+        "navigationBarTitleText": ""
+        // "navigationStyle": "custom"
       }
     },
     {
@@ -205,66 +208,54 @@
         "navigationBarTitleText": "任务详情",
         "enablePullDownRefresh": false
       }
+    },
+    {
+      "path": "pages/executeTask/executeTask",
+      "style": {
+        "navigationBarTitleText": "任务详情",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/outboundTask/outboundTask",
+      "style": {
+        "navigationBarTitleText": "任务详情",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/inventoryTask/inventoryTask",
+      "style": {
+        "navigationBarTitleText": "任务详情",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/inventoryTaskDetail/inventoryTaskDetail",
+      "style": {
+        "navigationBarTitleText": "物料盘点",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/outboundTaskDetail/outboundTaskDetail",
+      "style": {
+        "navigationBarTitleText": "任务详情",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/replaceTask/replaceTask",
+      "style": {
+        "navigationBarTitleText": "任务详情",
+        "enablePullDownRefresh": false
+      }
     }
-      ,{
-            "path" : "pages/executeTask/executeTask",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "任务详情",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/outboundTask/outboundTask",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "任务详情",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/inventoryTask/inventoryTask",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "任务详情",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/inventoryTaskDetail/inventoryTaskDetail",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "物料盘点",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/outboundTaskDetail/outboundTaskDetail",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "任务详情",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/replaceTask/replaceTask",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "任务详情",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+  ],
   "tabBar": {
     "blurEffect": "extralight",
-    "selectedColor": "#4988fd",
-    "color": "#bfbfbf",
+    "selectedColor": "#214579",
+    "color": "#cccccc",
     "fontSize": "12px",
     "iconWidth": "26px",
     "list": [
@@ -291,7 +282,7 @@
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "yudao-ui-app",
-    "navigationBarBackgroundColor": "#ffffff",
-    "backgroundColor": "#F5F5F5"
+    "navigationBarBackgroundColor": "#f5f5f5",
+    "backgroundColor": "#f5f5f5"
   }
 }

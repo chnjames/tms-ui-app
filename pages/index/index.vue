@@ -5,11 +5,12 @@
       <u-row justify="space-between" gutter="10">
         <u-col span="3" v-for="(item, index) in districtList" :key="index" align="center" textAlign="center"
           @click="bindDistrict(item)">
-          <u--image :src="item.icon" width="80rpx" height="80rpx"></u--image>
-          <u--text margin="20rpx 20rpx 0" size="24rpx" align="center" :text="item.name"></u--text>
+          <view class="icon-text">{{ item.iconText }}</view>
+          <view class="district-name">{{ item.name }}</view>
         </u-col>
       </u-row>
     </view>
+    <u-gap height="40rpx"></u-gap>
     <!-- 任务列表 -->
     <u-swipe-action>
       <u-swipe-action-item class="swipe-item" :options="item.options" v-for="(item, index) in taskList" :name="item.id"
@@ -17,8 +18,10 @@
         <view class="swipe-action" @click="bindTask(item, index)">
           <view class="swipe-action__content">
             <view class="swipe-action__content__text">{{ item.name }}</view>
+            <u-gap height="10rpx"></u-gap>
             <view class="swipe-action__content__text">{{ item.type }}</view>
-            <view class="swipe-action__content__text">{{ item.date }}</view>
+            <u-gap height="16rpx"></u-gap>
+            <view class="swipe-action__content__date">{{ item.date }}</view>
           </view>
         </view>
       </u-swipe-action-item>
@@ -38,19 +41,19 @@ export default {
     return {
       districtList: [{
         name: '到货验收',
-        icon: require("../../static/images/icons/acceptance.png"),
+        iconText: '收',
         url: '/pages/acceptance/acceptance'
       }, {
         name: '入库操作',
-        icon: require("../../static/images/icons/receipt.png"),
+        iconText: '入',
         url: '/pages/receipt/receipt'
       }, {
         name: '扫码出库',
-        icon: require("../../static/images/icons/outgoing.png"),
+        iconText: '出',
         url: '/pages/outgoing/outgoing'
       }, {
         name: '设备信息',
-        icon: require("../../static/images/icons/equipment.png"),
+        iconText: '查',
         url: '/pages/equipment/equipment'
       }],
       taskList: [{
@@ -61,12 +64,12 @@ export default {
         options: [{
           text: '立即领取',
           style: {
-            backgroundColor: '#2979ff'
+            backgroundColor: '#cccccc'
           }
         }, {
           text: '忽略',
           style: {
-            backgroundColor: '#fa3534'
+            backgroundColor: '#f04844'
           }
         }]
       }, {
@@ -77,12 +80,12 @@ export default {
         options: [{
           text: '立即领取',
           style: {
-            backgroundColor: '#2979ff'
+            backgroundColor: '#cccccc'
           }
         }, {
           text: '忽略',
           style: {
-            backgroundColor: '#fa3534'
+            backgroundColor: '#f04844'
           }
         }]
       }, {
@@ -93,12 +96,12 @@ export default {
         options: [{
           text: '立即领取',
           style: {
-            backgroundColor: '#2979ff'
+            backgroundColor: '#cccccc'
           }
         }, {
           text: '忽略',
           style: {
-            backgroundColor: '#fa3534'
+            backgroundColor: '#f04844'
           }
         }]
       }, {
@@ -109,12 +112,12 @@ export default {
         options: [{
           text: '立即领取',
           style: {
-            backgroundColor: '#2979ff'
+            backgroundColor: '#cccccc'
           }
         }, {
           text: '忽略',
           style: {
-            backgroundColor: '#fa3534'
+            backgroundColor: '#f04844'
           }
         }]
       }]
@@ -168,16 +171,33 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  padding: 20rpx;
+  padding: 30rpx;
 }
 
 .district {
   border-radius: 20rpx;
-  // margin: 0 32rpx 32rpx;
   padding: 40rpx;
   text-align: center;
-  background-color: #FFFFFF;
+  background-color: #e7e6e6;
   box-shadow: 0 0 10rpx 0 rgba(0, 0, 0, .1);
+
+  .icon-text {
+    font-size: 30rpx;
+    color: #666666;
+    margin-bottom: 20rpx;
+    border: 1rpx solid #666666;
+    border-radius: 50%;
+    width: 60rpx;
+    height: 60rpx;
+    background-color: #FFFFFF;
+    line-height: 60rpx;
+    text-align: center;
+  }
+
+  .district-name {
+    font-size: 26rpx;
+    color: #333333;
+  }
 }
 
 .swipe-item {
@@ -185,20 +205,19 @@ export default {
   border-radius: 10rpx;
   overflow: hidden;
   background-color: #FFFFFF;
-  box-shadow: 0 0 10rpx 0 rgba(0, 0, 0, .1);
 }
 
 .swipe-action {
   &__content {
-    padding: 25rpx 0;
-    background-color: #FFFFFF;
-    z-index: 20;
+    padding: 20rpx;
 
     &__text {
-      font-size: 30rpx;
-      color: $u-main-color;
-      padding-left: 32rpx;
+      font-size: 28rpx;
+      color: $custom-text-sub-color;
+    }
+    &__date {
+      font-size: 24rpx;
+      color: $custom-text-danger-color;
     }
   }
-}
-</style>
+}</style>
