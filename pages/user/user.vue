@@ -2,7 +2,7 @@
   <view class="container">
     <view class="user-header">
       <view class="user-info" @click="pageRouter('/pages/profile/profile')">
-        <u-avatar size="60" shape="square" :src="userInfo.avatar"></u-avatar>
+        <u-avatar size="80" shape="circle" :src="userInfo.avatar"></u-avatar>
         <view class="info-text">
           <view class="user-nickname">{{ hasLogin ? userInfo.nickname || '会员用户' : '匿名用户' }}</view>
           <view class="user-mobile">{{ hasLogin ? userInfo.mobile || ' ' : '登录/注册' }}</view>
@@ -26,7 +26,7 @@
       </u-cell>
     </u-cell-group>
 
-    <u-button v-if="hasLogin" type="primary" text="退出账号" class="logout"></u-button>
+    <u-button v-if="hasLogin" color="#214579" text="退出账号" class="logout"></u-button>
   </view>
 </template>
 
@@ -121,7 +121,7 @@ export default {
     padding-top: 10rpx;
     padding-bottom: 10rpx;
     .leave-name {
-      color: #4988fd;
+      color: $custom-content-color;
     }
   }
 }

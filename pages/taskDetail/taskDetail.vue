@@ -1,7 +1,9 @@
 <template>
   <view class="container">
-    <u--text type="error" text="紧急"></u--text>
-    <u--text size="28rpx" bold text="WNC项目YOUITMS系统开发"></u--text>
+    <view style="display: flex;">
+      <u--text type="error" text="紧急"></u--text>
+      <u--text size="28rpx" bold text="WNC项目YOUITMS系统开发"></u--text>
+    </view>
     <u-gap height="20rpx"></u-gap>
     <u-read-more textIndent="0" toggle closeText="展开">
       <view>{{ content }}</view>

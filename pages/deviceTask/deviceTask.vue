@@ -6,26 +6,26 @@
           <text>M38574359346 / 汽油加注机</text>
         </view>
       </u-cell>
-      <u-icon name="scan" color="#2979ff" size="28" @click="bindScan"></u-icon>
+      <u-icon name="scan" color="#214579" size="28" @click="bindScan"></u-icon>
     </view>
     <u-gap height="20rpx"></u-gap>
-    <u--textarea v-model="deviceInfo.description" placeholder="请输入快速上报问题描述" count height="200rpx"
+    <u--textarea v-model="deviceInfo.description" placeholder="请输入快速上报问题描述" border="none" count height="200rpx"
       :maxlength="300"></u--textarea>
     <u-gap height="20rpx"></u-gap>
-    <u-cell-group class="user">
-      <u-cell icon="account-fill">
-        <view slot="title" @click="bindAccount">
-          <text class="title">陈逸飞</text>
+    <u-cell-group class="user" :border="false">
+      <u-cell icon="account-fill" :border="false" iconStyle="color: #aaaaaa;">
+        <view slot="title" class="title" @click="bindAccount">
+          <text>陈逸飞</text>
         </view>
       </u-cell>
-      <u-cell icon="share-fill">
-        <view slot="title">
+      <u-cell icon="share-fill" :border="false" iconStyle="color: #aaaaaa;">
+        <view slot="title" class="title">
           <text class="attention">陈逸飞</text> 关注
         </view>
       </u-cell>
-      <u-cell icon="calendar-fill">
-        <view slot="title" @click="bindCalendar">
-          <text class="title">2022/11/13</text> 前截止
+      <u-cell icon="calendar-fill" :border="false" iconStyle="color: #aaaaaa;">
+        <view slot="title" class="title" @click="bindCalendar">
+          <text>2022/11/13</text> 前截止
         </view>
       </u-cell>
     </u-cell-group>
@@ -34,19 +34,18 @@
     <view class="file-list" v-if="fileList.length > 0">
       <view class="file-item" v-for="(item, index) in fileList" :key="index">
         <view class="file-src">
-          <u--image :showLoading="true" shape="circle" :src="item.url" width="100rpx"
-            height="100rpx"></u--image>
+          <u--image :showLoading="true" shape="circle" :src="item.url" width="90rpx" height="90rpx"></u--image>
           <view class="file-name">{{ item.name }}</view>
         </view>
-        <u-icon name="close" size="24" @click="bindDelFile(item, index)"></u-icon>
+        <u-icon name="close" size="22" @click="bindDelFile(item, index)"></u-icon>
       </view>
     </view>
     <u-row class="btn-group" gutter="20rpx" justify="space-around">
       <u-col span="3">
-        <u-button text="立即创建" type="primary" shape="circle" @click="bindCreate"></u-button>
+        <u-button text="立即创建" color="#214579" shape="circle" @click="bindCreate"></u-button>
       </u-col>
       <u-col span="3">
-        <u-button text="添加附件" color="#909399" shape="circle" @click="bindPhoto"></u-button>
+        <u-button text="添加附件" color="#aaaaaa" shape="circle" @click="bindPhoto"></u-button>
       </u-col>
     </u-row>
     <!-- 设备选择器 -->
@@ -177,23 +176,32 @@ export default {
 .container {
   padding: 20rpx;
 
+  /deep/ .u-textarea {
+    background-color: transparent;
+  }
+
   .user {
-    background-color: #FFFFFF;
 
     .title {
-      color: #2979ff;
-      font-size: 26rpx;
-      margin-right: 10rpx;
-    }
+      font-size: 24rpx;
+      color: #aaaaaa;
 
-    .attention {
-      font-size: 26rpx;
-      margin-right: 10rpx;
+      text {
+        color: $custom-content-color;
+        font-size: 24rpx;
+        margin-right: 20rpx;
+      }
+
+      .attention {
+        color: #aaaaaa;
+      }
     }
   }
+
   .device-top {
     @include flex-space-between;
   }
+
   .device-name {
     flex: 1;
     background-color: #ffffff;
@@ -201,9 +209,8 @@ export default {
     margin-right: 20rpx;
 
     .title {
-      color: #303133;
+      color: $custom-content-color;
       font-size: 24rpx;
-      font-weight: bold;
     }
   }
 
@@ -223,7 +230,7 @@ export default {
 
 .file-name {
   font-size: 24rpx;
-  color: #303133;
+  color: #666666;
   margin-left: 20rpx;
 }
 
@@ -232,7 +239,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 20rpx;
-  background-color: #FFFFFF;
+  background-color: #e7e6e6;
   border-radius: 10rpx;
   margin-bottom: 20rpx;
 

@@ -5,11 +5,11 @@
     <view class="coding">
       <!-- 注意：由于兼容性差异，如果需要使用前后插槽，nvue下需使用u--input，非nvue下需使用u-input -->
       <!-- #ifndef APP-NVUE -->
-      <u-input class="coding-name" color="#214579" fontSize="28rpx" placeholder="请扫描或输入物料名称" border="bottom"
+      <u-input readonly class="coding-name" color="#214579" fontSize="28rpx" placeholder="请扫描或输入物料名称" border="bottom"
         v-model="materialCode" @change="bindCoding">
         <!-- #endif -->
         <!-- #ifdef APP-NVUE -->
-        <u--input class="coding-name" color="#214579" fontSize="28rpx" placeholder="请扫描或输入物料名称" border="bottom" v-model="materialCode"
+        <u--input readonly class="coding-name" color="#214579" fontSize="28rpx" placeholder="请扫描或输入物料名称" border="bottom" v-model="materialCode"
           @change="bindCoding">
           <!-- #endif -->
           <template slot="suffix">
@@ -29,11 +29,11 @@
     <view class="coding">
       <!-- 注意：由于兼容性差异，如果需要使用前后插槽，nvue下需使用u--input，非nvue下需使用u-input -->
       <!-- #ifndef APP-NVUE -->
-      <u-input class="coding-name" color="#214579" fontSize="28rpx" placeholder="请扫描或输入物料名称" border="bottom"
+      <u-input readonly class="coding-name" color="#214579" fontSize="28rpx" placeholder="请扫描或输入物料名称" border="bottom"
         v-model="materialCode" @change="bindMaterial">
         <!-- #endif -->
         <!-- #ifdef APP-NVUE -->
-        <u--input class="coding-name" color="#214579" fontSize="28rpx" placeholder="请扫描或输入物料名称" border="bottom" v-model="materialCode"
+        <u--input readonly class="coding-name" color="#214579" fontSize="28rpx" placeholder="请扫描或输入物料名称" border="bottom" v-model="materialCode"
           @change="bindMaterial">
           <!-- #endif -->
           <template slot="suffix">
@@ -73,9 +73,13 @@ export default {
     };
   },
   methods: {
+    // 库位编码
+    bindCoding(e) {
+      console.log('当前值为: ' + e)
+    },
     // 物料数量
     bindQuantity(e) {
-      console.log('当前值为: ' + e.quantity)
+      console.log('当前值为: ' + e.value)
     },
     // 物料编码
     bindMaterial(e) {
