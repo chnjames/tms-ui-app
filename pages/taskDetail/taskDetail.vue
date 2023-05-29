@@ -1,27 +1,27 @@
 <template>
   <view class="container">
-    <view style="display: flex;">
-      <u--text type="error" text="紧急"></u--text>
-      <u--text size="28rpx" bold text="WNC项目YOUITMS系统开发"></u--text>
+    <view class="task-top">
+      <view class="tag">紧急</view>
+      <view class="task-name">WNC项目YOUITMS系统开发</view>
     </view>
     <u-gap height="20rpx"></u-gap>
     <u-read-more textIndent="0" toggle closeText="展开">
       <view>{{ content }}</view>
     </u-read-more>
     <u-gap height="20rpx"></u-gap>
-    <u-cell-group class="user">
-      <u-cell icon="account-fill">
-        <view slot="title" @click="bindAccount">
-          <text class="title">陈逸飞</text>
+    <u-cell-group class="user" :border="false">
+      <u-cell icon="account-fill" :border="false" iconStyle="color: #aaaaaa;">
+        <view slot="title" class="title" @click="bindAccount">
+          <text>陈逸飞</text>
         </view>
       </u-cell>
-      <u-cell icon="share-fill">
-        <view slot="title">
+      <u-cell icon="share-fill" :border="false" iconStyle="color: #aaaaaa;">
+        <view slot="title" class="title">
           <text class="attention">陈逸飞</text> 关注
         </view>
       </u-cell>
-      <u-cell icon="calendar-fill">
-        <view slot="title">
+      <u-cell icon="calendar-fill" :border="false" iconStyle="color: #aaaaaa;">
+        <view slot="title" class="title">
           <text class="attention">2022/11/13</text> 前截止
         </view>
       </u-cell>
@@ -30,37 +30,37 @@
     <view class="file-list" v-if="fileList.length > 0">
       <view class="file-item" v-for="(item, index) in fileList" :key="index">
         <view class="file-src">
-          <u--image :showLoading="true" shape="circle" :src="item.url" width="100rpx" height="100rpx"></u--image>
+          <u--image :showLoading="true" shape="circle" :src="item.url" width="90rpx" height="90rpx"></u--image>
           <view class="file-name">{{ item.name }}</view>
         </view>
-        <u-icon name="close" size="24" @click="bindDelFile(item, index)"></u-icon>
+        <u-icon name="close" size="22" @click="bindDelFile(item, index)"></u-icon>
       </view>
     </view>
     <u-gap height="20rpx"></u-gap>
-    <u--text type="primary" text="评论"></u--text>
+    <u--text color="#214579" text="评论"></u--text>
     <u-gap height="20rpx"></u-gap>
     <u-line></u-line>
     <u-gap height="20rpx"></u-gap>
-    <u--text type="info" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
+    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23  刘能创建了代办"></u--text>
+    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23  陈逸飞完成代办"></u--text>
+    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23  刘能修改截止时间为2022/11/21"></u--text>
+    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23  刘能修改截止时间为2022/11/21"></u--text>
+    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
+    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
+    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
+    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
+    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
+    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
+    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
+    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
+    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
+    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
+    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
+    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
+    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
+    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
     <u-gap height="20rpx"></u-gap>
-    <view class="board-number">
+    <view class="board-number" v-show="isBoard">
       <!-- 工时登记 -->
       <view v-if="isRegister" class="register">
         <view class="qualified">请输入(h)：</view>
@@ -80,17 +80,17 @@
     </view>
     <u-row class="btn-group" gutter="20rpx" justify="space-around">
       <u-col span="3">
-        <u-button text="完成任务" type="primary" shape="circle" @click="bindCreate"></u-button>
+        <u-button text="完成任务" color="#aaaaaa" shape="circle" @click="bindCreate"></u-button>
       </u-col>
       <u-col span="3">
-        <u-button text="结果登记" type="primary" shape="circle" @click="bindCreate"></u-button>
+        <u-button text="结果登记" color="#214579" shape="circle" @click="bindCreate"></u-button>
       </u-col>
       <u-col span="3">
-        <u-button text="添加附件" color="#909399" shape="circle" @click="bindPhoto"></u-button>
+        <u-button text="添加附件" color="#aaaaaa" shape="circle" @click="bindPhoto"></u-button>
       </u-col>
     </u-row>
     <!-- 操作人选择器 -->
-    <u-picker :show="accountShow" :columns="accountColumns" @cancel="bindClose" @close="bindClose"
+    <u-picker :show="accountShow" :columns="accountColumns" cancelColor="#aaaaaa" confirmColor="#214579" @cancel="bindClose" @close="bindClose"
       @confirm="confirmAccount"></u-picker>
     <!-- 提醒 -->
     <u-toast ref="uToast"></u-toast>
@@ -111,6 +111,7 @@ export default {
       quantity: 0, // 合格数量
       unQuantity: 0, // 不合格数量
       accountShow: false, // 操作人选择器
+      isBoard: false, // 是否显示底部工时登记
       accountColumns: [
         ['操作人1', '操作人2', '操作人3']
       ],
@@ -163,24 +164,42 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  padding: 20rpx;
+  padding: 30rpx;
+
+  .task-top {
+    @include flex-left;
+    font-size: 26rpx;
+    font-weight: bold;
+
+    .tag {
+      margin-right: 10rpx;
+      color: $custom-text-danger-color;
+    }
+
+    .task-name {
+      color: $custom-text-color;
+    }
+  }
 
   u-tag {
     width: auto;
   }
 
   .user {
-    background-color: #FFFFFF;
 
     .title {
-      color: #2979ff;
-      font-size: 26rpx;
-      margin-right: 10rpx;
-    }
+      font-size: 24rpx;
+      color: #aaaaaa;
 
-    .attention {
-      font-size: 26rpx;
-      margin-right: 10rpx;
+      text {
+        color: $custom-content-color;
+        font-size: 24rpx;
+        margin-right: 20rpx;
+      }
+
+      .attention {
+        color: #aaaaaa;
+      }
     }
   }
 }
@@ -237,12 +256,16 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 20rpx;
-  background-color: #FFFFFF;
+  background-color: #e7e6e6;
   border-radius: 10rpx;
   margin-bottom: 20rpx;
 
   .u-icon {
     margin-left: 20rpx;
   }
+}
+
+/deep/ .u-cell__body {
+  padding: 10rpx 0;
 }
 </style>

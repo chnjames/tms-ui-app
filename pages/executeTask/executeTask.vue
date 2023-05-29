@@ -1,16 +1,16 @@
 <template>
   <view class="container">
-    <u--text size="28rpx" bold text="M38574359346 / 汽油加注机"></u--text>
+    <u--text size="28rpx" color="#214579" text="M38574359346 / 汽油加注机"></u--text>
     <u-gap height="20rpx"></u-gap>
-    <u--text size="28rpx" bold text="设备点检"></u--text>
+    <u--text size="28rpx" color="#214579" text="设备点检"></u--text>
     <u-gap height="40rpx"></u-gap>
     <!-- 执行任务项 -->
     <view class="question">
       <u--image :showLoading="true" width="100%" v-if="currentQuestion.image" :src="currentQuestion.image"></u--image>
+      <u-gap height="40rpx"></u-gap>
+      <u--text color="#214579" text="任务名称"></u--text>
       <u-gap height="20rpx"></u-gap>
-      <u--text text="任务名称"></u--text>
-      <u-gap height="20rpx"></u-gap>
-      <u--text size="28rpx" bold :text="currentQuestion.content"></u--text>
+      <u--text size="28rpx" color="#666666" :text="currentQuestion.content"></u--text>
       <u-gap height="200rpx"></u-gap>
       <u-row justify="space-around">
         <u-col span="3" justify="center">
@@ -20,7 +20,7 @@
             @click="chooseAnswer(false)"></u-button>
         </u-col>
         <u-col span="3" justify="center">
-          <u-button type="primary" text="提 交" shape="circle" :disabled="hasUnansweredQuestions"
+          <u-button color="#214579" text="提 交" shape="circle" :disabled="hasUnansweredQuestions"
             @click="submitAnswers"></u-button>
         </u-col>
         <u-col span="3" justify="center">
@@ -34,14 +34,14 @@
       <view class="fixed">
         <u-row justify="space-around">
           <u-col span="3" justify="center">
-            <u--text :show="currentIndex > 0" block align="center" type="primary" text="上一项"
+            <u--text :show="currentIndex > 0" block align="center" color="#214579" text="上一项"
               @click="previousQuestion"></u--text>
           </u-col>
           <u-col span="3" justify="center">
             <u--text block align="center" type="info" :text="`${currentIndex + 1} / ${questions.length}`"></u--text>
           </u-col>
           <u-col span="3" justify="center">
-            <u--text :show="currentIndex < questions.length - 1" block align="center" type="primary" text="下一项"
+            <u--text :show="currentIndex < questions.length - 1" block align="center" color="#214579" text="下一项"
               @click="nextQuestion"></u--text>
           </u-col>
         </u-row>
