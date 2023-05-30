@@ -219,7 +219,7 @@
     {
       "path": "pages/outboundTask/outboundTask",
       "style": {
-        "navigationBarTitleText": "任务详情",
+        "navigationBarTitleText": "出库任务",
         "enablePullDownRefresh": false
       }
     },
@@ -240,7 +240,14 @@
     {
       "path": "pages/outboundTaskDetail/outboundTaskDetail",
       "style": {
-        "navigationBarTitleText": "任务详情",
+        "navigationBarTitleText": "出库任务列表",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/outboundMaterial/outboundMaterial",
+      "style": {
+        "navigationBarTitleText": "",
         "enablePullDownRefresh": false
       }
     },
