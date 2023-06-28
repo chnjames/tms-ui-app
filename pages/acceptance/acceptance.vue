@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import {getAcceptanceList} from "../../api/warehouse";
 export default {
   data() {
     return {
@@ -71,7 +72,16 @@ export default {
       }]
     };
   },
+  onLoad() {
+    this.getAcceptanceList()
+  },
   methods: {
+    // 待验收列表
+    getAcceptanceList() {
+      getAcceptanceList().then(res => {
+        console.log('getAcceptanceList', res)
+      })
+    },
     // 选择操作人
     bindPN() {
       this.PNShow = true

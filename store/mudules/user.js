@@ -1,5 +1,5 @@
-import { getUserInfo } from '@/api/user'
-import { passwordLogin, smsLogin, weixinMiniAppLogin, logout } from '@/api/auth'
+import { getUserProfile } from '@/api/user'
+import { smsLogin, weixinMiniAppLogin, logout, authLogin } from '@/api/auth'
 
 const AccessTokenKey = 'ACCESS_TOKEN'
 const RefreshTokenKey = 'REFRESH_TOKEN'
@@ -50,7 +50,7 @@ const user = {
     //账号登录
     Login({ state, commit }, { type, data }) {
       if (type === 0) {
-        return passwordLogin(data)
+        return authLogin(data)
           .then(res => {
             commit('SET_TOKEN', res.data)
             return Promise.resolve(res)
@@ -93,7 +93,7 @@ const user = {
     },
     // 获得用户基本信息
     async ObtainUserInfo({ state, commit }) {
-      const res = await getUserInfo()
+      const res = await getUserProfile()
       commit('SET_USER_INFO', res.data)
     }
   }

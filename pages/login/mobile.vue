@@ -138,19 +138,21 @@
       },
       handleSubmit() {
         this.$refs.form.validate().then(res => {
-          uni.login({
-            provider: 'weixin',
-            success: res => {
-              let data = this.formData
-              data.socialType = 34 //WECHAT_MINI_APP 先指定固定值
-              data.socialCode = res.code
-              data.socialState = Math.random() // 该参数没有实际意义暂时传随机数
-              this.mobileLogin(data)
-            },
-            fail: res => {
-              this.mobileLogin(this.formData)
-            }
-          })
+          this.mobileLogin(this.formData)
+          // uni.login({
+          //   provider: 'weixin',
+          //   success: res => {
+          //     let data = this.formData
+          //     data.socialType = 34 //WECHAT_MINI_APP 先指定固定值
+          //     data.socialCode = res.code
+          //     data.socialState = Math.random() // 该参数没有实际意义暂时传随机数
+          //     this.mobileLogin(data)
+          //   },
+          //   fail: res => {
+          //     console.log(this.formData)
+          //     this.mobileLogin(this.formData)
+          //   }
+          // })
         })
       },
       mobileLogin(data) {

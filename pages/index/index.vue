@@ -34,6 +34,7 @@ import {
   getBannerData,
   getNoticeData
 } from '../../api/index'
+import {getCommonTaskPage, getCommonTaskDetail, ignoreCommonTask, receiveCommonTask} from '../../api/task'
 
 export default {
   components: {},
@@ -124,7 +125,8 @@ export default {
     }
   },
   onLoad() {
-    this.loadBannerData()
+    this.getCommonTaskPage()
+    // this.loadBannerData()
     // this.loadNoticeData()
     uni.setTabBarBadge({
       index: 0,
@@ -136,6 +138,12 @@ export default {
     // })
   },
   methods: {
+    // 获得公共任务分页
+    getCommonTaskPage() {
+      getCommonTaskPage().then(res => {
+        console.log(res)
+      })
+    },
     loadBannerData() {
       getBannerData().then(res => {
         this.bannerList = res.data

@@ -4,8 +4,8 @@
       <view class="user-info" @click="pageRouter('/pages/profile/profile')">
         <u-avatar size="80" shape="circle" :src="userInfo.avatar"></u-avatar>
         <view class="info-text">
-          <view class="user-nickname">{{ hasLogin ? userInfo.nickname || '会员用户' : '匿名用户' }}</view>
-          <view class="user-mobile">{{ hasLogin ? userInfo.mobile || ' ' : '登录/注册' }}</view>
+          <view class="user-nickname">{{ hasLogin ? userInfo.nickname || '' : '匿名用户' }}</view>
+          <view class="user-mobile">{{ hasLogin ? userInfo.mobile || '' : '登录' }}</view>
         </view>
       </view>
       <view class="user-setting">
@@ -21,26 +21,35 @@
       <u-cell class="fun-item" icon="hourglass" title="本月/累计工时投入" value="12/193h"></u-cell>
       <u-cell class="fun-item" :border="false" icon="calendar" title="入职日期" value="2022/01/21"></u-cell>
       <u-gap height="10" bgColor="#f3f3f3"></u-gap>
-      <u-cell class="fun-item" :border="false" icon="edit-pen" title="休假设置" @click="pageRouter('/pages/leave/leave')" isLink>
-        <text slot="value" class="leave-name">程珂</text>
+      <u-cell class="fun-item" :border="false" icon="edit-pen" title="休假设置" @click="pageRouter('/pages/leave/leave', {proxyUserId: userInfo.proxyUserId})" isLink>
+        <text slot="value" class="leave-name">{{proxyUserName}}</text>
       </u-cell>
     </u-cell-group>
 
-    <u-button v-if="hasLogin" color="#214579" text="退出账号" class="logout"></u-button>
+    <u-button v-if="hasLogin" color="#214579" text="退出账号" class="logout" @click="logout"></u-button>
   </view>
 </template>
 
 <script>
+import {getUserList} from "../../api/user";
 
 export default {
   data() {
     return {
-      orderPage: '/pages/order/list'
+      userList: [],
+      proxyUserName: ''
     }
   },
   onLoad() {
     if (this.hasLogin) {
+      this.getUserList()
       this.$store.dispatch('ObtainUserInfo')
+    }
+  },
+  onShow() {
+    if (this.hasLogin) {
+      const proxyUser = this.userList.find(item => item.id === this.userInfo.proxyUserId)
+      this.proxyUserName = proxyUser ? proxyUser.nickname : ''
     }
   },
   computed: {
@@ -52,16 +61,20 @@ export default {
     }
   },
   methods: {
+    // 获取用户列表
+    getUserList() {
+      getUserList().then(res => {
+        const arr = res.data || []
+        this.userList = arr
+        const proxyUser = arr.find(item => item.id === this.userInfo.proxyUserId)
+        this.proxyUserName = proxyUser ? proxyUser.nickname : ''
+      })
+    },
     pageRouter(pageUrl, param) {
-      uni.$u.route(pageUrl)
       if (!this.hasLogin) {
-        uni.$u.route('/pages/login/social')
-      } else if (pageUrl === this.orderPage) {
-        uni.$u.route(this.orderPage, {
-          status: param
-        })
+        uni.$u.route('/pages/login/mobile')
       } else {
-        uni.$u.route(pageUrl)
+        uni.$u.route(pageUrl, param)
       }
     },
     logout() {
@@ -70,7 +83,11 @@ export default {
         content: '您确定要退出登录吗',
         success: res => {
           if (res.confirm) {
-            this.$store.dispatch('Logout')
+            this.$store.dispatch('Logout').then(res => {
+              uni.switchTab({
+                url: '/pages/user/user'
+              })
+            })
           } else if (res.cancel) {
             //console.log('用户点击取消')
           }

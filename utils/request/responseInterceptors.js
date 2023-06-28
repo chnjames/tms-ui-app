@@ -27,6 +27,7 @@ module.exports = vm => {
         return Promise.reject(msg)
       } else if (code === 401) {
         // 如果未认证，并且未进行刷新令牌，说明可能是访问令牌过期了
+        console.log(isRefreshToken)
         if (!isRefreshToken) {
           isRefreshToken = true
           // 1. 如果获取不到刷新令牌，则只能执行登出操作
