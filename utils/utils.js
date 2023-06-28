@@ -42,3 +42,33 @@ export function getGroupByPinyin(arr, key = 'name') {
   }
   return group;
 }
+
+/**
+ * 时间戳转换为自定义日期格式 yyyy-MM-dd hh:mm:ss || 年月日时分秒
+ * @param {Number} timestamp 时间戳
+ * @param {String} fmt 日期格式
+ * @returns {String} 返回自定义日期格式
+ */
+export function timestampToTime(timestamp, fmt = "yyyy-MM-dd hh:mm:ss") {
+if (!timestamp) return;
+  let date = new Date(timestamp);
+  let ret;
+  let opt = {
+    "y+": date.getFullYear().toString(), // 年
+    "M+": (date.getMonth() + 1).toString(), // 月
+    "d+": date.getDate().toString(), // 日
+    "h+": date.getHours().toString(), // 时
+    "m+": date.getMinutes().toString(), // 分
+    "s+": date.getSeconds().toString(), // 秒
+  };
+  for (let k in opt) {
+    ret = new RegExp("(" + k + ")").exec(fmt);
+    if (ret) {
+      fmt = fmt.replace(
+        ret[1],
+        ret[1].length === 1 ? opt[k] : opt[k].padStart(ret[1].length, "0")
+      );
+    }
+  }
+  return fmt;
+}

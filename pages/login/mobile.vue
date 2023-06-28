@@ -8,6 +8,14 @@
       <u-gap height="80rpx"></u-gap>
       <!-- 登录表单 -->
       <u--form labelPosition="left" :model="formData" ref="form">
+
+        <u-form-item labelWidth="60" borderBottom ref="item-tenant">
+          <u--input v-model="tenantId" prefixIconStyle="color:#cccccc" clearable placeholder="请填写租户名称"
+                    prefixIcon="grid-fill" border="none" @blur="bindTenantId"></u--input>
+        </u-form-item>
+
+        <u-gap height="40rpx"></u-gap>
+
         <u-form-item labelWidth="60" borderBottom ref="item-mobile">
           <u--input v-model="formData.username" prefixIconStyle="color:#cccccc" clearable placeholder="请填写用户名"
             prefixIcon="account-fill" border="none"></u--input>
@@ -57,6 +65,7 @@
   export default {
     data() {
       return {
+        tenantId: '', // 租户名称
         logoImg: require("../../static/images/icons/logo.png"),
         currentModeIndex: 0,
         loginModeList: ['密码登录', '验证码登录'],
@@ -100,6 +109,10 @@
       this.$refs.form.setRules(this.rules)
     },
     methods: {
+      // 获取租户编号
+      bindTenantId(value) {
+        this.$store.dispatch('ObtainTenantId', value)
+      },
       handleModeChange(index) {
         if (index !== this.currentModeIndex) {
           this.currentModeIndex = index

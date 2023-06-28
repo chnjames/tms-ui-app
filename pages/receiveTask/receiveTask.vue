@@ -1,22 +1,21 @@
 <template>
   <view class="container">
-    <u--text v-if="taskId === '2'" color="#333333" bold text="M38574359346 / 汽油加注机"></u--text>
-    <u--text v-else color="#333333" bold text="WNC项目YOUITMS系统开发"></u--text>
+    <u--text color="#333333" bold :text="taskDetail.projectName"></u--text>
     <u-gap height="20rpx"></u-gap>
+    <u--text color="#666666" size="14" :text="taskDetail.taskName"></u--text>
     <u-read-more toggle closeText="展开" color="#214579" textIndent="0" :shadowStyle="shadowStyle" :showHeight="200">
-      <u--text v-if="taskId === '2'" color="#666666" size="14" text="日常点检"></u--text>
-      <u--text v-else color="#666666" size="14" text="【MES】在配置界面中增加超时时间设置，日期选择的控制，其他问题的解决..."></u--text>
+      <u--text color="#666666" size="14" :text="taskDetail.taskName"></u--text>
     </u-read-more>
     <u-gap height="160rpx"></u-gap>
     <u-cell-group class="user" :border="false">
       <u-cell icon="share-fill" :border="false" iconStyle="color: #aaaaaa;">
         <view slot="title" class="title">
-          <text>陈逸飞</text> 关注
+          <text>{{taskDetail.followersStr}}</text> 关注
         </view>
       </u-cell>
       <u-cell icon="calendar-fill" :border="false" iconStyle="color: #aaaaaa;">
         <view slot="title" class="title">
-          <text>2022/11/13</text> 前截止
+          <text>{{taskDetail.date}}</text> 前截止
         </view>
       </u-cell>
     </u-cell-group>
@@ -25,11 +24,16 @@
 </template>
 
 <script>
+import { getCommonTaskDetail, receiveCommonTask } from '../../api/task'
+import {getProjectSimpleList} from '../../api/project'
+import { mapGetters } from 'vuex'
+import {timestampToTime} from '../../utils/utils'
 export default {
   data() {
     return {
       taskId: '',
-      taskType: '',
+      projectList: [],
+      taskDetail: {},
       shadowStyle: {
         // #ifndef APP-NVUE
         backgroundImage: "linear-gradient(-180deg, rgba(245, 245, 245, 0) 0%, #F5F5F5 80%)",
@@ -43,15 +47,36 @@ export default {
       }
     };
   },
-  created() {
-    const {
-      id,
-      type
-    } = this.$route.query;
-    this.taskId = id;
-    this.taskType = type;
+  computed: {
+    ...mapGetters(['userList'])
+  },
+  async created() {
+    await this.$store.dispatch('GetUserList')
+    const {taskId} = this.$route.query;
+    await this.getProjectSimpleList();
+    this.taskId = taskId;
+    this.getCommonTaskDetail(taskId);
   },
   methods: {
+    // 获取任务详情
+    getCommonTaskDetail(taskId) {
+      getCommonTaskDetail(taskId).then(res => {
+        const taskDetail = res.data || {};
+        taskDetail.date = timestampToTime(taskDetail.endTime, 'yyyy-MM-dd');
+        taskDetail.followersStr = taskDetail.followers.map(item => {
+          return this.userList.find(user => user.id === item).nickname
+        }).join('、');
+        taskDetail.projectName = this.projectList.find(item => item.id === taskDetail.projectId)?.name || '';
+        console.log(taskDetail)
+        this.taskDetail = taskDetail;
+      })
+    },
+    // 获取项目列表
+    getProjectSimpleList() {
+      getProjectSimpleList().then(res => {
+        this.projectList = res.data || [];
+      })
+    },
     // 领取任务
     bindReceive() {
       console.log('领取任务');

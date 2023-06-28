@@ -15,3 +15,5 @@ export const authLogin = data => http.post('/system/auth/login', data)
 export const logout = data => http.post('/system/auth/logout', data)
 //刷新令牌
 export const refreshToken = data => http.post('/system/auth/refresh-token', data)
+// 获得租户编号
+export const getTenantCode = name => http.get('/system/tenant/get-id-by-name?name=' + name)

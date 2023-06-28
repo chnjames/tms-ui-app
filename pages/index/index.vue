@@ -13,13 +13,13 @@
     <u-gap height="40rpx"></u-gap>
     <!-- 任务列表 -->
     <u-swipe-action>
-      <u-swipe-action-item class="swipe-item" :options="item.options" v-for="(item, index) in taskList" :name="item.id"
+      <u-swipe-action-item class="swipe-item" :options="item.options" v-for="(item, index) in taskList" :name="item.taskId"
         :key="index" @click="bindSwiperItem">
-        <view class="swipe-action" @click="bindTask(item, index)">
+        <view class="swipe-action" @click="bindTask(item)">
           <view class="swipe-action__content">
-            <view class="swipe-action__content__text">{{ item.name }}</view>
+            <view class="swipe-action__content__text">{{ item.urgentType }} {{ item.taskName }}</view>
             <u-gap height="10rpx"></u-gap>
-            <view class="swipe-action__content__text">{{ item.type }}</view>
+            <view class="swipe-action__content__text">{{ item.taskType }}</view>
             <u-gap height="16rpx"></u-gap>
             <view class="swipe-action__content__date">{{ item.date }}</view>
           </view>
@@ -30,11 +30,8 @@
 </template>
 
 <script>
-import {
-  getBannerData,
-  getNoticeData
-} from '../../api/index'
-import {getCommonTaskPage, getCommonTaskDetail, ignoreCommonTask, receiveCommonTask} from '../../api/task'
+import {getCommonTaskPage, ignoreCommonTask, receiveCommonTask} from '../../api/task'
+import  {timestampToTime} from '../../utils/utils'
 
 export default {
   components: {},
@@ -57,101 +54,37 @@ export default {
         iconText: '查',
         url: '/pages/equipment/equipment'
       }],
-      taskList: [{
-        id: 1,
-        name: '0237458 加注机设备',
-        type: '备件更换',
-        date: '10月3日截止',
-        options: [{
-          text: '立即领取',
-          style: {
-            backgroundColor: '#cccccc'
-          }
-        }, {
-          text: '忽略',
-          style: {
-            backgroundColor: '#f04844'
-          }
-        }]
-      }, {
-        id: 2,
-        name: '0237458 加注机设备',
-        type: '备件更换',
-        date: '10月3日截止',
-        options: [{
-          text: '立即领取',
-          style: {
-            backgroundColor: '#cccccc'
-          }
-        }, {
-          text: '忽略',
-          style: {
-            backgroundColor: '#f04844'
-          }
-        }]
-      }, {
-        id: 3,
-        name: '0237458 加注机设备',
-        type: '备件更换',
-        date: '10月3日截止',
-        options: [{
-          text: '立即领取',
-          style: {
-            backgroundColor: '#cccccc'
-          }
-        }, {
-          text: '忽略',
-          style: {
-            backgroundColor: '#f04844'
-          }
-        }]
-      }, {
-        id: 4,
-        name: '0237458 加注机设备',
-        type: '备件更换',
-        date: '10月3日截止',
-        options: [{
-          text: '立即领取',
-          style: {
-            backgroundColor: '#cccccc'
-          }
-        }, {
-          text: '忽略',
-          style: {
-            backgroundColor: '#f04844'
-          }
-        }]
-      }]
+      taskList: []
     }
   },
-  onLoad() {
+  onShow() {
     this.getCommonTaskPage()
-    // this.loadBannerData()
-    // this.loadNoticeData()
-    uni.setTabBarBadge({
-      index: 0,
-      text: '4'
-    })
-    // 当角标数值为 0 时，可以通过传空字符串或数字 0 的方式，将角标清除
-    // uni.removeTabBarBadge({
-    //   index: 0
-    // })
   },
   methods: {
     // 获得公共任务分页
     getCommonTaskPage() {
       getCommonTaskPage().then(res => {
-        console.log(res)
-      })
-    },
-    loadBannerData() {
-      getBannerData().then(res => {
-        this.bannerList = res.data
-      })
-    },
-    loadNoticeData() {
-      getNoticeData().then(res => {
-        this.noticeList = res.data
+        const { total, list } = res.data
+        list.forEach(item => {
+          item.date = timestampToTime(item.endTime, 'MM月dd日截止')
+          item.urgentType = item.urgent === 1 ? '紧急' : ''
+          item.options = [{
+            text: '立即领取',
+            style: {
+              backgroundColor: '#cccccc'
+            }
+          }, {
+            text: '忽略',
+            style: {
+              backgroundColor: '#f04844'
+            }
+          }]
+        })
+        this.taskList = list
+        uni.setTabBarBadge({
+          index: 0,
+          text: total
+        })
       })
     },
     // 金刚区
@@ -166,11 +99,10 @@ export default {
       console.log(`name${name}`, `index${index}`)
     },
     // 领取任务
-    bindTask(item, index) {
-      console.log(item, index)
-      const { id, type } = item
+    bindTask(item) {
+      const { taskId } = item
       uni.navigateTo({
-        url: `/pages/receiveTask/receiveTask?id=${id}&type=${type}`
+        url: `/pages/receiveTask/receiveTask?taskId=${taskId}`
       })
     }
   }

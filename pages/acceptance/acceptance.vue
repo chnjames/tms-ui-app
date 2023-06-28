@@ -5,71 +5,41 @@
     <view class="PN">
       <u-cell class="PN-name" :border="false" isLink arrow-direction="down" @click="bindPN">
         <view class="title" slot="title">
-          <text>PN202303948853</text>
+          <text>{{pnCode}}</text>
         </view>
       </u-cell>
       <u-icon name="scan" color="#214579" size="28" @click="bindScan"></u-icon>
     </view>
     <u-gap height="20rpx"></u-gap>
     <!-- 收货任务 -->
-    <view class="task">
-      <view v-for="(item, index) in mineTaskList" :key="index" @click="bindTask(item)">
+    <view class="task" v-if="acceptanceList.length > 0">
+      <view v-for="(item, index) in acceptanceList" :key="index">
         <view class="task-item">
           <view>
-            <view>{{ item.task }}</view>
+            <view>{{ item.materialCode }} {{ item.materialName}}</view>
             <u-gap height="20rpx"></u-gap>
-            <view>数量：{{ item.quantity }}</view>
+            <view>数量：{{ item.qty }}</view>
           </view>
-          <u-button color="#108ee9" text="收货"></u-button>
+          <u-button v-if="!item.received" color="#108ee9" text="收货" @click="bindAcceptance(item)"></u-button>
         </view>
       </view>
     </view>
-    <u-button class="receive" text="确 定" color="#214579" shape="circle" @click="bindReceive"></u-button>
+    <u-button class="receive" text="确 定" color="#214579" shape="circle" @click="bindBack"></u-button>
     <!-- PN号选择器 -->
-    <u-picker :show="PNShow" :columns="PNColumns" cancelColor="#aaaaaa" confirmColor="#214579" @cancel="bindClose" @close="bindClose" @confirm="confirmPN"></u-picker>
+    <u-picker :show="PNShow" :columns="PNColumns" keyName="pnCode" cancelColor="#aaaaaa" confirmColor="#214579" @cancel="bindClose" @close="bindClose" @confirm="confirmPN"></u-picker>
   </view>
 </template>
 
 <script>
-import {getAcceptanceList} from "../../api/warehouse";
+import {getAcceptanceList, getAcceptanceDetail, acceptance} from "../../api/warehouse";
 export default {
   data() {
     return {
       PNShow: false, // 操作人选择器
-      PNColumns: [
-        ['PN202303948853', 'PN202303948850', 'PN202303948859']
-      ],
-      mineTaskList: [{
-        task: 'M38574359346 汽油加注机滤芯',
-        quantity: 1
-      }, {
-        task: 'M38574359346 汽油加注机滤芯',
-        quantity: 1
-      }, {
-        task: 'M38574359346 汽油加注机滤芯',
-        quantity: 1
-      }, {
-        task: 'M38574359346 汽油加注机滤芯',
-        quantity: 1
-      }, {
-        task: 'M38574359346 汽油加注机滤芯',
-        quantity: 1
-      }, {
-        task: 'M38574359346 汽油加注机滤芯',
-        quantity: 1
-      }, {
-        task: 'M38574359346 汽油加注机滤芯',
-        quantity: 1
-      }, {
-        task: 'M38574359346 汽油加注机滤芯',
-        quantity: 1
-      }, {
-        task: 'M38574359346 汽油加注机滤芯',
-        quantity: 1
-      }, {
-        task: 'M38574359346 汽油加注机滤芯',
-        quantity: 1
-      }]
+      PNColumns: [],
+      buyingId: '',
+      pnCode: '',
+      acceptanceList: []
     };
   },
   onLoad() {
@@ -79,16 +49,46 @@ export default {
     // 待验收列表
     getAcceptanceList() {
       getAcceptanceList().then(res => {
-        console.log('getAcceptanceList', res)
+        this.PNColumns = [res.data || []]
       })
     },
-    // 选择操作人
+    // 验收详情
+    getAcceptanceDetail(buyingId) {
+      getAcceptanceDetail(buyingId).then(res => {
+        this.acceptanceList = res.data.items || []
+      })
+    },
+    // 收货提交
+    acceptance(itemId) {
+      acceptance({
+        buyingId: this.buyingId,
+        buyingItemId: itemId
+      }).then(() => {
+        // 验收成功
+        uni.$u.toast('验收成功')
+        this.getAcceptanceDetail(this.buyingId)
+      }).catch(err => {
+        uni.$u.toast(err.message)
+      })
+    },
+    // 到货验收
+    bindAcceptance(item) {
+      this.acceptance(item.id)
+    },
+    // 确定返回
+    bindBack() {
+      uni.navigateBack()
+    },
+    // 选择采购单号
     bindPN() {
       this.PNShow = true
     },
     // 确认操作人
-    confirmPN(e) {
-      console.log('confirm', e)
+    confirmPN({value}) {
+      const [firstItem] = value
+      this.buyingId = firstItem.buyingId
+      this.pnCode = firstItem.pnCode
+      this.getAcceptanceDetail(firstItem.buyingId)
       this.PNShow = false
     },
     // 关闭选择器
