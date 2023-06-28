@@ -14,7 +14,7 @@ let isRefreshToken = false
 
 /**
  * 响应拦截
- * @param {Object} http
+ * @param vm
  */
 module.exports = vm => {
   uni.$u.http.interceptors.response.use(
@@ -32,6 +32,7 @@ module.exports = vm => {
           isRefreshToken = true
           // 1. 如果获取不到刷新令牌，则只能执行登出操作
           if (!vm.$store.getters.refreshToken) {
+            console.log('未获取到刷新令牌')
             vm.$store.commit('CLEAR_LOGIN_INFO')
             return Promise.reject(res)
           }

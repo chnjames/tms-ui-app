@@ -14,4 +14,4 @@ export const authLogin = data => http.post('/system/auth/login', data)
 // 退出登录
 export const logout = data => http.post('/system/auth/logout', data)
 //刷新令牌
-export const  refreshToken = data => http.post('/system/auth/refresh-token', {data})
+export const refreshToken = data => http.post('/system/auth/refresh-token', data)
