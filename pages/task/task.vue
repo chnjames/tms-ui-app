@@ -1,7 +1,8 @@
 <template>
   <view class="container">
     <view class="sticky">
-      <u-tabs itemStyle="width: 140rpx;height: 90rpx" lineColor="#214579" activeStyle="color: #214579" inactiveStyle="color: #666666" :list="tabList" @change="bindTab"></u-tabs>
+      <u-tabs itemStyle="width: 140rpx;height: 90rpx" lineColor="#214579" activeStyle="color: #214579"
+              inactiveStyle="color: #666666" :list="tabList" @change="bindTab"></u-tabs>
     </view>
     <!-- 我的任务 -->
     <view class="task">
@@ -19,7 +20,7 @@
       </view>
     </view>
     <!-- 查看更多 -->
-    <u-loadmore :status="status" :load-text="loadText" :marginBottom="80" @loadmore="bindLoadMore" />
+    <u-loadmore :status="status" :load-text="loadText" :marginBottom="80" @loadmore="bindLoadMore"/>
     <!-- 快速创建 -->
     <view class="add-img" @click="bindAdd">
       <u-icon name="plus" bold color="#FFFFFF" size="40rpx"></u-icon>
@@ -32,6 +33,8 @@
 </template>
 
 <script>
+import {getMyTaskPage} from '../../api/task'
+
 export default {
   data() {
     return {
@@ -57,8 +60,10 @@ export default {
         loading: '努力加载中',
         nomore: '实在没有了'
       },
-      pageNo: 1,
-      pageSize: 10,
+      pageInfo: {
+        pageNo: 1,
+        pageSize: 10
+      },
       mineTaskList: [{
         name: '紧急 华为贴标机设备',
         task: '收款任务：首付款30%，20000元',
@@ -123,6 +128,7 @@ export default {
         this.offsetTop = e.statusBarHeight;
       },
     });
+    this.getMyTaskPage();
   },
   onReachBottom() {
     if (this.pageNo >= 3) return;
@@ -143,6 +149,18 @@ export default {
     }, 2000)
   },
   methods: {
+    // 获取我的任务列表
+    getMyTaskPage() {
+      const params = {
+        ...this.pageInfo,
+        tab: 1
+      }
+      getMyTaskPage(params).then(res => {
+        console.log('res', res);
+        const {list} = res.data;
+        this.mineTaskList = list;
+      })
+    },
     // 切换导航栏目
     bindTab(item) {
       console.log(item);
@@ -150,7 +168,7 @@ export default {
     // 任务详情
     bindTask(item) {
       console.log('item', item);
-      const { type } = item;
+      const {type} = item;
       switch (type) {
         // 项目&&生产任务
         case 1:
@@ -289,6 +307,7 @@ export default {
     color: #666666;
     margin-right: 60rpx;
   }
+
   &-progress {
     font-size: 24rpx;
     color: #108ee9;

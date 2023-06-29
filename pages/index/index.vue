@@ -87,6 +87,24 @@ export default {
         })
       })
     },
+    // 忽略任务
+    bindIgnoreTask(taskId) {
+      ignoreCommonTask({ taskId }).then(() => {
+        uni.$u.toast('忽略成功')
+        this.getCommonTaskPage()
+      }).catch(err => {
+        uni.$u.toast(err.msg)
+      })
+    },
+    // 领取任务
+    bindReceiveTask(taskId) {
+      receiveCommonTask({ taskId }).then(() => {
+        uni.$u.toast('领取成功')
+        this.getCommonTaskPage()
+      }).catch(err => {
+        uni.$u.toast(err.msg)
+      })
+    },
     // 金刚区
     bindDistrict(item) {
       const { url } = item
@@ -96,7 +114,11 @@ export default {
     },
     // 任务操作
     bindSwiperItem({ name, index }) {
-      console.log(`name${name}`, `index${index}`)
+      if (index === 0) {
+        this.bindReceiveTask(name)
+      } else {
+        this.bindIgnoreTask(name)
+      }
     },
     // 领取任务
     bindTask(item) {
