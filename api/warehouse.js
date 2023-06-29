@@ -7,3 +7,5 @@ export const getAcceptanceList = params => http.get('/warehouse/material-buying/
 export const getAcceptanceDetail = buyingId => http.get('/warehouse/material-buying/wait-received/detail?buyingId=' + buyingId)
 // 到货验收
 export const acceptance = params => http.post('/warehouse/material-buying/received', params)
+// 获得物料基础数据
+export const getMaterialBaseData = params => http.get('/warehouse/material/get', {params})

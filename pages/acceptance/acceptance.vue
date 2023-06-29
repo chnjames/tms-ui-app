@@ -75,6 +75,14 @@ export default {
     bindAcceptance(item) {
       this.acceptance(item.id)
     },
+    // 扫码
+    bindScan() {
+      uni.scanCode({
+        success: (res) => {
+          console.log(res)
+        }
+      });
+    },
     // 确定返回
     bindBack() {
       uni.navigateBack()

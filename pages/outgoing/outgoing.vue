@@ -54,11 +54,44 @@
 </template>
 
 <script>
+  import {getMaterialBaseData} from "../../api/warehouse";
+  import {getStockPage, outOfStorage} from "../../api/stock";
+
   export default {
     data() {
       return {
-
+        materialBaseInfo: {}
       };
+    },
+    created() {
+      this.getMaterialBaseData()
+    },
+    methods: {
+      // 获取物料基础数据
+      getMaterialBaseData() {
+        getMaterialBaseData({id: 3}).then(res => {
+          console.log(res)
+          this.materialBaseInfo = res.data
+          this.getStockPage()
+        })
+      },
+      // 获取库存列表
+      getStockPage() {
+        getStockPage({
+          materialId: 3
+        }).then(res => {
+          console.log(res)
+        })
+      },
+      // 出库
+      outOfStorage() {
+        outOfStorage({
+          materialId: 3,
+          quantity: 1
+        }).then(res => {
+          console.log(res)
+        })
+      }
     }
   }
 </script>
