@@ -3,53 +3,31 @@
     <u--text color="#aaaaaa" text="物料编码"></u--text>
     <u-gap height="20rpx"></u-gap>
     <view class="coding">
-      <!-- 注意：由于兼容性差异，如果需要使用前后插槽，nvue下需使用u--input，非nvue下需使用u-input -->
-      <!-- #ifndef APP-NVUE -->
-      <u-input class="coding-name" color="#214579" fontSize="28rpx" placeholder="请扫描或输入物料名称" border="bottom" v-model="materialCode"
-        @change="bindMaterial">
-        <!-- #endif -->
-        <!-- #ifdef APP-NVUE -->
-        <u--input class="coding-name" color="#214579" fontSize="28rpx" placeholder="请扫描或输入物料名称" border="bottom" v-model="materialCode"
-          @change="bindMaterial">
-          <!-- #endif -->
-          <template slot="suffix">
-            <u-icon name="search" color="#214579" size="24"></u-icon>
-          </template>
-          <!-- #ifndef APP-NVUE -->
-      </u-input>
-      <!-- #endif -->
-      <!-- #ifdef APP-NVUE -->
-      </u--input>
-      <!-- #endif -->
+      <u--input class="coding-name" v-model="materialDesc" readonly border="bottom" color="#214579" fontSize="28rpx" placeholder="请扫描库位编码"></u--input>
       <u-icon name="scan" color="#214579" size="36" @click="bindScan"></u-icon>
     </view>
     <u-gap height="40rpx"></u-gap>
-    <u--text color="#aaaaaa" text="物料规格"></u--text>
-    <u-gap height="20rpx"></u-gap>
-    <u--text size="28rpx" color="#666666" text="三相四线制 380V鼓式电机"></u--text>
-    <u-gap height="40rpx"></u-gap>
-    <u--text color="#aaaaaa" text="物料位置"></u--text>
-    <u-gap height="20rpx"></u-gap>
-    <view class="layout">
-      <u--text size="28rpx" color="#666666" text="原材料仓 号库位  1-1-2"></u--text>
-      <u--text size="28rpx" color="#666666" align="right" text="库存：5"></u--text>
+    <view v-if="outboundList.length > 0">
+      <u--text color="#aaaaaa" text="物料规格"></u--text>
+      <u-gap height="20rpx"></u-gap>
+      <u--text size="28rpx" color="#666666" :text="materialSpecs"></u--text>
+      <u-gap height="40rpx"></u-gap>
+      <u--text color="#aaaaaa" text="物料位置"></u--text>
+      <u-gap height="20rpx"></u-gap>
+      <view v-for="item in outboundList" :key="item.id">
+        <view class="layout">
+          <u--text size="28rpx" color="#666666" :text="item.storeDesc"></u--text>
+          <u--text size="28rpx" color="#666666" align="right" :text="'库存：' + item.stockQty"></u--text>
+        </view>
+        <u-gap height="40rpx"></u-gap>
+        <view class="layout">
+          <u--text color="#aaaaaa" text="出库数量"></u--text>
+          <u-number-box v-model="item.qty" :min="1" :max="item.stockQty"></u-number-box>
+        </view>
+        <u-gap height="60rpx"></u-gap>
+      </view>
+      <u-button class="receive" text="出 库" color="#214579" shape="circle" @click="bindOutBound"></u-button>
     </view>
-    <u-gap height="40rpx"></u-gap>
-    <view class="layout">
-      <u--text color="#aaaaaa" text="出库数量"></u--text>
-      <u-number-box v-model="quantity" :min="1" @change="bindQuantity"></u-number-box>
-    </view>
-    <u-gap height="60rpx"></u-gap>
-    <view class="layout">
-      <u--text size="28rpx" color="#666666" text="原材料仓 号库位  1-1-2"></u--text>
-      <u--text size="28rpx" color="#666666" align="right" text="库存：5"></u--text>
-    </view>
-    <u-gap height="40rpx"></u-gap>
-    <view class="layout">
-      <u--text color="#aaaaaa" text="出库数量"></u--text>
-      <u-number-box v-model="quantity" :min="1" @change="bindQuantity"></u-number-box>
-    </view>
-    <u-button class="receive" text="出 库" color="#214579" shape="circle" @click="bindReceive"></u-button>
   </view>
 </template>
 
@@ -60,36 +38,57 @@
   export default {
     data() {
       return {
-        materialBaseInfo: {}
+        materialDesc: '',
+        materialSpecs: '',
+        outboundList: []
       };
-    },
-    created() {
-      this.getMaterialBaseData()
     },
     methods: {
       // 获取物料基础数据
-      getMaterialBaseData() {
-        getMaterialBaseData({id: 3}).then(res => {
-          console.log(res)
-          this.materialBaseInfo = res.data
-          this.getStockPage()
+      getMaterialBaseData(id) {
+        getMaterialBaseData({id}).then(res => {
+          const {data} = res
+          this.materialDesc = `${data.code}/${data.category} ${data.name}`
+          this.materialSpecs = data.specs
+        }).catch(err => {
+          uni.$u.toast(err.msg)
         })
       },
+      // 扫码库位编码
+      bindScan() {
+        this.getMaterialBaseData(3)
+        this.getStockPage(3)
+        uni.scanCode({
+          success: (res) => {
+            console.log(res)
+          }
+        });
+      },
       // 获取库存列表
-      getStockPage() {
-        getStockPage({
-          materialId: 3
-        }).then(res => {
-          console.log(res)
+      getStockPage(materialId) {
+        getStockPage({materialId}).then(res => {
+          const {data} = res
+          this.outboundList = data?.map(item => ({
+            materialId: item.materialId,
+            storeDesc: `${item.storeName} ${item.storeAreaName} ${item.location}`,
+            storeAreaId: item.storeAreaId,
+            location: item.location,
+            stockQty: item.qty,
+            qty: 1
+          })) || [];
+        }).catch(err => {
+          uni.$u.toast(err.msg)
         })
       },
       // 出库
-      outOfStorage() {
-        outOfStorage({
-          materialId: 3,
-          quantity: 1
-        }).then(res => {
-          console.log(res)
+      bindOutBound() {
+        outOfStorage(this.outboundList).then(res => {
+          uni.$u.toast('出库成功')
+          setTimeout(() => {
+            uni.navigateBack()
+          }, 1000)
+        }).catch(err => {
+          uni.$u.toast(err.msg)
         })
       }
     }
