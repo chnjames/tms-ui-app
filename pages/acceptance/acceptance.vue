@@ -24,7 +24,7 @@
         </view>
       </view>
     </view>
-    <u-button class="receive" text="确 定" color="#214579" shape="circle" @click="bindBack"></u-button>
+    <u-button v-if="acceptanceList.length > 0" class="receive" text="确 定" color="#214579" shape="circle" @click="bindBack"></u-button>
     <!-- PN号选择器 -->
     <u-picker :show="PNShow" :columns="PNColumns" keyName="pnCode" cancelColor="#aaaaaa" confirmColor="#214579" @cancel="bindClose" @close="bindClose" @confirm="confirmPN"></u-picker>
   </view>
@@ -49,7 +49,7 @@ export default {
     // 待验收列表
     getAcceptanceList() {
       getAcceptanceList().then(res => {
-        this.PNColumns = [res.data || []]
+        this.PNColumns = res.data || []
       })
     },
     // 验收详情
@@ -89,7 +89,12 @@ export default {
     },
     // 选择采购单号
     bindPN() {
-      this.PNShow = true
+      console.log(this.PNColumns)
+      if (this.PNColumns.length > 0) {
+        this.PNShow = true;
+      } else {
+        uni.$u.toast('暂无采购单号')
+      }
     },
     // 确认操作人
     confirmPN({value}) {

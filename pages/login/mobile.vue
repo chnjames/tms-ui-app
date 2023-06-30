@@ -176,7 +176,7 @@
           uni.$u.toast('登录成功')
           setTimeout(() => {
             uni.switchTab({
-              url: '/pages/user/user'
+              url: '/pages/index/index'
             })
           }, 300)
         })

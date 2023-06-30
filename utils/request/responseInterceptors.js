@@ -27,19 +27,27 @@ module.exports = vm => {
         return Promise.reject(msg)
       } else if (code === 401) {
         // 如果未认证，并且未进行刷新令牌，说明可能是访问令牌过期了
-        console.log(isRefreshToken)
         if (!isRefreshToken) {
           isRefreshToken = true
           // 1. 如果获取不到刷新令牌，则只能执行登出操作
           if (!vm.$store.getters.refreshToken) {
-            console.log('未获取到刷新令牌')
-            vm.$store.commit('CLEAR_LOGIN_INFO')
+            // 直接调用退出登录，跳转到登录界面
+            vm.$store.dispatch('Logout').then(() => {
+              uni.$u.toast('登录已过期，请重新登录')
+              // 提示之后，跳转到登录界面
+              setTimeout(() => {
+                uni.reLaunch({
+                  url: '/pages/login/mobile'
+                })
+              }, 300)
+            })
             return Promise.reject(res)
           }
           // 2. 进行刷新访问令牌
           try {
             let param = {}
             let refreshToken =  uni.getStorageSync('REFRESH_TOKEN');
+            console.log(refreshToken)
             param.refreshToken = refreshToken;
             const refreshTokenRes = await refreshToken(param)
             // 2.1 刷新成功，则回放队列的请求 + 当前请求
