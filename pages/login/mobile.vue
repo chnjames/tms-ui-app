@@ -113,6 +113,10 @@
       bindTenantId(value) {
         this.$store.dispatch('ObtainTenantId', value)
       },
+      // 获取字典
+      bindDict() {
+        this.$store.dispatch('dict/loadDictDatas')
+      },
       handleModeChange(index) {
         if (index !== this.currentModeIndex) {
           this.currentModeIndex = index
@@ -174,6 +178,8 @@
           data: data
         }).then(res => {
           uni.$u.toast('登录成功')
+          // TODO: 获取字典
+          this.bindDict()
           setTimeout(() => {
             uni.switchTab({
               url: '/pages/index/index'

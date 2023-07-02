@@ -13,3 +13,5 @@ export const receiveCommonTask = data => http.post('/operations/common/task/pick
 export const getMyTaskPage = params => http.get('/operations/task/page', { params })
 // 获取任务分页
 export const getTaskPage = params => http.get('/operations/project/task/page', {params})
+// 创建任务
+export const createTask = data => http.post('/operations/task/create', data)

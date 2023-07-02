@@ -85,7 +85,7 @@ export default {
           if (res.confirm) {
             this.$store.dispatch('Logout').then(res => {
               uni.switchTab({
-                url: '/pages/user/user'
+                url: '/pages/login/mobile'
               })
             })
           } else if (res.cancel) {

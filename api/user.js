@@ -20,3 +20,5 @@ export const cancelVacation = data => http.post('/system/user/profile/vacation/c
 export const getUserProfile = params => http.get('/system/user/profile/get', params)
 // 用户列表
 export const getUserList = params => http.get('/system/user/list-all-simple', params)
+// 获取全部字典数据列表
+export const getDictList = params => http.get('/system/dict-data/list-all-simple', params)

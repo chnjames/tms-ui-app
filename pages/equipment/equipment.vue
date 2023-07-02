@@ -29,7 +29,7 @@
       <view class="task" v-show="currentIndex === 1">
         <view v-for="(item, index) in docList" :key="index">
           <view class="task-item-doc" @click="bindDocument(item.url)">
-            <view class="doc-name">{{ item.name }}</view>
+            <view class="doc-name">{{ item.suffixName }}</view>
           </view>
         </view>
       </view>
@@ -65,13 +65,7 @@ export default {
         name: '设备文档'
       }],
       mineTaskList: [],
-      docList: [{
-        url: 'http://www.gov.cn/zhengce/pdfFile/2023_PDF.pdf',
-        name: '加注机设备图纸.pdf'
-      }, {
-        url: 'http://www.gov.cn/zhengce/pdfFile/2023_PDF.pdf',
-        name: '加注机设备图纸.pdf'
-      }]
+      docList: []
     };
   },
   created() {
@@ -117,6 +111,11 @@ export default {
     getProjectDocList() {
       getProjectDocList(this.docInfo).then(res => {
         console.log(res)
+        const {list} = res.data
+        this.docList = list?.map(item => ({
+          url: item.url,
+          suffixName: `${item.name}.${item.type}`
+        })) || [];
       }).catch(err => {
         uni.$u.toast(err.msg)
       })

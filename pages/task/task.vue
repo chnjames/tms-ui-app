@@ -2,15 +2,15 @@
   <view class="container">
     <view class="sticky">
       <u-tabs itemStyle="width: 140rpx;height: 90rpx" lineColor="#214579" activeStyle="color: #214579"
-              inactiveStyle="color: #666666" :list="tabList" @change="bindTab"></u-tabs>
+              inactiveStyle="color: #666666" :list="tabList" keyName="label" @change="bindTab"></u-tabs>
     </view>
     <!-- 我的任务 -->
     <view class="task">
       <view v-for="(item, index) in mineTaskList" :key="index" @click="bindTask(item)">
         <view class="task-item">
-          <u--text size="28rpx" color="#666666" :text="item.name"></u--text>
+          <u--text size="28rpx" color="#666666" :text="`${item.urgentType} ${item.projectName}`"></u--text>
           <u-gap height="10rpx"></u-gap>
-          <u--text size="28rpx" color="#666666" :text="item.task"></u--text>
+          <u--text size="28rpx" color="#666666" :text="item.taskName"></u--text>
           <u-gap height="20rpx"></u-gap>
           <view class="task-item-start">
             <view class="task-item-time">{{ item.time }}</view>
@@ -33,102 +33,39 @@
 </template>
 
 <script>
-import {getMyTaskPage} from '../../api/task'
+import {getMyTaskPage} from "../../api/task";
+import {timestampToTime} from "../../utils/utils";
+import {DICT_TYPE, getDictDatas} from "../../utils/dict";
+import {getProjectSimpleList} from "../../api/project";
 
 export default {
   data() {
     return {
       offsetTop: 0,
-      tabList: [{
-        name: '进行中'
-      }, {
-        name: '已逾期',
-        badge: {
-          value: 6
-        }
-      }, {
-        name: '已完成'
-      }, {
-        name: '我关注',
-        badge: {
-          value: 1
-        }
-      }],
+      taskInfo: {
+        pageNo: 1,
+        pageSize: 10,
+        tab: 0
+      },
+      projectList: [],
+      tabList: getDictDatas(DICT_TYPE.APP_MY_TASK_TAB),
       status: 'loadmore',
       loadText: {
         loadmore: '轻轻上拉',
         loading: '努力加载中',
         nomore: '实在没有了'
       },
-      pageInfo: {
-        pageNo: 1,
-        pageSize: 10
-      },
-      mineTaskList: [{
-        name: '紧急 华为贴标机设备',
-        task: '收款任务：首付款30%，20000元',
-        time: '10月3日截止',
-        type: 1,
-        progress: '30%'
-      }, {
-        name: '紧急 华为贴标机设备',
-        task: '收款任务：首付款30%，20000元',
-        time: '10月3日截止',
-        type: 2,
-        progress: '30%'
-      }, {
-        name: '紧急 华为贴标机设备',
-        task: '收款任务：首付款30%，20000元',
-        time: '10月3日截止',
-        type: 3,
-        progress: '30%'
-      }, {
-        name: '紧急 华为贴标机设备',
-        task: '收款任务：首付款30%，20000元',
-        time: '10月3日截止',
-        type: 4,
-        progress: '30%'
-      }, {
-        name: '紧急 华为贴标机设备',
-        task: '收款任务：首付款30%，20000元',
-        time: '10月3日截止',
-        type: 5,
-        progress: '30%'
-      }, {
-        name: '紧急 华为贴标机设备',
-        task: '收款任务：首付款30%，20000元',
-        time: '10月3日截止',
-        progress: '30%'
-      }, {
-        name: '紧急 华为贴标机设备',
-        task: '收款任务：首付款30%，20000元',
-        time: '10月3日截止',
-        progress: '30%'
-      }, {
-        name: '紧急 华为贴标机设备',
-        task: '收款任务：首付款30%，20000元',
-        time: '10月3日截止',
-        progress: '30%'
-      }, {
-        name: '紧急 华为贴标机设备',
-        task: '收款任务：首付款30%，20000元',
-        time: '10月3日截止',
-        progress: '30%'
-      }, {
-        name: '紧急 华为贴标机设备',
-        task: '收款任务：首付款30%，20000元',
-        time: '10月3日截止',
-        progress: '30%'
-      }]
+      mineTaskList: []
     }
   },
-  onLoad() {
+  async created() {
     uni.getSystemInfo({
       success: (e) => {
         this.offsetTop = e.statusBarHeight;
       },
     });
-    this.getMyTaskPage();
+    await this.getProjectSimpleList();
+    await this.getMyTaskPage();
   },
   onReachBottom() {
     if (this.pageNo >= 3) return;
@@ -143,7 +80,6 @@ export default {
           progress: '30%'
         });
       }
-      console.log('this.mineTaskList', this.mineTaskList);
       if (this.pageNo >= 3) this.status = 'nomore';
       else this.status = 'loading';
     }, 2000)
@@ -151,19 +87,30 @@ export default {
   methods: {
     // 获取我的任务列表
     getMyTaskPage() {
-      const params = {
-        ...this.pageInfo,
-        tab: 1
-      }
-      getMyTaskPage(params).then(res => {
-        console.log('res', res);
+      getMyTaskPage(this.taskInfo).then(res => {
         const {list} = res.data;
-        this.mineTaskList = list;
+        this.mineTaskList = list?.map(item => ({
+          ...item,
+          urgentType: item?.urgent === 1 ? '紧急' : '',
+          projectName: this.projectList.find(pro => pro?.id === item?.projectId)?.name || '',
+          task: item?.taskName,
+          time: timestampToTime(item?.endTime, 'MM月dd日截止'),
+          progress: item?.rate + '%'
+        })) || [];
+      })
+    },
+    // 获取项目精简信息列表
+    // 获取项目列表
+    getProjectSimpleList() {
+      getProjectSimpleList().then(res => {
+        this.projectList = res.data || [];
       })
     },
     // 切换导航栏目
     bindTab(item) {
-      console.log(item);
+      console.log(item.value);
+      this.taskInfo.tab = item.value;
+      this.getMyTaskPage();
     },
     // 任务详情
     bindTask(item) {

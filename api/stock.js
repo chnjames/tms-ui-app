@@ -9,8 +9,6 @@ export const getCommonTaskDetail = taskId => http.get('/operations/common/task/d
 export const ignoreCommonTask = data => http.post('/operations/common/task/ignore', data)
 // 领取公共任务
 export const receiveCommonTask = data => http.post('/operations/common/task/pick', data)
-// 我的任务分页
-export const getMyTaskPage = params => http.get('/operations/task/page', { params })
 // 入库
 export const putInStorage = data => http.post('/warehouse/stock/inbound', data)
 // 出库

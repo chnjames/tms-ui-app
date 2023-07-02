@@ -17,3 +17,9 @@ export const logout = data => http.post('/system/auth/logout', data)
 export const refreshToken = data => http.post('/system/auth/refresh-token', {data})
 // 获得租户编号
 export const getTenantCode = name => http.get('/system/tenant/get-id-by-name?name=' + name)
+// 上传附件 multipart/form-data
+export const uploadFile = params => http.upload('/operations/task/file/upload', {
+  filePath: params.filePath,
+  name: 'file',
+  header: {'Content-Type': 'multipart/form-data'}
+})
