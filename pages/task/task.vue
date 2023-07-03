@@ -49,6 +49,7 @@ export default {
       },
       projectList: [],
       tabList: getDictDatas(DICT_TYPE.APP_MY_TASK_TAB),
+      taskTypeList: getDictDatas(DICT_TYPE.OPERATIONS_TASK_TYPE),
       status: 'loadmore',
       loadText: {
         loadmore: '轻轻上拉',
@@ -91,6 +92,7 @@ export default {
         const {list} = res.data;
         this.mineTaskList = list?.map(item => ({
           ...item,
+          taskTypeStr: this.taskTypeList.find(task => parseInt(task?.value) === item?.taskType)?.cssClass || '',
           urgentType: item?.urgent === 1 ? '紧急' : '',
           projectName: this.projectList.find(pro => pro?.id === item?.projectId)?.name || '',
           task: item?.taskName,
@@ -115,8 +117,14 @@ export default {
     // 任务详情
     bindTask(item) {
       console.log('item', item);
-      const {type} = item;
-      switch (type) {
+      const {taskTypeStr, taskType, taskId} = item;
+      console.log(taskTypeStr, taskType, taskId)
+      switch (taskTypeStr) {
+        case 'simple':
+          uni.navigateTo({
+            url: `/pages/ordinaryTaskDetail/ordinaryTaskDetail?taskId=${taskId}`
+          });
+          break;
         // 项目&&生产任务
         case 1:
           uni.navigateTo({

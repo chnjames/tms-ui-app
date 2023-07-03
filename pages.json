@@ -257,6 +257,13 @@
         "navigationBarTitleText": "任务详情",
         "enablePullDownRefresh": false
       }
+    },
+    {
+      "path": "pages/ordinaryTaskDetail/ordinaryTaskDetail",
+      "style": {
+        "navigationBarTitleText": "任务详情",
+        "enablePullDownRefresh": false
+      }
     }
   ],
   "tabBar": {

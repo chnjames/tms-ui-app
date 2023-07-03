@@ -15,3 +15,7 @@ export const getMyTaskPage = params => http.get('/operations/task/page', { param
 export const getTaskPage = params => http.get('/operations/project/task/page', {params})
 // 创建任务
 export const createTask = data => http.post('/operations/task/create', data)
+// 我的任务详情
+export const getTaskDetail = params => http.get('/operations/task/detail', { params })
+// 完成任务
+export const missionTask = data => http.post('/operations/task/complete', data)

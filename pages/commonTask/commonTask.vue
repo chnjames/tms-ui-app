@@ -122,6 +122,8 @@ export default {
     },
     // 确认日期
     confirmCalendar(e) {
+      // e.value：2023-07-04 00:00:00 => 2023-07-04 23:59:59 => 时间戳
+      console.log(e)
       this.taskInfo.endTime = e.value
       this.calendarShow = false
     },
