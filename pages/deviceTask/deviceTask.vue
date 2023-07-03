@@ -3,7 +3,8 @@
     <view class="device-top">
       <u-cell class="device-name" :border="false" isLink arrow-direction="down" @click="bindDevice">
         <view class="title" slot="title">
-          <text>M38574359346 / 汽油加注机</text>
+          <text v-if="!deviceInfo.name" class="placeholder">请选择或者输入设备</text>
+          <text v-else>{{deviceInfo.name}}</text>
         </view>
       </u-cell>
       <u-icon name="scan" color="#214579" size="28" @click="bindScan"></u-icon>
@@ -49,19 +50,21 @@
       </u-col>
     </u-row>
     <!-- 设备选择器 -->
-    <u-picker :show="deviceShow" ref="deviceRef" :columns="deviceColumns" @confirm="confirmDevice" @cancel="bindClose"
+    <u-picker :show="deviceShow" ref="deviceRef" keyName="name" :columns="deviceColumns" @confirm="confirmDevice" @cancel="bindClose"
       @close="bindClose" @change="bindDeviceChange"></u-picker>
     <!-- 日期选择器 -->
     <u-calendar :show="calendarShow" @confirm="confirmCalendar" @cancel="bindClose" @close="bindClose"></u-calendar>
     <!-- 操作人选择器 -->
-    <u-picker :show="accountShow" :columns="accountColumns" @cancel="bindClose" @close="bindClose"
-      @confirm="confirmAccount"></u-picker>
+    <u-picker :show="accountShow" :columns="accountColumns" @cancel="bindClose" @close="bindClose" @confirm="confirmAccount"></u-picker>
     <!-- 提醒 -->
     <u-toast ref="uToast"></u-toast>
   </view>
 </template>
 
 <script>
+import {getDeviceSimpleList} from "../../api/device";
+import {getChildrenById, handleTree} from "../../utils/tree";
+
 export default {
   data() {
     return {
@@ -71,14 +74,9 @@ export default {
       accountColumns: [
         ['操作人1', '操作人2', '操作人3']
       ],
-      deviceColumns: [
-        ['深圳2#工厂', '深圳1#工厂'],
-        ['M01293844/汽油加注设备', 'M92938485/1#玻璃涂胶设备']
-      ],
-      deviceColumnData: [
-        ['M01293844/汽油加注设备', 'M92938485/1#玻璃涂胶设备']
-        ['M01293844/汽设备', 'M92938485/1#玻璃']
-      ],
+      deviceArr: [],
+      deviceIndex: [0, 0, 0],
+      deviceColumns: [[],[],[]],
       deviceInfo: {
         name: '',
         description: ''
@@ -92,7 +90,38 @@ export default {
       }]
     }
   },
+  created() {
+    this.getDeviceSimpleList()
+  },
   methods: {
+    // 获取设备精简列表
+    getDeviceSimpleList() {
+      getDeviceSimpleList().then(res => {
+        this.deviceArr = handleTree(res.data)
+        this.deviceArr.forEach((item) => {
+          this.deviceColumns[0].push({ ...item });
+        });
+
+        if (this.deviceArr[0]?.children?.length > 0) {
+          this.deviceArr[0].children.forEach((item) => {
+            this.deviceColumns[1].push({ ...item });
+          });
+
+          if (this.deviceArr[0].children[0]?.children?.length > 0) {
+            this.deviceArr[0].children[0].children.forEach((item) => {
+              this.deviceColumns[2].push({ ...item });
+            });
+          } else {
+            this.deviceColumns[2] = [];
+          }
+        } else {
+          this.deviceColumns[1] = [];
+          this.deviceColumns[2] = [];
+        }
+      }).catch(err => {
+        uni.$u.toast(err.message)
+      })
+    },
     // 扫码
     bindScan() {
       uni.scanCode({
@@ -107,16 +136,28 @@ export default {
     },
     // 改变设备
     bindDeviceChange(e) {
-      const { columnIndex, value, values, index, picker = this.$refs.deviceRef } = e
+      console.log(e)
+      const {columnIndex, index, picker = this.$refs.deviceRef} = e
+      console.log(columnIndex, index, picker)
+      // 根据列的索引值，判断当前改变的是哪一列，然后改变对应的列数据
       if (columnIndex === 0) {
-        picker.setColumnValues(1, this.deviceColumnData[index])
-      } else {
-        console.log(values)
+        this.deviceColumns[1] = this.deviceArr[index]?.children || []
+        picker.setColumnValues(1, this.deviceColumns[1])
+        this.deviceColumns[2] = this.deviceArr[index]?.children?.[0]?.children || []
+        picker.setColumnValues(2, this.deviceColumns[2])
+      } else if (columnIndex === 1) {
+        this.deviceColumns[2] = this.deviceArr[this.deviceIndex[0]]?.children[index]?.children || []
+        picker.setColumnValues(2, this.deviceColumns[2])
       }
     },
     // 确认设备
     confirmDevice(e) {
-      console.log('confirm', e)
+      const [arr1, arr2, arr3] = e.value
+      if (!arr1?.id || !arr2?.id || !arr3?.id) {
+        uni.$u.toast('请选择设备')
+        return
+      }
+      this.deviceInfo.name = `${arr3.name}`
       this.deviceShow = false
     },
     // 选择操作人
@@ -246,5 +287,8 @@ export default {
   .u-icon {
     margin-left: 20rpx;
   }
+}
+.placeholder {
+  color: #aaaaaa;
 }
 </style>

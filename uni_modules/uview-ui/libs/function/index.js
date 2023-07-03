@@ -2,8 +2,8 @@ import test from './test.js'
 import { round } from './digit.js'
 /**
  * @description 如果value小于min，取min；如果value大于max，取max
- * @param {number} min 
- * @param {number} max 
+ * @param {number} min
+ * @param {number} max
  * @param {number} value
  */
 function range(min = 0, max = 0, value = 0) {
@@ -13,7 +13,7 @@ function range(min = 0, max = 0, value = 0) {
 /**
  * @description 用于获取用户传递值的px值  如果用户传递了"xxpx"或者"xxrpx"，取出其数值部分，如果是"xxxrpx"还需要用过uni.upx2px进行转换
  * @param {number|string} value 用户传递值的px值
- * @param {boolean} unit 
+ * @param {boolean} unit
  * @returns {number|string}
  */
 function getPx(value, unit = false) {
@@ -41,7 +41,7 @@ function sleep(value = 30) {
 }
 /**
  * @description 运行期判断平台
- * @returns {string} 返回所在平台(小写) 
+ * @returns {string} 返回所在平台(小写)
  * @link 运行期判断平台 https://uniapp.dcloud.io/frame?id=判断平台
  */
 function os() {
@@ -49,7 +49,7 @@ function os() {
 }
 /**
  * @description 获取系统信息同步接口
- * @link 获取系统信息同步接口 https://uniapp.dcloud.io/api/system/info?id=getsysteminfosync 
+ * @link 获取系统信息同步接口 https://uniapp.dcloud.io/api/system/info?id=getsysteminfosync
  */
 function sys() {
 	return uni.getSystemInfoSync()
@@ -274,8 +274,8 @@ if (!String.prototype.padStart) {
 
 /**
  * @description 格式化时间
- * @param {String|Number} dateTime 需要格式化的时间戳
- * @param {String} fmt 格式化规则 yyyy:mm:dd|yyyy:mm|yyyy年mm月dd日|yyyy年mm月dd日 hh时MM分等,可自定义组合 默认yyyy-mm-dd
+ * @param {Date} dateTime 需要格式化的时间戳
+ * @param formatStr
  * @returns {string} 返回格式化后的字符串
  */
  function timeFormat(dateTime = null, formatStr = 'yyyy-mm-dd') {
@@ -327,7 +327,7 @@ if (!String.prototype.padStart) {
 /**
  * @description 时间戳转为多久之前
  * @param {String|Number} timestamp 时间戳
- * @param {String|Boolean} format 
+ * @param {String|Boolean} format
  * 格式化规则如果为时间格式字符串，超出一定时间范围，返回固定的时间格式；
  * 如果为布尔值false，无论什么时间，都返回多久以前的格式
  * @returns {string} 转化后的内容
@@ -517,7 +517,7 @@ function priceFormat(number, decimals = 0, decimalPoint = '.', thousandsSeparato
 	while (re.test(s[0])) {
 		s[0] = s[0].replace(re, `$1${sep}$2`)
 	}
-	
+
 	if ((s[1] || '').length < prec) {
 		s[1] = s[1] || ''
 		s[1] += new Array(prec - s[1].length + 1).join('0')
@@ -531,7 +531,7 @@ function priceFormat(number, decimals = 0, decimalPoint = '.', thousandsSeparato
  * 比如以30位阈值，那么300大于30，可以理解为用户想要的是300ms，而不是想花300s去执行一个动画
  * @param {String|number} value 比如: "1s"|"100ms"|1|100
  * @param {boolean} unit  提示: 如果是false 默认返回number
- * @return {string|number} 
+ * @return {string|number}
  */
 function getDuration(value, unit = true) {
 	const valueNum = parseInt(value)

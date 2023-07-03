@@ -6,10 +6,7 @@
  * @param {*} children 孩子节点字段 默认 'children'
  * @param {*} rootId 根Id 默认 0
  */
-export function handleTree(data, id, parentId, children, rootId) {
-  id = id || 'id'
-  parentId = parentId || 'parentId'
-  children = children || 'children'
+export function handleTree(data, id = 'id', parentId = 'parentId', children = 'children', rootId = 0) {
   rootId = rootId || Math.min.apply(Math, data.map(item => {
     return item[parentId]
   })) || 0

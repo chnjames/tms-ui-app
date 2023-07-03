@@ -93,7 +93,7 @@ export default {
         uni.$u.toast('忽略成功')
         this.getCommonTaskPage()
       }).catch(err => {
-        uni.$u.toast(err.msg)
+        uni.$u.toast(err.message)
       })
     },
     // 领取任务
@@ -102,7 +102,7 @@ export default {
         uni.$u.toast('领取成功')
         this.getCommonTaskPage()
       }).catch(err => {
-        uni.$u.toast(err.msg)
+        uni.$u.toast(err.message)
       })
     },
     // 金刚区

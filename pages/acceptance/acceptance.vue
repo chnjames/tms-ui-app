@@ -68,7 +68,7 @@ export default {
         uni.$u.toast('验收成功')
         this.getAcceptanceDetail(this.buyingId)
       }).catch(err => {
-        uni.$u.toast(err.msg)
+        uni.$u.toast(err.message)
       })
     },
     // 到货验收

@@ -83,7 +83,7 @@ export default {
         this.getTaskPage()
         this.getProjectDocList()
       }).catch(err => {
-        uni.$u.toast(err.msg)
+        uni.$u.toast(err.message)
       })
     },
     // 获取设备精简列表
@@ -91,7 +91,7 @@ export default {
       getDeviceSimpleList().then(res => {
         console.log(res)
       }).catch(err => {
-        uni.$u.toast(err.msg)
+        uni.$u.toast(err.message)
       })
     },
     // 获取设备履历
@@ -104,7 +104,7 @@ export default {
           imgList: item.attachments
         })) || [];
       }).catch(err => {
-        uni.$u.toast(err.msg)
+        uni.$u.toast(err.message)
       })
     },
     // 获取设备文档
@@ -117,7 +117,7 @@ export default {
           suffixName: `${item.name}.${item.type}`
         })) || [];
       }).catch(err => {
-        uni.$u.toast(err.msg)
+        uni.$u.toast(err.message)
       })
     },
     // 扫码

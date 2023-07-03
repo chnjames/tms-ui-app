@@ -79,7 +79,7 @@ export default {
         this.inboundInfo.materialName = data.name
         this.inboundInfo.materialSpecs = data.specs
       }).catch(err => {
-        uni.$u.toast(err.msg)
+        uni.$u.toast(err.message)
       })
     },
     // 扫码库位编码
@@ -110,7 +110,7 @@ export default {
           uni.navigateBack()
         }, 2000)
       }).catch(err => {
-        uni.$u.toast(err.msg)
+        uni.$u.toast(err.message)
       })
     },
     // 物料数量

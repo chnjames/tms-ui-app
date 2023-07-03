@@ -51,7 +51,7 @@
           this.materialDesc = `${data.code}/${data.category} ${data.name}`
           this.materialSpecs = data.specs
         }).catch(err => {
-          uni.$u.toast(err.msg)
+          uni.$u.toast(err.message)
         })
       },
       // 扫码库位编码
@@ -77,7 +77,7 @@
             qty: 1
           })) || [];
         }).catch(err => {
-          uni.$u.toast(err.msg)
+          uni.$u.toast(err.message)
         })
       },
       // 出库
@@ -88,7 +88,7 @@
             uni.navigateBack()
           }, 1000)
         }).catch(err => {
-          uni.$u.toast(err.msg)
+          uni.$u.toast(err.message)
         })
       }
     }

@@ -72,6 +72,12 @@ const user = {
             commit('SET_TOKEN', res.data)
             return Promise.resolve(res)
           })
+          .then(() => {
+            return this.dispatch('ObtainUserInfo')
+          })
+          .then(() => {
+            return this.dispatch('GetUserList')
+          })
           .catch(err => {
             return Promise.reject(err)
           })
@@ -109,9 +115,13 @@ const user = {
         })
     },
     // 获得用户基本信息
-    async ObtainUserInfo({state, commit}) {
-      const res = await getUserProfile()
-      commit('SET_USER_INFO', res.data)
+    ObtainUserInfo({state, commit}) {
+      return getUserProfile().then(res => {
+        commit('SET_USER_INFO', res.data)
+        return Promise.resolve(res)
+      }).catch(err => {
+        return Promise.reject(err)
+      })
     },
     // 刷新令牌
     RefreshToken({state, commit}) {
