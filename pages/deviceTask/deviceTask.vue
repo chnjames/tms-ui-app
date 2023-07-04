@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import {getDeviceSimpleList} from "../../api/device";
+import {getDeviceDetail, getDeviceSimpleList} from "../../api/device";
 import {handleTree} from "../../utils/tree";
 import {createTask} from "@/api/task";
 import {uploadFile} from "@/api/auth";
@@ -80,6 +80,7 @@ export default {
       deviceColumns: [[],[],[]],
       taskInfo: {
         name: '', // 任务名称
+        projectId: '', // 项目id
         deviceId: '',
         deviceName: '',
         blameId: '', // 责任人
@@ -120,6 +121,17 @@ export default {
     }
   },
   methods: {
+    // 获取设备信息
+    getDeviceDetail(deviceId) {
+      getDeviceDetail({deviceId}).then(res => {
+        const {data} = res
+        this.deviceDesc = `${data.code}/${data.name}`
+        this.deviceLocation = data.location
+        this.taskInfo.projectId = data.projectId
+      }).catch(err => {
+        uni.$u.toast(err.message)
+      })
+    },
     // 创建任务
     createTask() {
       this.taskInfo.attachments = this.fileList.map(item => item.url)
@@ -196,6 +208,7 @@ export default {
       }
       this.taskInfo.deviceName = `${arr3.name}`
       this.taskInfo.deviceId = arr3.id
+      this.getDeviceDetail(arr3.id)
       this.deviceShow = false
     },
     // 选择操作人

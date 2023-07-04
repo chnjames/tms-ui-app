@@ -1,12 +1,12 @@
 <template>
   <view class="container">
     <view class="task-top">
-      <view class="tag">紧急</view>
-      <view class="task-name">WNC项目YOUITMS系统开发</view>
+      <view class="tag" v-if="taskInfo.urgent === 1">紧急</view>
+      <view class="task-name">{{taskInfo.projectName}}</view>
     </view>
     <u-gap height="20rpx"></u-gap>
     <u-read-more textIndent="0" toggle closeText="展开">
-      <view>{{ content }}</view>
+      <view>{{ taskInfo.taskName }}</view>
     </u-read-more>
     <u-gap height="20rpx"></u-gap>
     <u-cell-group class="user" :border="false">
@@ -41,49 +41,14 @@
     <u-gap height="20rpx"></u-gap>
     <u-line></u-line>
     <u-gap height="20rpx"></u-gap>
-    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23  刘能创建了代办"></u--text>
-    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23  陈逸飞完成代办"></u--text>
-    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23  刘能修改截止时间为2022/11/21"></u--text>
-    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23  刘能修改截止时间为2022/11/21"></u--text>
-    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
-    <u--text type="info" margin="10rpx 0" size="24rpx" text="11月1日 12:23 刘能创建了代办"></u--text>
+    <u--text v-for="item in boardList" :key="item.id" type="info" margin="10rpx 0" size="24rpx" :text="item.description"></u--text>
     <u-gap height="20rpx"></u-gap>
-    <view class="board-number" v-show="isBoard">
-      <!-- 工时登记 -->
-      <view v-if="isRegister" class="register">
-        <view class="qualified">请输入(h)：</view>
-        <u-number-box :min="0.5" :step="0.5" v-model="workingHours"></u-number-box>
-      </view>
-      <!-- 数量登记 -->
-      <view class="quantity" v-else>
-        <view class="quantity-item">
-          <view class="qualified">合格：</view>
-          <u-number-box integer :min="-100" v-model="quantity"></u-number-box>
-        </view>
-        <view class="quantity-item">
-          <view class="unqualified">不合格：</view>
-          <u-number-box integer :min="-100" color="#fa3534" v-model="unQuantity"></u-number-box>
-        </view>
-      </view>
-    </view>
     <u-row class="btn-group" gutter="20rpx" justify="space-around">
       <u-col span="3">
         <u-button text="完成任务" color="#aaaaaa" shape="circle" @click="bindCreate"></u-button>
       </u-col>
       <u-col span="3">
-        <u-button text="结果登记" color="#214579" shape="circle" @click="bindCreate"></u-button>
+        <u-button text="结果登记" color="#214579" shape="circle" @click="bindRegistration"></u-button>
       </u-col>
       <u-col span="3">
         <u-button text="添加附件" color="#aaaaaa" shape="circle" @click="bindPhoto"></u-button>
@@ -94,16 +59,43 @@
       @confirm="confirmAccount"></u-picker>
     <!-- 提醒 -->
     <u-toast ref="uToast"></u-toast>
+    <!-- 键盘 -->
+    <u-keyboard ref="uKeyboard" mode="number" :closeOnClickOverlay="false"
+                :showTips="false" :show="isKeyBoard" safeAreaInsetBottom @change="bindKeyBoard"
+                @backspace="bindBackspace">
+      <view slot="default">
+        <view class="board-number">
+          <!-- 工时登记 -->
+          <view v-if="isRegister" class="register">
+            <view class="qualified">请输入(h)：</view>
+            <u-number-box :min="0.5" :step="0.5" v-model="workingHours"></u-number-box>
+          </view>
+          <!-- 数量登记 -->
+          <view class="quantity" v-else>
+            <view class="quantity-item">
+              <view class="qualified">合格：</view>
+              <u-number-box integer :min="-100" v-model="quantity"></u-number-box>
+            </view>
+            <view class="quantity-item">
+              <view class="unqualified">不合格：</view>
+              <u-number-box integer :min="-100" color="#fa3534" v-model="unQuantity"></u-number-box>
+            </view>
+          </view>
+        </view>
+      </view>
+    </u-keyboard>
   </view>
 </template>
 
 <script>
+import {getTaskDetail, missionTask, getTaskRecord, uploadTaskFile} from "../../api/task";
 export default {
   data() {
     return {
-      content: `山不在高，有仙则名。水不在深，有龙则灵。斯是陋室，惟吾德馨。
-				苔痕上阶绿，草色入帘青。谈笑有鸿儒，往来无白丁。可以调素琴，阅金经。
-				无丝竹之乱耳，无案牍之劳形。南阳诸葛庐，西蜀子云亭。孔子云：何陋之有？`,
+      taskId: '',
+      taskInfo: {},
+      boardList: [],
+      isKeyBoard: false, // 键盘
       show: false,
       value: 2,
       isRegister: true,
@@ -111,7 +103,7 @@ export default {
       quantity: 0, // 合格数量
       unQuantity: 0, // 不合格数量
       accountShow: false, // 操作人选择器
-      isBoard: false, // 是否显示底部工时登记
+      isBoard: true, // 是否显示底部工时登记
       accountColumns: [
         ['操作人1', '操作人2', '操作人3']
       ],
@@ -124,7 +116,53 @@ export default {
       }]
     };
   },
+  async onLoad(options) {
+    console.log(options)
+    const {taskId} = options;
+    this.taskId = taskId;
+    await this.getTaskDetail(this.taskId)
+    await this.getTaskRecord(this.taskId)
+  },
+  // async created() {
+  //   const {taskId} = this.$route.query;
+  //   this.taskId = taskId;
+  //   await this.getTaskDetail(this.taskId)
+  //   await this.getTaskRecord(this.taskId)
+  // },
+  computed: {
+    projectList() {
+      return this.$store.getters.projectList
+    },
+    hasLogin() {
+      return this.$store.getters.hasLogin
+    },
+    userInfo() {
+      return this.$store.getters.userInfo
+    },
+    userList() {
+      return this.$store.getters.userList
+    }
+  },
   methods: {
+    // 获取任务详情
+    getTaskDetail(taskId) {
+      getTaskDetail({taskId}).then(res => {
+        const data = res.data || {}
+        data.projectName = this.projectList.find(pro => pro?.id === data?.projectId)?.name || ''
+        this.taskInfo = data
+      }).catch(err => {
+        uni.$u.toast(err.message)
+      })
+    },
+    // 获取任务记录
+    getTaskRecord(taskId) {
+      getTaskRecord({taskId}).then(res => {
+        console.log(res)
+        this.boardList = res.data || []
+      }).catch(err => {
+        uni.$u.toast(err.message)
+      })
+    },
     // 选择操作人
     bindAccount() {
       this.accountShow = true
@@ -147,6 +185,30 @@ export default {
           uni.navigateBack()
         }
       })
+    },
+    // 结果登记
+    bindRegistration() {
+      this.isKeyBoard = true
+    },
+    // 键盘输入
+    bindKeyBoard(e) {
+      // 改变工时
+      if (this.isRegister) {
+        // this.workingHours => string => 拼接 => number
+        this.workingHours = Number(this.workingHours.toString() + e)
+      } else {
+        this.quantity += e
+      }
+    },
+    // 键盘删除
+    bindBackspace(e) {
+      // 改变工时
+      if (this.isRegister) {
+        // this.workingHours => string => 拼接 => number
+        this.workingHours = Number(this.workingHours.toString().slice(0, -1))
+      } else {
+        this.quantity -= e
+      }
     },
     // 添加附件
     bindPhoto() {
@@ -225,7 +287,7 @@ export default {
 }
 
 .qualified {
-  color: #2979ff;
+  color: $custom-content-color;
 }
 
 .unqualified {
@@ -267,5 +329,11 @@ export default {
 
 /deep/ .u-cell__body {
   padding: 10rpx 0;
+}
+/deep/ .u-keyboard__tooltip {
+  background-color: #e0e4e6;
+}
+/deep/ .u-keyboard__tooltip__submit {
+  color: $custom-content-color;
 }
 </style>

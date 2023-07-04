@@ -125,7 +125,12 @@ export default {
             url: `/pages/ordinaryTaskDetail/ordinaryTaskDetail?taskId=${taskId}`
           });
           break;
-        // 项目&&生产任务
+        case 'workingHours':
+          uni.navigateTo({
+            url: `/pages/taskDetail/taskDetail?taskId=${taskId}`
+          });
+          break;
+        // 项目&&生产任务 workingHours
         case 1:
           uni.navigateTo({
             url: '/pages/taskDetail/taskDetail'

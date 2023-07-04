@@ -19,3 +19,16 @@ export const createTask = data => http.post('/operations/task/create', data)
 export const getTaskDetail = params => http.get('/operations/task/detail', { params })
 // 完成任务
 export const missionTask = data => http.post('/operations/task/complete', data)
+// 任务记录
+export const getTaskRecord = params => http.get('/operations/task/record', { params })
+// 任务附件上传
+export const uploadTaskFile = params => http.upload('/operations/task/attachment/upload', {
+  filePath: params.filePath,
+  formData: params.formData,
+  name: 'file',
+  header: {'Content-Type': 'multipart/form-data'}
+})
+// 工时登记
+export const workTimeRegister = data => http.post('/operations/task/working-minute/register', data)
+// 数量登记
+export const quantityRegister = data => http.post('/operations/task/quantity/register', data)
