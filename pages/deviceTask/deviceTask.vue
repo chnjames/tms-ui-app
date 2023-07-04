@@ -7,7 +7,7 @@
           <text v-else>{{taskInfo.deviceName}}</text>
         </view>
       </u-cell>
-      <u-icon name="scan" color="#214579" size="28" @click="bindScan"></u-icon>
+      <u-icon name="scan" color="#214579" size="36" @click="bindScan"></u-icon>
     </view>
     <u-gap height="20rpx"></u-gap>
     <u--textarea v-model="taskInfo.name" placeholder="请输入快速上报问题描述" border="none" count height="200rpx"
@@ -41,7 +41,7 @@
         <u-icon name="close" size="22" @click="bindDelFile(item, index)"></u-icon>
       </view>
     </view>
-    <u-row class="btn-group" gutter="20rpx" justify="space-around">
+    <u-row class="btn-group" gutter="20rpx" justify="flex-end">
       <u-col span="3">
         <u-button text="立即创建" color="#214579" shape="circle" @click="createTask"></u-button>
       </u-col>

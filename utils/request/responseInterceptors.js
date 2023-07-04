@@ -1,5 +1,5 @@
 import errorCode from '@/utils/request/errorCode'
-import { refreshToken } from '@/api/auth'
+import { authRefreshToken } from '@/api/auth'
 
 // 需要忽略的提示。忽略后，自动 Promise.reject('error')
 const ignoreMsgs = [
@@ -47,9 +47,9 @@ module.exports = vm => {
           try {
             let param = {}
             let refreshToken =  uni.getStorageSync('REFRESH_TOKEN');
-            console.log(refreshToken)
             param.refreshToken = refreshToken;
-            const refreshTokenRes = await refreshToken(param)
+            const refreshTokenRes = await authRefreshToken(param)
+            console.log(refreshTokenRes)
             // 2.1 刷新成功，则回放队列的请求 + 当前请求
             vm.$store.commit('SET_TOKEN', refreshTokenRes.data)
             requestList.forEach(cb => cb())

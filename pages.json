@@ -4,8 +4,10 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": ""
-        // "navigationStyle": "custom"
+        "navigationBarTitleText": "首页",
+        // "navigationStyle": "custom",
+        "enablePullDownRefresh": true,
+        "onReachBottomDistance": 50
       }
     },
     {

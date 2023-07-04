@@ -27,9 +27,9 @@
           <u-input :type="inputType" prefixIconStyle="color:#cccccc" maxlength="16" v-model="formData.password"
             prefixIcon="lock-fill" placeholder="请填写密码" border="none">
             <template slot="suffix">
-              <u-icon v-if="inputType === 'password'" size="20" color="#cccccc" name="eye-fill"
+              <u-icon v-show="inputType === 'password'" size="20" color="#cccccc" name="eye-fill"
                 @click="inputType = 'text'"></u-icon>
-              <u-icon v-if="inputType === 'text'" size="20" color="#cccccc" name="eye-off"
+              <u-icon v-show="inputType === 'text'" size="20" color="#cccccc" name="eye-off"
                 @click="inputType = 'password'"></u-icon>
             </template>
           </u-input>
@@ -46,7 +46,7 @@
         <u-gap height="100rpx"></u-gap>
 
         <view class="btn-group">
-          <u-button class="auth-btn" color="#214579" @click="handleSubmit">登 录</u-button>
+          <u-button class="auth-btn" color="#214579" :loading="loading" loadingText="登录中" @click="handleSubmit">登 录</u-button>
         </view>
       </u--form>
     </view>
@@ -66,6 +66,7 @@
     data() {
       return {
         tenantId: '', // 租户名称
+        loading: false,
         logoImg: require("../../static/images/icons/logo.png"),
         currentModeIndex: 0,
         loginModeList: ['密码登录', '验证码登录'],
@@ -173,10 +174,12 @@
         })
       },
       mobileLogin(data) {
+        this.loading = true
         this.$store.dispatch('Login', {
           type: this.currentModeIndex,
           data: data
         }).then(res => {
+          this.loading = false
           uni.$u.toast('登录成功')
           // TODO: 获取字典
           this.bindDict()
@@ -185,6 +188,8 @@
               url: '/pages/index/index'
             })
           }, 300)
+        }).catch(err => {
+          this.loading = false
         })
       },
       // 忘记密码

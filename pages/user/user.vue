@@ -44,6 +44,10 @@ export default {
     if (this.hasLogin) {
       this.getUserList()
       this.$store.dispatch('ObtainUserInfo')
+    } else {
+      uni.reLaunch({
+        url: '/pages/login/mobile'
+      })
     }
   },
   onShow() {
@@ -84,7 +88,7 @@ export default {
         success: res => {
           if (res.confirm) {
             this.$store.dispatch('Logout').then(res => {
-              uni.switchTab({
+              uni.reLaunch({
                 url: '/pages/login/mobile'
               })
             })

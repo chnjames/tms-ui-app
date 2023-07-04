@@ -8,7 +8,7 @@
           <text>{{pnCode}}</text>
         </view>
       </u-cell>
-      <u-icon name="scan" color="#214579" size="28" @click="bindScan"></u-icon>
+      <u-icon name="scan" color="#214579" size="36" @click="bindScan"></u-icon>
     </view>
     <u-gap height="20rpx"></u-gap>
     <!-- 收货任务 -->
@@ -42,14 +42,25 @@ export default {
       acceptanceList: []
     };
   },
+  computed: {
+    hasLogin() {
+      return this.$store.getters.hasLogin
+    }
+  },
   onLoad() {
-    this.getAcceptanceList()
+    if (this.hasLogin) {
+      this.getAcceptanceList()
+    } else {
+      uni.reLaunch({
+        url: '/pages/login/mobile'
+      })
+    }
   },
   methods: {
     // 待验收列表
     getAcceptanceList() {
       getAcceptanceList().then(res => {
-        this.PNColumns = res.data || []
+        this.PNColumns = [res.data || []]
       })
     },
     // 验收详情

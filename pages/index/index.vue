@@ -1,31 +1,41 @@
 <template>
   <view class="container">
     <!-- 金刚区 -->
-    <view class="district" blurEffect="light">
-      <u-row justify="space-between" gutter="10">
-        <u-col span="3" v-for="(item, index) in districtList" :key="index" align="center" textAlign="center"
-          @click="bindDistrict(item)">
-          <view class="icon-text">{{ item.iconText }}</view>
-          <view class="district-name">{{ item.name }}</view>
-        </u-col>
-      </u-row>
-    </view>
-    <u-gap height="40rpx"></u-gap>
-    <!-- 任务列表 -->
-    <u-swipe-action>
-      <u-swipe-action-item class="swipe-item" :options="item.options" v-for="(item, index) in taskList" :name="item.taskId"
-        :key="index" @click="bindSwiperItem">
-        <view class="swipe-action" @click="bindTask(item)">
-          <view class="swipe-action__content">
-            <view class="swipe-action__content__text">{{ item.urgentType }} {{ item.taskName }}</view>
-            <u-gap height="10rpx"></u-gap>
-            <view class="swipe-action__content__text">{{ item.taskType }}</view>
-            <u-gap height="16rpx"></u-gap>
-            <view class="swipe-action__content__date">{{ item.date }}</view>
-          </view>
+    <u-sticky>
+      <view class="sticky">
+        <view class="district" blurEffect="light">
+          <u-row justify="space-between" gutter="10">
+            <u-col span="3" v-for="(item, index) in districtList" :key="index" align="center" textAlign="center"
+                   @click="bindDistrict(item)">
+              <view class="icon-text">{{ item.iconText }}</view>
+              <view class="district-name">{{ item.name }}</view>
+            </u-col>
+          </u-row>
         </view>
-      </u-swipe-action-item>
-    </u-swipe-action>
+      </view>
+    </u-sticky>
+    <u-gap height="30rpx"></u-gap>
+    <!-- 任务列表 -->
+    <view class="task">
+      <u-swipe-action>
+        <u-list @scrolltolower="scrollToLower" height="100%" :preLoadScreen="pageCount * 4">
+          <u-list-item v-for="(item, index) in taskList" :key="index">
+            <u-swipe-action-item class="swipe-item" :options="item.options" :name="item.taskId" @click="bindSwiperItem">
+              <view class="swipe-action" @click="bindTask(item)">
+                <view class="swipe-action__content">
+                  <view class="swipe-action__content__text">{{ item.urgentType }} {{ item.projectName }}</view>
+                  <u-gap height="10rpx"></u-gap>
+                  <view class="swipe-action__content__text">{{ item.taskName }}</view>
+                  <u-gap height="16rpx"></u-gap>
+                  <view class="swipe-action__content__date">{{ item.date }}</view>
+                </view>
+              </view>
+            </u-swipe-action-item>
+          </u-list-item>
+          <u-loadmore :status="loadMoreStatus"/>
+        </u-list>
+      </u-swipe-action>
+    </view>
   </view>
 </template>
 
@@ -37,6 +47,13 @@ export default {
   components: {},
   data() {
     return {
+      pageCount: 1,
+      total: 0,
+      loadMoreStatus: 'loadmore',
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 10
+      },
       districtList: [{
         name: '到货验收',
         iconText: '收',
@@ -57,16 +74,36 @@ export default {
       taskList: []
     }
   },
-  onShow() {
+  computed: {
+    projectList() {
+      return this.$store.getters.projectList
+    }
+  },
+  onLoad() {
     this.getCommonTaskPage()
+  },
+  onPullDownRefresh() {
+    this.loadMoreStatus = 'loadmore';
+    this.pageInfo.pageNum = 1;
+    this.taskList = [];
+    this.getCommonTaskPage();
+    setTimeout(() => {
+      uni.stopPullDownRefresh();
+    }, 1000);
+  },
+  onReachBottom() {
+    this.scrollToLower()
   },
   methods: {
     // 获得公共任务分页
     getCommonTaskPage() {
-      getCommonTaskPage().then(res => {
+      getCommonTaskPage(this.pageInfo).then(res => {
         const { total, list } = res.data
+        this.pageCount = Math.ceil(total / this.pageInfo.pageSize)
+        this.total = total
         list.forEach(item => {
           item.date = timestampToTime(item.endTime, 'MM月dd日截止')
+          item.projectName = this.projectList.find(pro => pro?.id === item?.projectId)?.name || ''
           item.urgentType = item.urgent === 1 ? '紧急' : ''
           item.options = [{
             text: '立即领取',
@@ -80,12 +117,27 @@ export default {
             }
           }]
         })
-        this.taskList = list
+        this.taskList = this.taskList.concat(list)
+        if (this.pageInfo.pageNum === this.pageCount) {
+          this.loadMoreStatus = 'nomore'
+        } else {
+          this.loadMoreStatus = 'loadmore'
+        }
         uni.setTabBarBadge({
           index: 0,
           text: total
         })
+      }).catch(err => {
+        uni.$u.toast(err.message)
       })
+    },
+    scrollToLower() {
+      if (this.pageInfo.pageNum < this.pageCount) {
+        this.pageInfo.pageNum++
+        this.getCommonTaskPage()
+      } else {
+        this.loadMoreStatus = 'nomore'
+      }
     },
     // 忽略任务
     bindIgnoreTask(taskId) {
@@ -133,7 +185,16 @@ export default {
 
 <style lang="scss" scoped>
 .container {
+  //height: 100vh;
+}
+
+.sticky {
   padding: 30rpx;
+  background-color: #F5F5F5;
+}
+
+.task {
+  padding: 0 30rpx;
 }
 
 .district {
@@ -163,7 +224,7 @@ export default {
 }
 
 .swipe-item {
-  margin: 20rpx 0;
+  margin: 15rpx 0;
   border-radius: 10rpx;
   overflow: hidden;
   background-color: #FFFFFF;
@@ -182,4 +243,5 @@ export default {
       color: $custom-text-danger-color;
     }
   }
-}</style>
+}
+</style>
