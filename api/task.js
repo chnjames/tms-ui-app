@@ -32,3 +32,5 @@ export const uploadTaskFile = params => http.upload('/operations/task/attachment
 export const workTimeRegister = data => http.post('/operations/task/working-minute/register', data)
 // 数量登记
 export const quantityRegister = data => http.post('/operations/task/quantity/register', data)
+// 获取BOM需求列表
+export const getBomDemandList = params => http.get('/operations/project-bom/list', { params })

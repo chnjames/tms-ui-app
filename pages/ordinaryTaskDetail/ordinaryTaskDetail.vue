@@ -119,8 +119,6 @@ export default {
       getTaskDetail({taskId}).then(res => {
         console.log(res)
         this.taskInfo = res.data || {}
-      }).catch(err => {
-        uni.$u.toast(err.message)
       })
     },
     // 完成任务
@@ -130,8 +128,6 @@ export default {
         setTimeout(() => {
           uni.navigateBack()
         }, 300)
-      }).catch(err => {
-        uni.$u.toast(err.message)
       })
     },
     // 选择操作人

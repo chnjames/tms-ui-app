@@ -5,9 +5,7 @@
       <view class="task-name">{{taskInfo.projectName}}</view>
     </view>
     <u-gap height="20rpx"></u-gap>
-    <u-read-more textIndent="0" toggle closeText="展开">
-      <view>{{ taskInfo.taskName }}</view>
-    </u-read-more>
+    <u--text color="#666666" size="14" :text="taskInfo.taskName"></u--text>
     <u-gap height="20rpx"></u-gap>
     <u-cell-group class="user" :border="false">
       <u-cell icon="account-fill" :border="false" iconStyle="color: #aaaaaa;">
@@ -74,11 +72,11 @@
           <view class="quantity" v-else>
             <view class="quantity-item">
               <view class="qualified">合格：</view>
-              <u-number-box integer :min="-100" v-model="quantity"></u-number-box>
+              <u-number-box integer :min="0" v-model="quantity"></u-number-box>
             </view>
             <view class="quantity-item">
               <view class="unqualified">不合格：</view>
-              <u-number-box integer :min="-100" color="#fa3534" v-model="unQuantity"></u-number-box>
+              <u-number-box integer :min="0" color="#fa3534" v-model="unQuantity"></u-number-box>
             </view>
           </view>
         </view>
@@ -88,7 +86,7 @@
 </template>
 
 <script>
-import {getTaskDetail, missionTask, getTaskRecord, uploadTaskFile} from "../../api/task";
+import {getTaskDetail, missionTask, getTaskRecord, uploadTaskFile, workTimeRegister, quantityRegister} from "@/api/task";
 export default {
   data() {
     return {
@@ -99,7 +97,7 @@ export default {
       show: false,
       value: 2,
       isRegister: true,
-      workingHours: 3.5, // 工时
+      workingHours: 3.5, // 工时 => 3.5h => 3.5h * 60m => 210m
       quantity: 0, // 合格数量
       unQuantity: 0, // 不合格数量
       accountShow: false, // 操作人选择器
@@ -116,12 +114,12 @@ export default {
       }]
     };
   },
-  async onLoad(options) {
+  onLoad(options) {
     console.log(options)
-    const {taskId} = options;
+    const {taskId, taskType} = options;
     this.taskId = taskId;
-    await this.getTaskDetail(this.taskId)
-    await this.getTaskRecord(this.taskId)
+    this.getTaskDetail(this.taskId)
+    this.getTaskRecord(this.taskId)
   },
   // async created() {
   //   const {taskId} = this.$route.query;
@@ -147,11 +145,12 @@ export default {
     // 获取任务详情
     getTaskDetail(taskId) {
       getTaskDetail({taskId}).then(res => {
-        const data = res.data || {}
-        data.projectName = this.projectList.find(pro => pro?.id === data?.projectId)?.name || ''
-        this.taskInfo = data
-      }).catch(err => {
-        uni.$u.toast(err.message)
+        const {data} = res;
+        console.log(data.extra)
+        this.taskInfo = {
+          ...data,
+          projectName: this.projectList.find(pro => pro?.id === data?.projectId)?.name || ''
+        }
       })
     },
     // 获取任务记录
@@ -159,8 +158,6 @@ export default {
       getTaskRecord({taskId}).then(res => {
         console.log(res)
         this.boardList = res.data || []
-      }).catch(err => {
-        uni.$u.toast(err.message)
       })
     },
     // 选择操作人

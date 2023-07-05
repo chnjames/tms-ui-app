@@ -13,6 +13,9 @@
     </view>
     <u-gap height="40rpx"></u-gap>
     <view v-if="outboundList.length > 0">
+      <u--text color="#aaaaaa" text="物料名称"></u--text>
+      <u-gap height="20rpx"></u-gap>
+      <u--text size="28rpx" color="#666666" :text="materialName"></u--text>
       <u--text color="#aaaaaa" text="物料规格"></u--text>
       <u-gap height="20rpx"></u-gap>
       <u--text size="28rpx" color="#666666" :text="materialSpecs"></u--text>
@@ -33,69 +36,54 @@
       </view>
       <u-button class="receive" text="出 库" color="#214579" shape="circle" @click="bindOutBound"></u-button>
     </view>
-    <!--库位选择器-->
-    <u-picker :show="materialShow" ref="materialRef" keyName="name" :columns="materialColumns" confirmColor="#214579" @confirm="confirmMaterial" @cancel="bindClose"
-              @close="bindClose" @change="bindMaterialChange"></u-picker>
+    <!--物料选择器 -->
+    <u-picker :show="materialShow" :columns="materialColumns"
+              :defaultIndex="materialIndex" keyName="name"
+              confirmColor="#214579" @cancel="bindClose"
+              @close="bindClose" @confirm="confirmMaterial"></u-picker>
   </view>
 </template>
 
 <script>
-  import {getMaterialBaseData} from "../../api/warehouse";
-  import {getStockPage, outOfStorage, getStockList} from "../../api/stock";
-  import {handleTree} from "../../utils/tree";
+  import {getMaterialBaseData, getAllMaterial} from "@/api/warehouse";
+  import {getStockPage, outOfStorage} from "@/api/stock";
 
   export default {
     data() {
       return {
         materialDesc: '',
         materialSpecs: '',
+        materialName: '',
         materialShow: false,
         outboundList: [],
         materialArr: [],
-        materialIndex: [0, 0, 0],
-        materialColumns: [[],[],[]],
+        materialIndex: [0], // 物料选择器索引
+        materialColumns: [] // 物料选择器列
       };
     },
     onLoad() {
-      this.getStockList()
+      this.getAllMaterial()
     },
     methods: {
-      // 获取所有库位及其父集列表
-      getStockList() {
-        getStockList().then(res => {
-          this.materialArr = handleTree(res.data)
-          this.materialArr.forEach((item) => {
-            this.materialColumns[0].push({ ...item });
-          });
-          if (this.materialArr[0]?.children?.length > 0) {
-            this.materialArr[0].children.forEach((item) => {
-              this.materialColumns[1].push({ ...item });
-            });
-            if (this.materialArr[0].children[0]?.children?.length > 0) {
-              this.materialArr[0].children[0].children.forEach((item) => {
-                this.materialColumns[2].push({ ...item });
-              });
-            } else {
-              this.materialColumns[2] = [];
-            }
-          } else {
-            this.materialColumns[1] = [];
-            this.materialColumns[2] = [];
-          }
+      // 获取物料列表
+      getAllMaterial() {
+        getAllMaterial().then(res => {
+          this.materialColumns = [res.data || []]
         })
       },
       // 获取物料基础数据
       getMaterialBaseData(id) {
         getMaterialBaseData({id}).then(res => {
           const {data} = res
-          this.materialDesc = `${data.code}/${data.category} ${data.name}`
+          this.materialDesc = `${data.code}`
+          this.materialName = data.name
           this.materialSpecs = data.specs
         })
       },
       // 扫码库位编码
       bindScan() {
-        this.getMaterialBaseData(13)
-        this.getStockPage(13)
+        // this.getMaterialBaseData(13)
+        // this.getStockPage(13)
         uni.scanCode({
           success: (res) => {
             console.log(res)
@@ -106,33 +94,11 @@
       bindMaterial() {
         this.materialShow = true
       },
-      // 改变物料
-      bindMaterialChange(e) {
-        console.log(e)
-        const {columnIndex, index, picker = this.$refs.materialRef} = e
-        console.log(columnIndex, index, picker)
-        // 根据列的索引值，判断当前改变的是哪一列，然后改变对应的列数据
-        if (columnIndex === 0) {
-          this.materialColumns[1] = this.materialArr[index]?.children || []
-          picker.setColumnValues(1, this.materialColumns[1])
-          this.materialColumns[2] = this.materialArr[index]?.children?.[0]?.children || []
-          picker.setColumnValues(2, this.materialColumns[2])
-        } else if (columnIndex === 1) {
-          this.materialColumns[2] = this.materialArr[this.materialIndex[0]]?.children[index]?.children || []
-          picker.setColumnValues(2, this.materialColumns[2])
-        }
-      },
       // 确认物料
       confirmMaterial(e) {
-        const [arr1, arr2, arr3] = e.value
-        console.log(e.value)
-        if (!arr1?.id || !arr2?.id || !arr3?.id) {
-          uni.$u.toast('请选择设备')
-          return
-        }
-        // this.taskInfo.deviceName = `${arr3.name}`
-        // this.taskInfo.deviceId = arr3.id
-        this.getMaterialBaseData(arr3.id)
+        const [item] = e.value
+        this.getMaterialBaseData(item.id)
+        this.getStockPage(item.id)
         this.materialShow = false
       },
       // 关闭选择器

@@ -120,14 +120,17 @@ export default {
       const {taskTypeStr, taskType, taskId} = item;
       console.log(taskTypeStr, taskType, taskId)
       switch (taskTypeStr) {
+        // 设备快速&&快速&&采购&&回款任务
         case 'simple':
           uni.navigateTo({
             url: `/pages/ordinaryTaskDetail/ordinaryTaskDetail?taskId=${taskId}`
           });
           break;
-        case 'workingHours':
+        // 项目&&生产任务
+        case 'project':
+        case 'produce':
           uni.navigateTo({
-            url: `/pages/taskDetail/taskDetail?taskId=${taskId}`
+            url: `/pages/taskDetail/taskDetail?taskId=${taskId}&taskType=${taskType}`
           });
           break;
         // 项目&&生产任务 workingHours
@@ -155,9 +158,9 @@ export default {
           });
           break;
         // 出库任务
-        case 5:
+        case 'outbound':
           uni.navigateTo({
-            url: '/pages/outboundTaskDetail/outboundTaskDetail'
+            url: `/pages/outboundTask/outboundTask?taskId=${taskId}`
           });
           break;
       }

@@ -1,11 +1,20 @@
 <template>
   <view class="container">
     <view class="coding">
-      <u--input class="coding-name" v-model="deviceDesc" readonly border="bottom" color="#214579" fontSize="28rpx" placeholder="请选择或扫描设备编码"></u--input>
+      <u-cell class="coding-name" :border="false" isLink arrow-direction="down" @click="bindDevice">
+        <view class="title" slot="title">
+          <text v-if="!deviceName" class="placeholder">请选择或扫描设备编码</text>
+          <text v-else>{{deviceName}}</text>
+        </view>
+      </u-cell>
       <u-icon name="scan" color="#214579" size="36" @click="bindScan"></u-icon>
     </view>
     <u-gap height="80rpx"></u-gap>
     <view v-if="deviceId">
+      <u--text color="#aaaaaa" text="物料名称"></u--text>
+      <u-gap height="20rpx"></u-gap>
+      <u--text size="28rpx" color="#666666" :text="deviceName"></u--text>
+      <u-gap height="20rpx"></u-gap>
       <u--text color="#aaaaaa" text="所在位置"></u--text>
       <u-gap height="20rpx"></u-gap>
       <u--text size="28rpx" color="#666666" :text="deviceLocation"></u--text>
@@ -34,6 +43,9 @@
         </view>
       </view>
     </view>
+    <!-- 设备选择器 -->
+    <u-picker :show="deviceShow" ref="deviceRef" keyName="name" :columns="deviceColumns" confirmColor="#214579" @confirm="confirmDevice" @cancel="bindClose"
+              @close="bindClose" @change="bindDeviceChange"></u-picker>
   </view>
 </template>
 
@@ -42,12 +54,18 @@ import {getDeviceDetail, getDeviceSimpleList} from "../../api/device";
 import {getTaskPage} from "../../api/task";
 import {getProjectDocList} from "../../api/project";
 import {timestampToTime} from "../../utils/utils";
+import {handleTree} from "../../utils/tree";
 export default {
   data() {
     return {
       deviceId: '',
       deviceDesc: '',
+      deviceName: '',
       deviceLocation: '',
+      deviceShow: false, // 设备选择器
+      deviceArr: [],
+      deviceIndex: [0, 0, 0],
+      deviceColumns: [[],[],[]],
       taskInfo: {
         pageNo: 1,
         pageSize: 10,
@@ -76,7 +94,8 @@ export default {
     getDeviceDetail(deviceId) {
       getDeviceDetail({deviceId}).then(res => {
         const {data} = res
-        this.deviceDesc = `${data.code}/${data.name}`
+        this.deviceDesc = `${data.code}`
+        this.deviceName = data.name
         this.deviceLocation = data.location
         this.taskInfo.projectId = data.projectId
         this.docInfo.projectId = data.projectId
@@ -87,7 +106,25 @@ export default {
     // 获取设备精简列表
     getDeviceSimpleList() {
       getDeviceSimpleList().then(res => {
-        console.log(res)
+        this.deviceArr = handleTree(res.data)
+        this.deviceArr.forEach((item) => {
+          this.deviceColumns[0].push({ ...item });
+        });
+        if (this.deviceArr[0]?.children?.length > 0) {
+          this.deviceArr[0].children.forEach((item) => {
+            this.deviceColumns[1].push({ ...item });
+          });
+          if (this.deviceArr[0].children[0]?.children?.length > 0) {
+            this.deviceArr[0].children[0].children.forEach((item) => {
+              this.deviceColumns[2].push({ ...item });
+            });
+          } else {
+            this.deviceColumns[2] = [];
+          }
+        } else {
+          this.deviceColumns[1] = [];
+          this.deviceColumns[2] = [];
+        }
       })
     },
     // 获取设备履历
@@ -114,13 +151,51 @@ export default {
     },
     // 扫码
     bindScan() {
-      this.deviceId = 19
-      this.getDeviceDetail(19)
+      // this.deviceId = 19
+      // this.getDeviceDetail(19)
       uni.scanCode({
         success: (res) => {
           console.log(res)
         }
       });
+    },
+    // 打开设备选择器
+    bindDevice() {
+      this.deviceShow = true
+    },
+    // 改变设备
+    bindDeviceChange(e) {
+      console.log(e)
+      const {columnIndex, index, picker = this.$refs.deviceRef} = e
+      console.log(columnIndex, index, picker)
+      // 根据列的索引值，判断当前改变的是哪一列，然后改变对应的列数据
+      if (columnIndex === 0) {
+        this.deviceColumns[1] = this.deviceArr[index]?.children || []
+        picker.setColumnValues(1, this.deviceColumns[1])
+        this.deviceColumns[2] = this.deviceArr[index]?.children?.[0]?.children || []
+        picker.setColumnValues(2, this.deviceColumns[2])
+      } else if (columnIndex === 1) {
+        this.deviceColumns[2] = this.deviceArr[this.deviceIndex[0]]?.children[index]?.children || []
+        picker.setColumnValues(2, this.deviceColumns[2])
+      }
+    },
+    // 确认设备
+    confirmDevice(e) {
+      const [arr1, arr2, arr3] = e.value
+      console.log(e.value)
+      if (!arr1?.id || !arr2?.id || !arr3?.id) {
+        uni.$u.toast('请选择设备')
+        return
+      }
+      this.deviceId = arr3.id
+      this.getDeviceDetail(arr3.id)
+      this.deviceShow = false
+    },
+    // 关闭选择器
+    bindClose() {
+      this.deviceShow = false
+      this.calendarShow = false
+      this.accountShow = false
     },
     // tab切换
     bindTab({name, index}) {
@@ -163,9 +238,12 @@ export default {
   margin-right: 20rpx;
 
   .title {
-    color: #303133;
+    color: $custom-content-color;
     font-size: 24rpx;
-    font-weight: bold;
+  }
+
+  .placeholder {
+    color: #aaaaaa;
   }
 }
 
