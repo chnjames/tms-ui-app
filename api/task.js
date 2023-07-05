@@ -4,7 +4,7 @@ const { http } = uni.$u
 // 获得公共任务分页
 export const getCommonTaskPage = params => http.get('/operations/common/task/page', {params})
 // 获得公共任务详情
-export const getCommonTaskDetail = taskId => http.get('/operations/common/task/detail?taskId=' + taskId)
+export const getCommonTaskDetail = params => http.get('/operations/common/task/detail', {params})
 // 忽略公共任务
 export const ignoreCommonTask = data => http.post('/operations/common/task/ignore', data)
 // 领取公共任务

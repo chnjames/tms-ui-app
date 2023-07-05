@@ -3,7 +3,7 @@
     <view class="device-top">
       <u-cell class="device-name" :border="false" isLink arrow-direction="down" @click="bindDevice">
         <view class="title" slot="title">
-          <text v-if="!taskInfo.deviceName" class="placeholder">请选择或者输入设备</text>
+          <text v-if="!taskInfo.deviceName" class="placeholder">请选择或扫描设备编码</text>
           <text v-else>{{taskInfo.deviceName}}</text>
         </view>
       </u-cell>
@@ -50,12 +50,12 @@
       </u-col>
     </u-row>
     <!-- 设备选择器 -->
-    <u-picker :show="deviceShow" ref="deviceRef" keyName="name" :columns="deviceColumns" @confirm="confirmDevice" @cancel="bindClose"
+    <u-picker :show="deviceShow" ref="deviceRef" keyName="name" :columns="deviceColumns" confirmColor="#214579" @confirm="confirmDevice" @cancel="bindClose"
       @close="bindClose" @change="bindDeviceChange"></u-picker>
     <!-- 日期选择器 -->
     <u-datetime-picker :show="calendarShow" v-model="taskInfo.endTime" mode="date" @confirm="confirmCalendar" @cancel="bindClose" @close="bindClose"></u-datetime-picker>
     <!-- 操作人选择器 -->
-    <u-picker :show="accountShow" :columns="accountColumns" :defaultIndex="accountIndex" keyName="nickname" @cancel="bindClose" @close="bindClose" @confirm="confirmAccount"></u-picker>
+    <u-picker :show="accountShow" :columns="accountColumns" :defaultIndex="accountIndex" keyName="nickname" confirmColor="#214579" @cancel="bindClose" @close="bindClose" @confirm="confirmAccount"></u-picker>
     <!-- 提醒 -->
     <u-toast ref="uToast"></u-toast>
   </view>
@@ -93,26 +93,16 @@ export default {
       fileList: []
     }
   },
-  created() {
-    if (this.hasLogin) {
-      this.getDeviceSimpleList()
-      this.taskInfo.endTime = Number(new Date(this.$u.timeFormat(null, 'yyyy/mm/dd') + ' 23:59:59'))
-      this.taskInfo.endTimeStr = this.$u.timeFormat(null, 'yyyy/mm/dd')
-      this.taskInfo.blameId = this.userInfo.id
-      this.taskInfo.blameName = this.userInfo.nickname
-      this.accountColumns = [this.userList]
-      this.accountIndex = [this.userList.findIndex(item => item.id === this.userInfo.id)]
-    } else {
-      this.$u.toast('请先登录')
-      uni.navigateTo({
-        url: '/pages/login/mobile'
-      })
-    }
+  onLoad() {
+    this.getDeviceSimpleList()
+    this.taskInfo.endTime = Number(new Date(this.$u.timeFormat(null, 'yyyy/mm/dd') + ' 23:59:59'))
+    this.taskInfo.endTimeStr = this.$u.timeFormat(null, 'yyyy/mm/dd')
+    this.taskInfo.blameId = this.userInfo.id
+    this.taskInfo.blameName = this.userInfo.nickname
+    this.accountColumns = [this.userList]
+    this.accountIndex = [this.userList.findIndex(item => item.id === this.userInfo.id)]
   },
   computed: {
-    hasLogin() {
-      return this.$store.getters.hasLogin
-    },
     userInfo() {
       return this.$store.getters.userInfo
     },
@@ -128,8 +118,6 @@ export default {
         this.deviceDesc = `${data.code}/${data.name}`
         this.deviceLocation = data.location
         this.taskInfo.projectId = data.projectId
-      }).catch(err => {
-        uni.$u.toast(err.message)
       })
     },
     // 创建任务
@@ -140,8 +128,6 @@ export default {
         setTimeout(() => {
           uni.navigateBack()
         }, 300)
-      }).catch(err => {
-        uni.$u.toast(err.message)
       })
     },
     // 获取设备精简列表
@@ -166,8 +152,6 @@ export default {
           this.deviceColumns[1] = [];
           this.deviceColumns[2] = [];
         }
-      }).catch(err => {
-        uni.$u.toast(err.message)
       })
     },
     // 扫码
@@ -261,8 +245,6 @@ export default {
           name: file.name,
           url: res.data
         })
-      }).catch(err => {
-        uni.$u.toast(err.message)
       }).finally(() => {
         uni.hideLoading();
       })
@@ -313,6 +295,10 @@ export default {
     }
   }
 
+  .placeholder {
+    color: #aaaaaa;
+  }
+
   .btn-group {
     position: fixed;
     bottom: 200rpx;
@@ -345,8 +331,5 @@ export default {
   .u-icon {
     margin-left: 20rpx;
   }
-}
-.placeholder {
-  color: #aaaaaa;
 }
 </style>

@@ -9,3 +9,5 @@ export const getAcceptanceDetail = buyingId => http.get('/warehouse/material-buy
 export const acceptance = params => http.post('/warehouse/material-buying/received', params)
 // 获得物料基础数据
 export const getMaterialBaseData = params => http.get('/warehouse/material/get', {params})
+// 获得所有物料
+export const getAllMaterial = params => http.get('/warehouse/material/list', {params})

@@ -42,19 +42,8 @@ export default {
       acceptanceList: []
     };
   },
-  computed: {
-    hasLogin() {
-      return this.$store.getters.hasLogin
-    }
-  },
   onLoad() {
-    if (this.hasLogin) {
-      this.getAcceptanceList()
-    } else {
-      uni.reLaunch({
-        url: '/pages/login/mobile'
-      })
-    }
+    this.getAcceptanceList()
   },
   methods: {
     // 待验收列表
@@ -78,8 +67,6 @@ export default {
         // 验收成功
         uni.$u.toast('验收成功')
         this.getAcceptanceDetail(this.buyingId)
-      }).catch(err => {
-        uni.$u.toast(err.message)
       })
     },
     // 到货验收

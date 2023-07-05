@@ -13,8 +13,10 @@
     {
       "path": "pages/task/task",
       "style": {
-        "navigationBarTitleText": ""
-        // "navigationStyle": "custom"
+        "navigationBarTitleText": "我的",
+        // "navigationStyle": "custom",
+        "enablePullDownRefresh": true,
+        "onReachBottomDistance": 50
       }
     },
     {

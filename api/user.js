@@ -2,7 +2,7 @@
 const { http } = uni.$u
 
 //获取用户信息
-export const getUserInfo = params => http.get('/system/auth/get-permission-info', params)
+export const getUserInfo = params => http.get('/system/auth/get-permission-info', { params })
 //修改用户头像
 export const updateAvatar = filePath =>
   http.upload('/member/user/update-avatar', {
@@ -17,7 +17,7 @@ export const updateVacation = data => http.post('/system/user/profile/vacation',
 // 取消休假
 export const cancelVacation = data => http.post('/system/user/profile/vacation/cancel', data)
 // 获取用户信息
-export const getUserProfile = params => http.get('/system/user/profile/get', params)
+export const getUserProfile = params => http.get('/system/user/profile/get', { params })
 // 用户列表
 export const getUserList = params => http.get('/system/user/list-all-simple', params)
 // 获取全部字典数据列表

@@ -1,5 +1,5 @@
 import errorCode from '@/utils/request/errorCode'
-import { authRefreshToken } from '@/api/auth'
+import {authRefreshToken} from '@/api/auth'
 
 // 需要忽略的提示。忽略后，自动 Promise.reject('error')
 const ignoreMsgs = [
@@ -21,7 +21,6 @@ module.exports = vm => {
     async res => {
       const code = res.data.code || 0
       const msg = res.data.msg || errorCode[code] || errorCode['default']
-
       if (ignoreMsgs.indexOf(msg) !== -1) {
         // 如果是忽略的错误码，直接返回 msg 异常
         return Promise.reject(msg)
@@ -45,11 +44,9 @@ module.exports = vm => {
           }
           // 2. 进行刷新访问令牌
           try {
-            let param = {}
-            let refreshToken =  uni.getStorageSync('REFRESH_TOKEN');
-            param.refreshToken = refreshToken;
-            const refreshTokenRes = await authRefreshToken(param)
-            console.log(refreshTokenRes)
+            // let param = {}
+            const refreshToken = uni.getStorageSync('REFRESH_TOKEN');
+            const refreshTokenRes = await authRefreshToken(refreshToken)
             // 2.1 刷新成功，则回放队列的请求 + 当前请求
             vm.$store.commit('SET_TOKEN', refreshTokenRes.data)
             requestList.forEach(cb => cb())

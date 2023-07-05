@@ -49,7 +49,7 @@ export default {
     return {
       pageCount: 1,
       total: 0,
-      loadMoreStatus: 'loadmore',
+      loadMoreStatus: 'loading',
       pageInfo: {
         pageNum: 1,
         pageSize: 10
@@ -79,11 +79,11 @@ export default {
       return this.$store.getters.projectList
     }
   },
-  onLoad() {
+  onShow() {
     this.getCommonTaskPage()
   },
   onPullDownRefresh() {
-    this.loadMoreStatus = 'loadmore';
+    this.loadMoreStatus = 'loading';
     this.pageInfo.pageNum = 1;
     this.taskList = [];
     this.getCommonTaskPage();
@@ -121,14 +121,12 @@ export default {
         if (this.pageInfo.pageNum === this.pageCount) {
           this.loadMoreStatus = 'nomore'
         } else {
-          this.loadMoreStatus = 'loadmore'
+          this.loadMoreStatus = 'loading'
         }
         uni.setTabBarBadge({
           index: 0,
           text: total
         })
-      }).catch(err => {
-        uni.$u.toast(err.message)
       })
     },
     scrollToLower() {
@@ -144,8 +142,6 @@ export default {
       ignoreCommonTask({ taskId }).then(() => {
         uni.$u.toast('忽略成功')
         this.getCommonTaskPage()
-      }).catch(err => {
-        uni.$u.toast(err.message)
       })
     },
     // 领取任务
@@ -153,8 +149,6 @@ export default {
       receiveCommonTask({ taskId }).then(() => {
         uni.$u.toast('领取成功')
         this.getCommonTaskPage()
-      }).catch(err => {
-        uni.$u.toast(err.message)
       })
     },
     // 金刚区

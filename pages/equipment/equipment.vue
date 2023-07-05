@@ -1,7 +1,7 @@
 <template>
   <view class="container">
     <view class="coding">
-      <u--input class="coding-name" v-model="deviceDesc" readonly border="bottom" color="#214579" fontSize="28rpx" placeholder="请扫描库位编码"></u--input>
+      <u--input class="coding-name" v-model="deviceDesc" readonly border="bottom" color="#214579" fontSize="28rpx" placeholder="请选择或扫描设备编码"></u--input>
       <u-icon name="scan" color="#214579" size="36" @click="bindScan"></u-icon>
     </view>
     <u-gap height="80rpx"></u-gap>
@@ -68,7 +68,7 @@ export default {
       docList: []
     };
   },
-  created() {
+  onLoad() {
     this.getDeviceSimpleList()
   },
   methods: {
@@ -82,16 +82,12 @@ export default {
         this.docInfo.projectId = data.projectId
         this.getTaskPage()
         this.getProjectDocList()
-      }).catch(err => {
-        uni.$u.toast(err.message)
       })
     },
     // 获取设备精简列表
     getDeviceSimpleList() {
       getDeviceSimpleList().then(res => {
         console.log(res)
-      }).catch(err => {
-        uni.$u.toast(err.message)
       })
     },
     // 获取设备履历
@@ -103,8 +99,6 @@ export default {
           time: timestampToTime(item.createTime),
           imgList: item.attachments
         })) || [];
-      }).catch(err => {
-        uni.$u.toast(err.message)
       })
     },
     // 获取设备文档
@@ -116,14 +110,12 @@ export default {
           url: item.url,
           suffixName: `${item.name}.${item.type}`
         })) || [];
-      }).catch(err => {
-        uni.$u.toast(err.message)
       })
     },
     // 扫码
     bindScan() {
-      this.deviceId = 8
-      this.getDeviceDetail(8)
+      this.deviceId = 19
+      this.getDeviceDetail(19)
       uni.scanCode({
         success: (res) => {
           console.log(res)
