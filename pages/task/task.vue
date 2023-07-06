@@ -144,7 +144,7 @@ export default {
             url: `/pages/taskDetail/taskDetail?taskId=${taskId}&taskType=${taskType}`
           });
           break;
-        // 项目&&生产任务 workingHours
+        // 项目&&生产任务
         case 1:
           uni.navigateTo({
             url: '/pages/taskDetail/taskDetail'
@@ -156,16 +156,16 @@ export default {
             url: '/pages/deviceTaskDetail/deviceTaskDetail'
           });
           break;
-        // 更换备件任务(命名简写)
-        case 3:
+        // 更换备件任务
+        case 'part':
           uni.navigateTo({
             url: '/pages/replaceTaskDetail/replaceTaskDetail'
           });
           break;
         // 物料盘点任务
-        case 4:
+        case 'stocktaking':
           uni.navigateTo({
-            url: '/pages/inventoryTaskDetail/inventoryTaskDetail'
+            url: `/pages/inventoryTaskDetail/inventoryTaskDetail?taskId=${taskId}`
           });
           break;
         // 出库任务

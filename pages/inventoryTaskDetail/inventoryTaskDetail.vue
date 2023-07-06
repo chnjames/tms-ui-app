@@ -1,42 +1,63 @@
 <template>
   <view class="container">
-    <u-list @scrolltolower="scrolltolower">
-      <view @click="bindInventory(item)" class="inventory-item" :class="item.status === '1' ? 'active': ''" v-for="(item, index) in indexList" :key="index">{{ item.name }}</view>
-    </u-list>
+    <view @click="bindInventory(item)" :class="['inventory-item', item.status ? 'active' : '']"
+          v-for="(item, index) in indexList" :key="index">{{ item.storeDesc }}</view>
     <u-button class="receive" text="完成任务" color="#214579" shape="circle" @click="bindReceive"></u-button>
   </view>
 </template>
 
 <script>
+import {getLocationList} from "@/api/stock";
+import {getTaskDetail, missionTask} from "@/api/task";
 export default {
   data() {
     return {
-      indexList: []
+      indexList: [],
+      taskId: ''
     };
   },
-  onLoad() {
-    this.loadmore()
+  onLoad(options) {
+    const {taskId} = options;
+    this.taskId = taskId;
+    this.getTaskDetail(this.taskId);
   },
   methods: {
-    // 物料盘点任务Item
-    bindInventory(item) {
-      console.log(item);
-      uni.navigateTo({
-        url: '/pages/inventoryTask/inventoryTask'
+    // 获取任务详情
+    getTaskDetail(taskId) {
+      getTaskDetail({taskId}).then(res => {
+        const {data} = res;
+        const {areaId} = data.extra
+        this.getLocationList(areaId)
       })
     },
-    scrolltolower() {
-      this.loadmore()
-    },
-    loadmore() {
-      for (let i = 0; i < 30; i++) {
-        this.indexList.push({
-          name: '原材料仓 01号库区 010101',
-          id: `10${this.indexList.length}`,
-          status: `${i % 2 === 0 ? 1 : 0}`
+    // 库位列表
+    getLocationList(areaId) {
+      getLocationList({areaId}).then(res => {
+        console.log(res)
+        const {data} = res
+        data.map(item => {
+          item.storeDesc = `${item.storeName} ${item.areaName} ${item.location}`
+          item.status = false
         })
-      }
-      console.log(this.indexList);
+        this.indexList = data
+      })
+    },
+    // 物料盘点任务Item
+    bindInventory(item) {
+      const {areaId, storeId, storeDesc, location} = item;
+      item.status = true;
+      uni.navigateTo({
+        url: `/pages/inventoryTask/inventoryTask?areaId=${areaId}&storeId=${storeId}&location=${location}&storeDesc=${storeDesc}`
+      })
+    },
+    // 完成任务
+    bindReceive() {
+      missionTask({taskId: this.taskId}).then(() => {
+        uni.$u.toast('任务完成')
+        setTimeout(() => {
+          uni.navigateBack()
+        }, 300)
+      })
     }
   },
 }

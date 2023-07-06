@@ -1,5 +1,6 @@
 import {getUserProfile, getUserList} from '@/api/user'
 import {getProjectSimpleList} from '@/api/project'
+import {getAllMaterial} from '@/api/warehouse'
 import {smsLogin, weixinMiniAppLogin, logout, authLogin, refreshToken, getTenantCode} from '@/api/auth'
 
 const AccessTokenKey = 'ACCESS_TOKEN'
@@ -7,6 +8,7 @@ const RefreshTokenKey = 'REFRESH_TOKEN'
 const TenantIdKey = 'TENANT_ID'
 const UserListKey = 'USER_LIST'
 const ProjectListKey = 'PROJECT_LIST'
+const MaterialListKey = 'MATERIAL_LIST'
 const UserInfoKey = 'USER_INFO'
 
 const user = {
@@ -16,6 +18,7 @@ const user = {
     tenantId: uni.getStorageSync(TenantIdKey), // 租户编号
     userList: uni.getStorageSync(UserListKey), // 用户列表
     projectList: uni.getStorageSync(ProjectListKey), // 项目列表
+    materialList: uni.getStorageSync(MaterialListKey), // 物料列表
     userInfo: uni.getStorageSync(UserInfoKey) // 用户信息
   },
   mutations: {
@@ -44,6 +47,11 @@ const user = {
       state.projectList = data
       uni.setStorageSync(ProjectListKey, data)
     },
+    // 更新物料列表
+    SET_MATERIAL_LIST(state, data) {
+      state.materialList = data
+      uni.setStorageSync(MaterialListKey, data)
+    },
     // 更新令牌
     SET_TOKEN(state, data) {
       // 设置令牌
@@ -69,11 +77,13 @@ const user = {
       uni.removeStorageSync(UserListKey)
       uni.removeStorageSync(UserInfoKey)
       uni.removeStorageSync(ProjectListKey)
+      uni.removeStorageSync(MaterialListKey)
       state.accessToken = ''
       state.refreshToken = ''
       state.tenantId = ''
       state.userList = []
       state.projectList = []
+      state.materialList = []
       state.userInfo = {}
     }
   },
@@ -94,6 +104,9 @@ const user = {
           })
           .then(() => {
             return this.dispatch('GetProjectList')
+          })
+          .then(() => {
+            return this.dispatch('GetMaterialList')
           })
           .catch(err => {
             return Promise.reject(err)
@@ -178,6 +191,17 @@ const user = {
       return getProjectSimpleList(data)
         .then(res => {
           commit('SET_PROJECT_LIST', res.data)
+          return Promise.resolve(res)
+        })
+        .catch(err => {
+          return Promise.reject(err)
+        })
+    },
+    // 获取物料列表
+    GetMaterialList({state, commit}, data) {
+      return getAllMaterial(data)
+        .then(res => {
+          commit('SET_MATERIAL_LIST', res.data)
           return Promise.resolve(res)
         })
         .catch(err => {

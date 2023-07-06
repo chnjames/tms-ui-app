@@ -54,7 +54,7 @@
 
 <script>
 import {getStockList, putInStorage} from "@/api/stock";
-import {getMaterialBaseData, getAllMaterial} from "@/api/warehouse";
+import {getMaterialBaseData} from "@/api/warehouse";
 import {handleTree} from "@/utils/tree";
 
 export default {
@@ -83,11 +83,14 @@ export default {
   computed: {
     isSubmit() {
       return !this.inboundInfo.materialId || !this.inboundInfo.storeAreaId
+    },
+    materialList() {
+      return this.$store.getters.materialList
     }
   },
   onLoad() {
+    this.materialColumns = [this.materialList || []]
     this.getStockList()
-    this.getAllMaterial()
   },
   methods: {
     // 获取所有库位及其父集列表
@@ -112,12 +115,6 @@ export default {
           this.locationColumns[1] = [];
           this.locationColumns[2] = [];
         }
-      })
-    },
-    // 获取物料列表
-    getAllMaterial() {
-      getAllMaterial().then(res => {
-        this.materialColumns = [res.data || []]
       })
     },
     // 获取物料基础数据

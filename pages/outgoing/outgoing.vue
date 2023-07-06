@@ -45,7 +45,7 @@
 </template>
 
 <script>
-  import {getMaterialBaseData, getAllMaterial} from "@/api/warehouse";
+  import {getMaterialBaseData} from "@/api/warehouse";
   import {getStockPage, outOfStorage} from "@/api/stock";
 
   export default {
@@ -56,21 +56,19 @@
         materialName: '',
         materialShow: false,
         outboundList: [],
-        materialArr: [],
         materialIndex: [0], // 物料选择器索引
         materialColumns: [] // 物料选择器列
       };
     },
     onLoad() {
-      this.getAllMaterial()
+      this.materialColumns = [this.materialList || []]
+    },
+    computed: {
+      materialList() {
+        return this.$store.getters.materialList
+      }
     },
     methods: {
-      // 获取物料列表
-      getAllMaterial() {
-        getAllMaterial().then(res => {
-          this.materialColumns = [res.data || []]
-        })
-      },
       // 获取物料基础数据
       getMaterialBaseData(id) {
         getMaterialBaseData({id}).then(res => {

@@ -230,7 +230,7 @@
     {
       "path": "pages/inventoryTask/inventoryTask",
       "style": {
-        "navigationBarTitleText": "任务详情",
+        "navigationBarTitleText": "物料盘点",
         "enablePullDownRefresh": false
       }
     },
