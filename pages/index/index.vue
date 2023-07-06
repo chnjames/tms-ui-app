@@ -51,7 +51,7 @@ export default {
       total: 0,
       loadMoreStatus: 'loading',
       pageInfo: {
-        pageNum: 1,
+        pageNo: 1,
         pageSize: 10
       },
       districtList: [{
@@ -80,11 +80,14 @@ export default {
     }
   },
   onShow() {
+    this.loadMoreStatus = 'loading';
+    this.pageInfo.pageNo = 1;
+    this.taskList = [];
     this.getCommonTaskPage()
   },
   onPullDownRefresh() {
     this.loadMoreStatus = 'loading';
-    this.pageInfo.pageNum = 1;
+    this.pageInfo.pageNo = 1;
     this.taskList = [];
     this.getCommonTaskPage();
     setTimeout(() => {
@@ -118,7 +121,7 @@ export default {
           }]
         })
         this.taskList = this.taskList.concat(list)
-        if (this.pageInfo.pageNum === this.pageCount) {
+        if (this.pageInfo.pageNo === this.pageCount || this.total === 0) {
           this.loadMoreStatus = 'nomore'
         } else {
           this.loadMoreStatus = 'loading'
@@ -130,8 +133,8 @@ export default {
       })
     },
     scrollToLower() {
-      if (this.pageInfo.pageNum < this.pageCount) {
-        this.pageInfo.pageNum++
+      if (this.pageInfo.pageNo < this.pageCount) {
+        this.pageInfo.pageNo++
         this.getCommonTaskPage()
       } else {
         this.loadMoreStatus = 'nomore'

@@ -1,15 +1,12 @@
 <template>
   <view class="container">
     <view class="user-header">
-      <view class="user-info" @click="pageRouter('/pages/profile/profile')">
+      <view class="user-info">
         <u-avatar size="80" shape="circle" :src="userInfo.avatar"></u-avatar>
         <view class="info-text">
           <view class="user-nickname">{{ hasLogin ? userInfo.nickname || '' : '匿名用户' }}</view>
           <view class="user-mobile">{{ hasLogin ? userInfo.mobile || '' : '登录' }}</view>
         </view>
-      </view>
-      <view class="user-setting">
-        <u-icon v-if="hasLogin" name="setting" color="#939393" size="22" @click="pageRouter('/pages/setting/setting')"></u-icon>
       </view>
     </view>
 
@@ -21,7 +18,7 @@
       <u-cell class="fun-item" icon="hourglass" title="本月/累计工时投入" value="12/193h"></u-cell>
       <u-cell class="fun-item" :border="false" icon="calendar" title="入职日期" value="2022/01/21"></u-cell>
       <u-gap height="10" bgColor="#f3f3f3"></u-gap>
-      <u-cell class="fun-item" :border="false" icon="edit-pen" title="休假设置" @click="pageRouter('/pages/leave/leave', {proxyUserId: userInfo.proxyUserId})" isLink>
+      <u-cell class="fun-item" :border="false" icon="edit-pen" title="休假设置" @click="pageRouter" isLink>
         <text slot="value" class="leave-name">{{proxyUserName}}</text>
       </u-cell>
     </u-cell-group>
@@ -31,54 +28,40 @@
 </template>
 
 <script>
-import {getUserList} from "../../api/user";
-
 export default {
   data() {
     return {
-      userList: [],
       proxyUserName: ''
     }
   },
-  onLoad() {
-    if (this.hasLogin) {
-      this.getUserList()
-      this.$store.dispatch('ObtainUserInfo')
-    } else {
-      uni.reLaunch({
-        url: '/pages/login/mobile'
-      })
+  computed: {
+    hasLogin() {
+      return this.$store.getters.hasLogin
+    },
+    userInfo() {
+      return this.$store.getters.userInfo
+    },
+    userList() {
+      return this.$store.getters.userList
     }
   },
   onShow() {
-    if (this.hasLogin) {
+    console.log(this.userInfo)
+    if (this.userInfo.proxyUserId) {
       const proxyUser = this.userList.find(item => item.id === this.userInfo.proxyUserId)
       this.proxyUserName = proxyUser ? proxyUser.nickname : ''
     }
   },
-  computed: {
-    userInfo() {
-      return this.$store.getters.userInfo
-    },
-    hasLogin() {
-      return this.$store.getters.hasLogin
-    }
-  },
   methods: {
-    // 获取用户列表
-    getUserList() {
-      getUserList().then(res => {
-        const arr = res.data || []
-        this.userList = arr
-        const proxyUser = arr.find(item => item.id === this.userInfo.proxyUserId)
-        this.proxyUserName = proxyUser ? proxyUser.nickname : ''
-      })
-    },
-    pageRouter(pageUrl, param) {
-      if (!this.hasLogin) {
-        uni.$u.route('/pages/login/mobile')
+    pageRouter() {
+      if (this.userInfo.proxyUserId) {
+        uni.navigateTo({
+          url: `/pages/leave/leave?proxyUserId=${this.userInfo.proxyUserId}`
+        })
       } else {
-        uni.$u.route(pageUrl, param)
+        uni.navigateTo({
+          url: '/pages/leave/leave'
+        })
       }
     },
     logout() {

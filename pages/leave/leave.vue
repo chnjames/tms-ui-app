@@ -31,8 +31,8 @@
 </template>
 
 <script>
-import {getUserList, updateVacation, cancelVacation} from "../../api/user";
-import {getGroupByPinyin} from "../../utils/utils";
+import {updateVacation, cancelVacation} from "@/api/user";
+import {getGroupByPinyin} from "@/utils/utils";
 
 export default {
   data() {
@@ -42,35 +42,27 @@ export default {
       proxyUserName: ''
     };
   },
-  onLoad() {
-    this.getUserList()
+  computed: {
+    userList() {
+      return this.$store.getters.userList
+    }
+  },
+  onLoad(options) {
+    const {proxyUserId} = options;
+    if (proxyUserId) {
+      this.proxyUserName = this.userList.find(item => item.id === parseInt(proxyUserId)).nickname;
+    }
+    const itemArr = getGroupByPinyin(this.userList, 'nickname').map(item => item.value);
+    const indexList = getGroupByPinyin(this.userList, 'nickname').map(item => item.name);
+    this.itemArr = itemArr;
+    this.indexList = indexList;
   },
   methods: {
-    // 获取用户列表
-    getUserList() {
-      getUserList().then(res => {
-        const {data = []} = res;
-        const {proxyUserId} = this.$route.query;
-        if (proxyUserId) {
-          this.proxyUserName = data.find(item => item.id === parseInt(proxyUserId)).nickname;
-        }
-        const itemArr = getGroupByPinyin(data, 'nickname').map(item => item.value);
-        const indexList = getGroupByPinyin(data, 'nickname').map(item => item.name);
-        this.itemArr = itemArr;
-        this.indexList = indexList;
-      }).catch(err => {
-        console.log(err)
-      })
-    },
     // 选择代理人
     bindUser(item) {
       this.proxyUserName = item.nickname;
       updateVacation({proxyUserId: item.id}).then(res => {
-        uni.showToast({
-          title: '代理成功',
-          icon: 'success',
-          duration: 2000
-        })
+        uni.$u.toast('代理成功')
         this.$store.dispatch('ObtainUserInfo')
         setTimeout(() => {
           uni.navigateBack()
