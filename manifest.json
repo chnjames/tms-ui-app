@@ -1,7 +1,7 @@
 {
-    "name" : "yudao-ui-app",
-    "appid" : "__UNI__CA099E3",
-    "description" : "yudao-ui-app for ruoyi-vue-pro",
+    "name" : "益嗒创新",
+    "appid" : "__UNI__FB02E82",
+    "description" : "让决策更透明，让管理更简单。",
     "versionName" : "1.0.0",
     "versionCode" : "100",
     "transformPx" : false,
@@ -46,9 +46,13 @@
                 ]
             },
             /* ios打包配置 */
-            "ios" : {},
+            "ios" : {
+                "dSYMs" : false
+            },
             /* SDK配置 */
-            "sdkConfigs" : {}
+            "sdkConfigs" : {
+                "ad" : {}
+            }
         }
     },
     /* 快应用特有相关 */
@@ -73,5 +77,7 @@
     "uniStatistics" : {
         "enable" : false
     },
-    "vueVersion" : "2"
+    "vueVersion" : "2",
+    "locale" : "zh-Hans",
+    "fallbackLocale" : "zh-Hans"
 }

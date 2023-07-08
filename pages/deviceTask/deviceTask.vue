@@ -41,7 +41,7 @@
         <u-icon name="close" size="22" @click="bindDelFile(item, index)"></u-icon>
       </view>
     </view>
-    <u-row class="btn-group" gutter="20rpx" justify="flex-end">
+    <u-row class="btn-group" gutter="20rpx" justify="space-around">
       <u-col span="3">
         <u-button text="立即创建" color="#214579" shape="circle" @click="createTask"></u-button>
       </u-col>

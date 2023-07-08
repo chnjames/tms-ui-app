@@ -159,7 +159,7 @@ export default {
         // 更换备件任务
         case 'part':
           uni.navigateTo({
-            url: '/pages/replaceTaskDetail/replaceTaskDetail'
+            url: `/pages/replaceTaskDetail/replaceTaskDetail?taskId=${taskId}`
           });
           break;
         // 物料盘点任务
