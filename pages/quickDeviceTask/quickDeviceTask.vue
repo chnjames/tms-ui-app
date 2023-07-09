@@ -1,32 +1,14 @@
 <template>
   <view class="container">
-    <view class="device-top">
-      <u-cell class="device-name" :border="false" isLink arrow-direction="down" @click="bindDevice">
-        <view class="title" slot="title">
-          <text v-if="!taskInfo.deviceName" class="placeholder">请选择或扫描设备编码</text>
-          <text v-else>{{taskInfo.deviceName}}</text>
-        </view>
-      </u-cell>
-      <u-icon name="scan" color="#214579" size="36" @click="bindScan"></u-icon>
-    </view>
+    <u--text size="28rpx" color="#214579" :text="taskInfo.projectName"></u--text>
     <u-gap height="20rpx"></u-gap>
     <u--textarea v-model="taskInfo.name" placeholder="请输入快速上报问题描述" border="none" count height="200rpx"
-      :maxlength="300"></u--textarea>
+                 :maxlength="300"></u--textarea>
     <u-gap height="20rpx"></u-gap>
     <u-cell-group class="user" :border="false">
       <u-cell icon="account-fill" :border="false" iconStyle="color: #aaaaaa;">
         <view slot="title" class="title" @click="bindAccount">
           <text>{{taskInfo.blameName}}</text>
-        </view>
-      </u-cell>
-      <u-cell icon="share-fill" :border="false" iconStyle="color: #aaaaaa;">
-        <view slot="title" class="title">
-          <text class="attention">陈逸飞</text> 关注
-        </view>
-      </u-cell>
-      <u-cell icon="calendar-fill" :border="false" iconStyle="color: #aaaaaa;">
-        <view slot="title" class="title" @click="bindCalendar">
-          <text>{{taskInfo.endTimeStr}}</text> 前截止
         </view>
       </u-cell>
     </u-cell-group>
@@ -49,37 +31,23 @@
         <u-button text="添加附件" color="#aaaaaa" shape="circle" @click="bindPhoto"></u-button>
       </u-col>
     </u-row>
-    <!-- 设备选择器 -->
-    <u-picker :show="deviceShow" ref="deviceRef" keyName="name" :columns="deviceColumns" confirmColor="#214579" @confirm="confirmDevice" @cancel="bindClose"
-      @close="bindClose" @change="bindDeviceChange"></u-picker>
-    <!-- 日期选择器 -->
-    <u-datetime-picker :show="calendarShow" v-model="taskInfo.endTime" mode="date" @confirm="confirmCalendar" @cancel="bindClose" @close="bindClose"></u-datetime-picker>
     <!-- 操作人选择器 -->
     <u-picker :show="accountShow" :columns="accountColumns" :defaultIndex="accountIndex" keyName="nickname" confirmColor="#214579" @cancel="bindClose" @close="bindClose" @confirm="confirmAccount"></u-picker>
-    <!-- 提醒 -->
-    <u-toast ref="uToast"></u-toast>
   </view>
 </template>
 
 <script>
-import {getDeviceDetail, getDeviceSimpleList} from "@/api/device";
-import {handleTree} from "@/utils/tree";
 import {createTask} from "@/api/task";
 import {uploadFile} from "@/api/auth";
 
 export default {
   data() {
     return {
-      deviceShow: false, // 设备选择器
-      calendarShow: false, // 日期选择器
       accountShow: false, // 操作人选择器
       accountColumns: [],
       accountIndex: [0],
-      deviceArr: [],
-      deviceIndex: [0, 0, 0],
-      deviceColumns: [[],[],[]],
       taskInfo: {
-        name: '', // 任务名称
+        name: '【异常】', // 任务名称
         projectId: '', // 项目id
         deviceId: '',
         deviceName: '',
@@ -93,8 +61,10 @@ export default {
       fileList: []
     }
   },
-  onLoad() {
-    this.getDeviceSimpleList()
+  onLoad(options) {
+    this.taskInfo.deviceId = options.deviceId
+    this.taskInfo.projectId = options.projectId
+    this.taskInfo.projectName = this.projectList.find(pro => pro?.id === Number(options?.projectId))?.name || ''
     this.taskInfo.endTime = Number(new Date(this.$u.timeFormat(null, 'yyyy/mm/dd') + ' 23:59:59'))
     this.taskInfo.endTimeStr = this.$u.timeFormat(null, 'yyyy/mm/dd')
     this.taskInfo.blameId = this.userInfo.id
@@ -108,18 +78,12 @@ export default {
     },
     userList() {
       return this.$store.getters.userList
+    },
+    projectList() {
+      return this.$store.getters.projectList
     }
   },
   methods: {
-    // 获取设备信息
-    getDeviceDetail(deviceId) {
-      getDeviceDetail({deviceId}).then(res => {
-        const {data} = res
-        this.deviceDesc = `${data.code}/${data.name}`
-        this.deviceLocation = data.location
-        this.taskInfo.projectId = data.projectId
-      })
-    },
     // 创建任务
     createTask() {
       this.taskInfo.attachments = this.fileList.map(item => item.url)
@@ -130,30 +94,6 @@ export default {
         }, 300)
       })
     },
-    // 获取设备精简列表
-    getDeviceSimpleList() {
-      getDeviceSimpleList().then(res => {
-        this.deviceArr = handleTree(res.data)
-        this.deviceArr.forEach((item) => {
-          this.deviceColumns[0].push({ ...item });
-        });
-        if (this.deviceArr[0]?.children?.length > 0) {
-          this.deviceArr[0].children.forEach((item) => {
-            this.deviceColumns[1].push({ ...item });
-          });
-          if (this.deviceArr[0].children[0]?.children?.length > 0) {
-            this.deviceArr[0].children[0].children.forEach((item) => {
-              this.deviceColumns[2].push({ ...item });
-            });
-          } else {
-            this.deviceColumns[2] = [];
-          }
-        } else {
-          this.deviceColumns[1] = [];
-          this.deviceColumns[2] = [];
-        }
-      })
-    },
     // 扫码
     bindScan() {
       uni.scanCode({
@@ -161,39 +101,6 @@ export default {
           console.log(res);
         }
       });
-    },
-    // 打开设备选择器
-    bindDevice() {
-      this.deviceShow = true
-    },
-    // 改变设备
-    bindDeviceChange(e) {
-      console.log(e)
-      const {columnIndex, index, picker = this.$refs.deviceRef} = e
-      console.log(columnIndex, index, picker)
-      // 根据列的索引值，判断当前改变的是哪一列，然后改变对应的列数据
-      if (columnIndex === 0) {
-        this.deviceColumns[1] = this.deviceArr[index]?.children || []
-        picker.setColumnValues(1, this.deviceColumns[1])
-        this.deviceColumns[2] = this.deviceArr[index]?.children?.[0]?.children || []
-        picker.setColumnValues(2, this.deviceColumns[2])
-      } else if (columnIndex === 1) {
-        this.deviceColumns[2] = this.deviceArr[this.deviceIndex[0]]?.children[index]?.children || []
-        picker.setColumnValues(2, this.deviceColumns[2])
-      }
-    },
-    // 确认设备
-    confirmDevice(e) {
-      const [arr1, arr2, arr3] = e.value
-      console.log(e.value)
-      if (!arr1?.id || !arr2?.id || !arr3?.id) {
-        uni.$u.toast('请选择设备')
-        return
-      }
-      this.taskInfo.deviceName = `${arr3.name}`
-      this.taskInfo.deviceId = arr3.id
-      this.getDeviceDetail(arr3.id)
-      this.deviceShow = false
     },
     // 选择操作人
     bindAccount() {
@@ -206,19 +113,8 @@ export default {
       this.taskInfo.blameName = item.nickname
       this.accountShow = false
     },
-    // 选择日期
-    bindCalendar() {
-      this.calendarShow = true
-    },
-    // 确认日期
-    confirmCalendar(e) {
-      this.taskInfo.endTime = e.value
-      this.calendarShow = false
-    },
     // 关闭选择器
     bindClose() {
-      this.deviceShow = false
-      this.calendarShow = false
       this.accountShow = false
     },
     // 删除附件
@@ -261,6 +157,10 @@ export default {
     background-color: transparent;
   }
 
+  /deep/ .u-textarea__field {
+    color: #f31f28;
+  }
+
   .user {
 
     .title {
@@ -276,22 +176,6 @@ export default {
       .attention {
         color: #aaaaaa;
       }
-    }
-  }
-
-  .device-top {
-    @include flex-space-between;
-  }
-
-  .device-name {
-    flex: 1;
-    background-color: #ffffff;
-    border-radius: 10rpx;
-    margin-right: 20rpx;
-
-    .title {
-      color: $custom-content-color;
-      font-size: 24rpx;
     }
   }
 

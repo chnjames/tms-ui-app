@@ -34,3 +34,7 @@ export const workTimeRegister = data => http.post('/operations/task/working-minu
 export const quantityRegister = data => http.post('/operations/task/quantity/register', data)
 // 获取BOM需求列表
 export const getBomDemandList = params => http.get('/operations/project-bom/list', { params })
+// 任务附件批量创建
+export const createTaskAttachment = data => http.post('/operations/task/attachment/batch/create', data)
+// 获得模板
+export const getTemplate = params => http.get('/operations/template/get', { params })

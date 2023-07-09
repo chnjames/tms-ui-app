@@ -1,9 +1,13 @@
 <template>
   <view class="container">
-    <view class="sticky" bgColor="#F5F5F5">
+    <u-sticky customNavHeight="44px" bgColor="#F5F5F5">
       <u-tabs itemStyle="width: 140rpx;height: 90rpx" lineColor="#214579" activeStyle="color: #214579"
               inactiveStyle="color: #666666" :list="tabList" keyName="label" @change="bindTab"></u-tabs>
-    </view>
+    </u-sticky>
+<!--    <view class="sticky" bgColor="#F5F5F5">
+      <u-tabs itemStyle="width: 140rpx;height: 90rpx" lineColor="#214579" activeStyle="color: #214579"
+              inactiveStyle="color: #666666" :list="tabList" keyName="label" @change="bindTab"></u-tabs>
+    </view>-->
     <!-- 我的任务 -->
     <view class="task">
       <u-list @scrolltolower="scrollToLower" height="100%" :preLoadScreen="pageCount * 4">
@@ -151,9 +155,9 @@ export default {
           });
           break;
         // 设备管理任务
-        case 2:
+        case 'check':
           uni.navigateTo({
-            url: '/pages/deviceTaskDetail/deviceTaskDetail'
+            url: `/pages/deviceTaskDetail/deviceTaskDetail?taskId=${taskId}`
           });
           break;
         // 更换备件任务

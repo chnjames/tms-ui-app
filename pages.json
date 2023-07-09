@@ -268,6 +268,14 @@
         "navigationBarTitleText": "任务详情",
         "enablePullDownRefresh": false
       }
+    },
+    {
+      "path" : "pages/quickDeviceTask/quickDeviceTask",
+      "style" :
+      {
+        "navigationBarTitleText": "快速创建任务[设备]",
+        "enablePullDownRefresh": false
+      }
     }
   ],
   "tabBar": {

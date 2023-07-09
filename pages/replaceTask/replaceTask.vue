@@ -1,8 +1,14 @@
 <template>
   <view class="container">
-    <u--text size="28rpx" color="#214579" text="M38574359346 / 汽油加注机"></u--text>
+    <u--text size="28rpx" color="#214579" :text="taskInfo.projectName"></u--text>
     <u-gap height="20rpx"></u-gap>
-    <u--text size="28rpx" color="#214579" text="更换备件：M9285739685/加注机油嘴"></u--text>
+    <u--text size="28rpx" color="#214579" :text="taskInfo.taskName"></u--text>
+    <u-gap height="40rpx"></u-gap>
+    <u--text size="28rpx" :text="`备件名称：${taskInfo.materialCode}/${taskInfo.materialName}`"></u--text>
+    <u-gap height="40rpx"></u-gap>
+    <u--text size="28rpx" :text="`规格型号：${taskInfo.materialSpecs}`"></u--text>
+    <u-gap height="40rpx"></u-gap>
+    <u--text size="28rpx" :text="`备件数量：${taskInfo.quantity}`"></u--text>
     <u-gap height="200rpx"></u-gap>
     <view class="file-list" v-if="fileList.length > 0">
       <view class="file-item" v-for="(item, index) in fileList" :key="index">
@@ -15,27 +21,92 @@
     </view>
     <u-row class="btn-group" gutter="20rpx" justify="space-around">
       <u-col span="3">
-        <u-button text="拍 照" color="#007bed" shape="circle" @click="bindCreate"></u-button>
+        <u-button text="拍 照" color="#007bed" shape="circle" @click="bindPhoto"></u-button>
       </u-col>
       <u-col span="3">
-        <u-button text="完成任务" color="#214579" shape="circle" @click="bindCreate"></u-button>
+        <u-button text="完成任务" :disabled="fileList.length === 0" color="#214579" shape="circle" @click="bindReceive"></u-button>
       </u-col>
     </u-row>
   </view>
 </template>
 
 <script>
+import {getTaskDetail, missionTask, createTaskAttachment} from "@/api/task";
+import {uploadFile} from "@/api/auth";
 export default {
   data() {
     return {
-      fileList: [{
-        name: '附件1232.ipg',
-        url: 'https://cdn.uviewui.com/uview/album/1.jpg'
-      }, {
-        name: '附件1232.ipg',
-        url: 'https://cdn.uviewui.com/uview/album/1.jpg'
-      }]
+      taskId: '',
+      taskInfo: {},
+      fileList: []
     };
+  },
+  computed: {
+    materialList() {
+      return this.$store.getters.materialList
+    },
+    projectList() {
+      return this.$store.getters.projectList
+    }
+  },
+  onLoad(options) {
+    const {taskId} = options;
+    this.taskId = taskId;
+    this.getTaskDetail(this.taskId);
+  },
+  methods: {
+    // 获取任务详情
+    getTaskDetail(taskId) {
+      getTaskDetail({taskId}).then(res => {
+        const {data} = res;
+        data.projectName = this.projectList.find(item => item.id === data.projectId)?.name || ''
+        data.materialName = this.materialList.find(material => material.id === data.extra.materialId)?.name || ''
+        data.materialSpecs = this.materialList.find(material => material.id === data.extra.materialId)?.specs || ''
+        data.materialCode = this.materialList.find(material => material.id === data.extra.materialId)?.code || ''
+        data.quantity = data?.extra?.qty || ''
+        this.taskInfo = data;
+      })
+    },
+    // 添加附件
+    bindPhoto() {
+      uni.chooseImage({
+        count: 1,
+        sourceType: ['camera'],
+        success: (res) => {
+          this.uploadFile(res.tempFiles[0])
+        }
+      });
+    },
+    // 删除附件
+    bindDelFile(item, index) {
+      this.fileList.splice(index, 1)
+    },
+    // 上传附件
+    uploadFile(file) {
+      uni.showLoading({
+        title: '上传中'
+      });
+      uploadFile({filePath: file.path}).then(res => {
+        this.fileList.push({
+          name: file.name,
+          url: res.data
+        })
+      }).finally(() => {
+        uni.hideLoading();
+      })
+    },
+    // 完成任务
+    bindReceive() {
+      const urls = this.fileList.map(item => item.url);
+      createTaskAttachment({ taskId: this.taskId, urls }).then(() => {
+        return missionTask({ taskId: this.taskId });
+      }).then(() => {
+        uni.$u.toast('任务完成');
+        setTimeout(() => {
+          uni.navigateBack();
+        }, 300);
+      })
+    }
   }
 }
 </script>
