@@ -56,8 +56,6 @@
     <u-datetime-picker :show="calendarShow" v-model="taskInfo.endTime" mode="date" @confirm="confirmCalendar" @cancel="bindClose" @close="bindClose"></u-datetime-picker>
     <!-- 操作人选择器 -->
     <u-picker :show="accountShow" :columns="accountColumns" :defaultIndex="accountIndex" keyName="nickname" confirmColor="#214579" @cancel="bindClose" @close="bindClose" @confirm="confirmAccount"></u-picker>
-    <!-- 提醒 -->
-    <u-toast ref="uToast"></u-toast>
   </view>
 </template>
 

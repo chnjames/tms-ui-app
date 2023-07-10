@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <u-sticky customNavHeight="44px" bgColor="#F5F5F5">
+    <u-sticky bgColor="#F5F5F5">
       <u-tabs itemStyle="width: 140rpx;height: 90rpx" lineColor="#214579" activeStyle="color: #214579"
               inactiveStyle="color: #666666" :list="tabList" keyName="label" @change="bindTab"></u-tabs>
     </u-sticky>

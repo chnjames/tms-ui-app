@@ -10,17 +10,17 @@
     <u-cell-group class="user" :border="false">
       <u-cell icon="account-fill" :border="false" iconStyle="color: #aaaaaa;">
         <view slot="title" class="title" @click="bindAccount">
-          <text>陈逸飞</text>
+          <text>{{taskInfo.blameName}}</text>
         </view>
       </u-cell>
       <u-cell icon="share-fill" :border="false" iconStyle="color: #aaaaaa;">
         <view slot="title" class="title">
-          <text class="attention">陈逸飞</text> 关注
+          <text class="attention">{{taskInfo.followersStr}}</text> 关注
         </view>
       </u-cell>
       <u-cell icon="calendar-fill" :border="false" iconStyle="color: #aaaaaa;">
         <view slot="title" class="title">
-          <text class="attention">2022/11/13</text> 前截止
+          <text class="attention">{{taskInfo.date}}</text> 前截止
         </view>
       </u-cell>
     </u-cell-group>
@@ -53,8 +53,8 @@
       </u-col>
     </u-row>
     <!-- 操作人选择器 -->
-    <u-picker :show="accountShow" :columns="accountColumns" cancelColor="#aaaaaa" confirmColor="#214579" @cancel="bindClose" @close="bindClose"
-      @confirm="confirmAccount"></u-picker>
+    <u-picker :show="accountShow" :columns="accountColumns" :defaultIndex="accountIndex" keyName="nickname" confirmColor="#214579" @cancel="bindClose" @close="bindClose"
+              @confirm="confirmAccount"></u-picker>
     <!-- 提醒 -->
     <u-toast ref="uToast"></u-toast>
     <!-- 键盘 -->
@@ -87,6 +87,7 @@
 
 <script>
 import {getTaskDetail, missionTask, getTaskRecord, uploadTaskFile, workTimeRegister, quantityRegister} from "@/api/task";
+import {timestampToTime} from "@/utils/utils";
 export default {
   data() {
     return {
@@ -102,22 +103,16 @@ export default {
       unQuantity: 0, // 不合格数量
       accountShow: false, // 操作人选择器
       isBoard: true, // 是否显示底部工时登记
-      accountColumns: [
-        ['操作人1', '操作人2', '操作人3']
-      ],
-      fileList: [{
-        name: '附件1232.ipg',
-        url: 'https://cdn.uviewui.com/uview/album/1.jpg'
-      }, {
-        name: '附件1232.ipg',
-        url: 'https://cdn.uviewui.com/uview/album/1.jpg'
-      }]
+      accountColumns: [],
+      accountIndex: [0],
+      fileList: []
     };
   },
   onLoad(options) {
     console.log(options)
     const {taskId, taskType} = options;
     this.taskId = taskId;
+    this.accountColumns = [this.userList]
     this.getTaskDetail(this.taskId)
     this.getTaskRecord(this.taskId)
   },
@@ -146,9 +141,14 @@ export default {
     getTaskDetail(taskId) {
       getTaskDetail({taskId}).then(res => {
         const {data} = res;
-        console.log(data.extra)
+        this.accountIndex = [this.userList.findIndex(user => user?.id === data?.blameId)]
         this.taskInfo = {
           ...data,
+          date: timestampToTime(data.endTime, 'yyyy-MM-dd'),
+          followersStr: data.followers.map(item => {
+            return this.userList.find(user => user.id === item).nickname
+          }).join('、'),
+          blameName: this.userList.find(user => user?.id === data?.blameId)?.nickname || '',
           projectName: this.projectList.find(pro => pro?.id === data?.projectId)?.name || ''
         }
       })
@@ -156,7 +156,6 @@ export default {
     // 获取任务记录
     getTaskRecord(taskId) {
       getTaskRecord({taskId}).then(res => {
-        console.log(res)
         this.boardList = res.data || []
       })
     },
@@ -166,12 +165,18 @@ export default {
     },
     // 确认操作人
     confirmAccount(e) {
-      console.log('confirm', e)
+      const [item] = e.value
+      this.taskInfo.blameId = item.id
+      this.taskInfo.blameName = item.nickname
       this.accountShow = false
     },
     // 关闭选择器
     bindClose() {
       this.accountShow = false
+    },
+    // 删除附件
+    bindDelFile(item, index) {
+      this.fileList.splice(index, 1)
     },
     // 立即创建
     bindCreate() {
