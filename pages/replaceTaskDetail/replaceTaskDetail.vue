@@ -13,17 +13,17 @@
     <u-cell-group class="user" :border="false">
       <u-cell icon="account-fill" :border="false" iconStyle="color: #aaaaaa;">
         <view class="title" slot="title" @click="bindAccount">
-          <text class="title">陈逸飞</text>
+          <text class="title">{{taskInfo.blameName}}</text>
         </view>
       </u-cell>
       <u-cell icon="share-fill" :border="false" iconStyle="color: #aaaaaa;">
         <view class="title" slot="title">
-          <text class="attention">陈逸飞</text> 关注
+          <text class="attention">{{taskInfo.followersStr}}</text> 关注
         </view>
       </u-cell>
       <u-cell icon="calendar-fill" :border="false" iconStyle="color: #aaaaaa;">
         <view class="title" slot="title">
-          <text class="attention">2022/11/13</text> 前截止
+          <text class="attention">{{taskInfo.date}}</text> 前截止
         </view>
       </u-cell>
     </u-cell-group>
@@ -55,8 +55,9 @@
 </template>
 
 <script>
-import {getTaskDetail} from "@/api/task";
+import {getTaskDetail, updateTaskOwner} from "@/api/task";
 import {getDeviceDetail} from "@/api/device";
+import {timestampToTime} from "@/utils/utils";
 export default {
   data() {
     return {
@@ -82,6 +83,7 @@ export default {
   onLoad(options) {
     const {taskId} = options;
     this.taskId = taskId;
+    this.accountColumns = [this.userList]
     this.getTaskDetail(this.taskId);
   },
   methods: {
@@ -94,8 +96,22 @@ export default {
         data.materialSpecs = this.materialList.find(material => material.id === data.extra.materialId)?.specs || ''
         data.materialCode = this.materialList.find(material => material.id === data.extra.materialId)?.code || ''
         data.quantity = data?.extra?.qty || ''
+        data.date = timestampToTime(data.endTime, 'yyyy-MM-dd')
+        data.followersStr = data.followers.map(item => {
+          return this.userList.find(user => user.id === item).nickname
+        }).join('、')
+        data.blameName = this.userList.find(user => user?.id === data?.blameId)?.nickname || ''
         this.getDeviceDetail(data.deviceId)
         this.taskInfo = data;
+      })
+    },
+    // 修改责任人
+    updateTaskOwner(blameId) {
+      updateTaskOwner({
+        taskId: this.taskId,
+        blameId
+      }).then(() => {
+        uni.$u.toast('修改成功')
       })
     },
     // 获取设备信息
@@ -112,7 +128,9 @@ export default {
     // 确认操作人
     confirmAccount(e) {
       const [item] = e.value
-      console.log(item)
+      this.taskInfo.blameId = item.id
+      this.taskInfo.blameName = item.nickname
+      this.updateTaskOwner(item.id)
       this.accountShow = false
     },
     // 关闭选择器

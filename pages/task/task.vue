@@ -132,8 +132,7 @@ export default {
     // 任务详情
     bindTask(item) {
       console.log('item', item);
-      const {taskTypeStr, taskType, taskId} = item;
-      console.log(taskTypeStr, taskType, taskId)
+      const {taskTypeStr, taskId} = item;
       switch (taskTypeStr) {
         // 设备快速&&快速&&采购&&回款任务
         case 'simple':
@@ -145,13 +144,7 @@ export default {
         case 'project':
         case 'produce':
           uni.navigateTo({
-            url: `/pages/taskDetail/taskDetail?taskId=${taskId}&taskType=${taskType}`
-          });
-          break;
-        // 项目&&生产任务
-        case 1:
-          uni.navigateTo({
-            url: '/pages/taskDetail/taskDetail'
+            url: `/pages/taskDetail/taskDetail?taskId=${taskId}&taskType=${taskTypeStr}`
           });
           break;
         // 设备管理任务

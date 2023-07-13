@@ -19,9 +19,9 @@
           <text>{{taskInfo.blameName}}</text>
         </view>
       </u-cell>
-      <u-cell icon="share-fill" :border="false" iconStyle="color: #aaaaaa;">
+      <u-cell v-if="taskInfo.followersStr" icon="share-fill" :border="false" iconStyle="color: #aaaaaa;">
         <view slot="title" class="title">
-          <text class="attention">陈逸飞</text> 关注
+          <text class="attention">{{taskInfo.followersStr}}</text> 关注
         </view>
       </u-cell>
       <u-cell icon="calendar-fill" :border="false" iconStyle="color: #aaaaaa;">
@@ -53,7 +53,7 @@
     <u-picker :show="deviceShow" ref="deviceRef" keyName="name" :columns="deviceColumns" confirmColor="#214579" @confirm="confirmDevice" @cancel="bindClose"
       @close="bindClose" @change="bindDeviceChange"></u-picker>
     <!-- 日期选择器 -->
-    <u-datetime-picker :show="calendarShow" v-model="taskInfo.endTime" mode="date" @confirm="confirmCalendar" @cancel="bindClose" @close="bindClose"></u-datetime-picker>
+    <u-datetime-picker :show="calendarShow" v-model="taskInfo.endTime" mode="date" @confirm="confirmCalendar" confirmColor="#214579" @cancel="bindClose" @close="bindClose"></u-datetime-picker>
     <!-- 操作人选择器 -->
     <u-picker :show="accountShow" :columns="accountColumns" :defaultIndex="accountIndex" keyName="nickname" confirmColor="#214579" @cancel="bindClose" @close="bindClose" @confirm="confirmAccount"></u-picker>
   </view>
@@ -64,6 +64,7 @@ import {getDeviceDetail, getDeviceSimpleList} from "@/api/device";
 import {handleTree} from "@/utils/tree";
 import {createTask} from "@/api/task";
 import {uploadFile} from "@/api/auth";
+import {getProjectFollowers} from "@/api/project";
 
 export default {
   data() {
@@ -83,6 +84,7 @@ export default {
         deviceName: '',
         blameId: '', // 责任人
         blameName: '', // 责任人名称
+        followersStr: '', // 关注人
         type: 22, // 任务类型: 快速任务：50 扫码设备任务：22
         endTime: '', // 截止时间
         endTimeStr: '', // 截止时间
@@ -115,7 +117,17 @@ export default {
         const {data} = res
         this.deviceDesc = `${data.code}/${data.name}`
         this.deviceLocation = data.location
-        this.taskInfo.projectId = data.projectId
+        this.taskInfo.projectId = data?.projectId || ''
+        data.projectId && this.getProjectFollowers(data.projectId)
+      })
+    },
+    // 获得项目关注人
+    getProjectFollowers(projectId) {
+      getProjectFollowers({projectId}).then(res => {
+        const {data} = res
+        this.taskInfo.followersStr = data.map(item => {
+          return this.userList.find(user => user.id === item).nickname
+        }).join('、')
       })
     },
     // 创建任务
@@ -166,7 +178,6 @@ export default {
     },
     // 改变设备
     bindDeviceChange(e) {
-      console.log(e)
       const {columnIndex, index, picker = this.$refs.deviceRef} = e
       console.log(columnIndex, index, picker)
       // 根据列的索引值，判断当前改变的是哪一列，然后改变对应的列数据
@@ -183,7 +194,6 @@ export default {
     // 确认设备
     confirmDevice(e) {
       const [arr1, arr2, arr3] = e.value
-      console.log(e.value)
       if (!arr1?.id || !arr2?.id || !arr3?.id) {
         uni.$u.toast('请选择设备')
         return

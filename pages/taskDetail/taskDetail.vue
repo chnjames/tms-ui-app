@@ -43,7 +43,7 @@
     <u-gap height="20rpx"></u-gap>
     <u-row class="btn-group" gutter="20rpx" justify="space-around">
       <u-col span="3">
-        <u-button text="完成任务" color="#aaaaaa" shape="circle" @click="bindCreate"></u-button>
+        <u-button text="完成任务" color="#aaaaaa" shape="circle" @click="bindReceive"></u-button>
       </u-col>
       <u-col span="3">
         <u-button text="结果登记" color="#214579" shape="circle" @click="bindRegistration"></u-button>
@@ -55,16 +55,14 @@
     <!-- 操作人选择器 -->
     <u-picker :show="accountShow" :columns="accountColumns" :defaultIndex="accountIndex" keyName="nickname" confirmColor="#214579" @cancel="bindClose" @close="bindClose"
               @confirm="confirmAccount"></u-picker>
-    <!-- 提醒 -->
-    <u-toast ref="uToast"></u-toast>
     <!-- 键盘 -->
     <u-keyboard ref="uKeyboard" mode="number" :closeOnClickOverlay="false"
                 :showTips="false" :show="isKeyBoard" safeAreaInsetBottom @change="bindKeyBoard"
-                @backspace="bindBackspace">
+                @backspace="bindBackspace" @confirm="bindKeyConfirm" @cancel="bindKeyCancel">
       <view slot="default">
         <view class="board-number">
           <!-- 工时登记 -->
-          <view v-if="isRegister" class="register">
+          <view v-if="taskType === 'project'" class="register">
             <view class="qualified">请输入(h)：</view>
             <u-number-box :min="0.5" :step="0.5" v-model="workingHours"></u-number-box>
           </view>
@@ -72,11 +70,11 @@
           <view class="quantity" v-else>
             <view class="quantity-item">
               <view class="qualified">合格：</view>
-              <u-number-box integer :min="0" v-model="quantity"></u-number-box>
+              <u-number-box integer :min="0" v-model="quantity" @focus="bindQuantityFocus(1)"></u-number-box>
             </view>
             <view class="quantity-item">
               <view class="unqualified">不合格：</view>
-              <u-number-box integer :min="0" color="#fa3534" v-model="unQuantity"></u-number-box>
+              <u-number-box integer :min="0" color="#fa3534" v-model="unQuantity" @focus="bindQuantityFocus(2)"></u-number-box>
             </view>
           </view>
         </view>
@@ -86,8 +84,9 @@
 </template>
 
 <script>
-import {getTaskDetail, missionTask, getTaskRecord, uploadTaskFile, workTimeRegister, quantityRegister} from "@/api/task";
+import {getTaskDetail, missionTask, getTaskRecord, workTimeRegister, quantityRegister, createTaskAttachment, updateTaskOwner} from "@/api/task";
 import {timestampToTime} from "@/utils/utils";
+import {uploadFile} from "@/api/auth";
 export default {
   data() {
     return {
@@ -95,39 +94,28 @@ export default {
       taskInfo: {},
       boardList: [],
       isKeyBoard: false, // 键盘
-      show: false,
-      value: 2,
-      isRegister: true,
+      taskType: '',
+      quantityFocus: 1, // 数量登记
       workingHours: 3.5, // 工时 => 3.5h => 3.5h * 60m => 210m
       quantity: 0, // 合格数量
       unQuantity: 0, // 不合格数量
       accountShow: false, // 操作人选择器
-      isBoard: true, // 是否显示底部工时登记
       accountColumns: [],
       accountIndex: [0],
       fileList: []
     };
   },
   onLoad(options) {
-    console.log(options)
     const {taskId, taskType} = options;
+    this.taskType = taskType;
     this.taskId = taskId;
     this.accountColumns = [this.userList]
     this.getTaskDetail(this.taskId)
     this.getTaskRecord(this.taskId)
   },
-  // async created() {
-  //   const {taskId} = this.$route.query;
-  //   this.taskId = taskId;
-  //   await this.getTaskDetail(this.taskId)
-  //   await this.getTaskRecord(this.taskId)
-  // },
   computed: {
     projectList() {
       return this.$store.getters.projectList
-    },
-    hasLogin() {
-      return this.$store.getters.hasLogin
     },
     userInfo() {
       return this.$store.getters.userInfo
@@ -149,8 +137,17 @@ export default {
             return this.userList.find(user => user.id === item).nickname
           }).join('、'),
           blameName: this.userList.find(user => user?.id === data?.blameId)?.nickname || '',
-          projectName: this.projectList.find(pro => pro?.id === data?.projectId)?.name || ''
+          projectName: this.projectList.find(pro => pro?.id === data?.projectId)?.name || '',
         }
+      })
+    },
+    // 修改责任人
+    updateTaskOwner(blameId) {
+      updateTaskOwner({
+        taskId: this.taskId,
+        blameId
+      }).then(() => {
+        uni.$u.toast('修改成功')
       })
     },
     // 获取任务记录
@@ -168,49 +165,94 @@ export default {
       const [item] = e.value
       this.taskInfo.blameId = item.id
       this.taskInfo.blameName = item.nickname
+      this.updateTaskOwner(item.id)
       this.accountShow = false
     },
     // 关闭选择器
     bindClose() {
       this.accountShow = false
     },
-    // 删除附件
-    bindDelFile(item, index) {
-      this.fileList.splice(index, 1)
-    },
-    // 立即创建
-    bindCreate() {
-      this.$refs.uToast.show({
-        type: 'success',
-        message: "创建成功",
-        complete() {
-          uni.navigateBack()
-        }
-      })
-    },
     // 结果登记
     bindRegistration() {
       this.isKeyBoard = true
     },
+    // 光标聚焦步进器
+    bindQuantityFocus(type) {
+      this.quantityFocus = type
+    },
     // 键盘输入
     bindKeyBoard(e) {
-      // 改变工时
-      if (this.isRegister) {
-        // this.workingHours => string => 拼接 => number
+      if (this.taskType === 'project') {
         this.workingHours = Number(this.workingHours.toString() + e)
       } else {
-        this.quantity += e
+        if (this.quantityFocus === 1) {
+          this.quantity = Number(this.quantity.toString() + e)
+        } else {
+          this.unQuantity = Number(this.unQuantity.toString() + e)
+        }
       }
     },
     // 键盘删除
     bindBackspace(e) {
       // 改变工时
-      if (this.isRegister) {
-        // this.workingHours => string => 拼接 => number
+      if (this.taskType === 'project') {
         this.workingHours = Number(this.workingHours.toString().slice(0, -1))
       } else {
-        this.quantity -= e
+        if (this.quantityFocus === 1) {
+          this.quantity = Number(this.quantity.toString().slice(0, -1))
+        } else {
+          this.unQuantity = Number(this.unQuantity.toString().slice(0, -1))
+        }
       }
+    },
+    // 键盘确认
+    bindKeyConfirm() {
+      this.isKeyBoard = false
+      if (this.taskType === 'project') {
+        this.workTimeRegister()
+      } else {
+        this.quantityRegister()
+      }
+    },
+    // 键盘取消
+    bindKeyCancel() {
+      this.isKeyBoard = false
+    },
+    // 工时登记
+    workTimeRegister() {
+      const {taskId, workingHours, taskInfo} = this
+      const workMinute = taskInfo.consumedWorkMinute + workingHours * 60
+      const params = {taskId, workMinute}
+      workTimeRegister(params).then(() => {
+        uni.$u.toast('登记成功')
+        setTimeout(() => {
+          this.resetData()
+          this.getTaskDetail(this.taskId)
+          this.getTaskRecord(this.taskId)
+        }, 300)
+      })
+    },
+    // 数量登记
+    quantityRegister() {
+      const {taskId, quantity, unQuantity, taskInfo} = this
+      const qualifiedQty = taskInfo?.extra?.qualifiedQty + quantity
+      const unQualifiedQty = taskInfo?.extra?.unQualifiedQty + unQuantity
+      const params = {taskId, qualifiedQty, unQualifiedQty}
+      quantityRegister(params).then(() => {
+        uni.$u.toast('登记成功')
+        setTimeout(() => {
+          this.resetData()
+          this.getTaskDetail(this.taskId)
+          this.getTaskRecord(this.taskId)
+        }, 300)
+      })
+    },
+    // 数据重置
+    resetData() {
+      this.workingHours = 3.5
+      this.quantity = 0
+      this.unQuantity = 0
+      this.quantityFocus = 1
     },
     // 添加附件
     bindPhoto() {
@@ -218,9 +260,39 @@ export default {
         count: 1,
         sourceType: ['camera'],
         success: (res) => {
-          console.log(res);
+          this.uploadFile(res.tempFiles[0])
         }
+      })
+    },
+    // 删除附件
+    bindDelFile(item, index) {
+      this.fileList.splice(index, 1)
+    },
+    // 上传附件
+    uploadFile(file) {
+      uni.showLoading({
+        title: '上传中'
       });
+      uploadFile({filePath: file.path}).then(res => {
+        this.fileList.push({
+          name: file.name,
+          url: res.data
+        })
+      }).finally(() => {
+        uni.hideLoading();
+      })
+    },
+    // 完成任务
+    bindReceive() {
+      const urls = this.fileList.map(item => item.url);
+      createTaskAttachment({ taskId: this.taskId, urls }).then(() => {
+        return missionTask({ taskId: this.taskId });
+      }).then(() => {
+        uni.$u.toast('任务完成');
+        setTimeout(() => {
+          uni.navigateBack();
+        }, 300);
+      })
     }
   },
 }

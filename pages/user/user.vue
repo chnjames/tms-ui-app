@@ -46,7 +46,6 @@ export default {
     }
   },
   onShow() {
-    console.log(this.userInfo)
     if (this.userInfo.proxyUserId) {
       const proxyUser = this.userList.find(item => item.id === this.userInfo.proxyUserId)
       this.proxyUserName = proxyUser ? proxyUser.nickname : ''

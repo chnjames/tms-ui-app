@@ -5,3 +5,5 @@ const { http } = uni.$u
 export const getProjectSimpleList = params => http.get('/operations/project/list-all-simple', {params})
 // 获取项目文档分页
 export const getProjectDocList = params => http.get('/operations/project/document/page', {params})
+// 获得项目关注人
+export const getProjectFollowers = params => http.get('/operations/project/follower/get', {params})

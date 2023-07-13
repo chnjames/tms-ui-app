@@ -38,3 +38,5 @@ export const getBomDemandList = params => http.get('/operations/project-bom/list
 export const createTaskAttachment = data => http.post('/operations/task/attachment/batch/create', data)
 // 获得模板
 export const getTemplate = params => http.get('/operations/template/get', { params })
+// 修改责任人
+export const updateTaskOwner = data => http.post('/operations/task/blame/change', data)

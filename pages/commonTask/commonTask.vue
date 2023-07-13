@@ -38,8 +38,6 @@
     <u-datetime-picker :show="calendarShow" v-model="taskInfo.endTime" mode="date" @confirm="confirmCalendar" @cancel="bindClose" @close="bindClose"></u-datetime-picker>
     <!-- 操作人选择器 -->
     <u-picker :show="accountShow" :columns="accountColumns" :defaultIndex="accountIndex" keyName="nickname" @cancel="bindClose" @close="bindClose" @confirm="confirmAccount"></u-picker>
-    <!-- 提醒 -->
-    <u-toast ref="uToast"></u-toast>
   </view>
 </template>
 
@@ -67,24 +65,14 @@ export default {
     };
   },
   created() {
-    if (this.hasLogin) {
-      this.taskInfo.endTime = Number(new Date(this.$u.timeFormat(null, 'yyyy/mm/dd') + ' 23:59:59'))
-      this.taskInfo.endTimeStr = this.$u.timeFormat(null, 'yyyy/mm/dd')
-      this.taskInfo.blameId = this.userInfo.id
-      this.taskInfo.blameName = this.userInfo.nickname
-      this.accountColumns = [this.userList]
-      this.accountIndex = [this.userList.findIndex(item => item.id === this.userInfo.id)]
-    } else {
-      this.$u.toast('请先登录')
-      uni.navigateTo({
-        url: '/pages/login/mobile'
-      })
-    }
+    this.taskInfo.endTime = Number(new Date(this.$u.timeFormat(null, 'yyyy/mm/dd') + ' 23:59:59'))
+    this.taskInfo.endTimeStr = this.$u.timeFormat(null, 'yyyy/mm/dd')
+    this.taskInfo.blameId = this.userInfo.id
+    this.taskInfo.blameName = this.userInfo.nickname
+    this.accountColumns = [this.userList]
+    this.accountIndex = [this.userList.findIndex(item => item.id === this.userInfo.id)]
   },
   computed: {
-    hasLogin() {
-      return this.$store.getters.hasLogin
-    },
     userInfo() {
       return this.$store.getters.userInfo
     },
