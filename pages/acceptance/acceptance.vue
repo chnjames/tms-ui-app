@@ -5,7 +5,8 @@
     <view class="PN">
       <u-cell class="PN-name" :border="false" isLink arrow-direction="down" @click="bindPN">
         <view class="title" slot="title">
-          <text>{{pnCode}}</text>
+          <text v-if="!pnCode" class="placeholder">请选择或扫描采购单号</text>
+          <text v-else>{{pnCode}}</text>
         </view>
       </u-cell>
       <u-icon name="scan" color="#214579" size="36" @click="bindScan"></u-icon>
@@ -128,6 +129,10 @@ export default {
       color: $custom-content-color;
       font-size: 26rpx;
     }
+  }
+
+  .placeholder {
+    color: #aaaaaa;
   }
 }
 

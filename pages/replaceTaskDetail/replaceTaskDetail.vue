@@ -49,6 +49,8 @@
     <!-- #ifdef APP-NVUE -->
     </u--input>
     <!-- #endif -->
+    <!-- 操作人选择器 -->
+    <u-picker :show="accountShow" :columns="accountColumns" :defaultIndex="accountIndex" keyName="nickname" confirmColor="#214579" @cancel="bindClose" @close="bindClose" @confirm="confirmAccount"></u-picker>
   </view>
 </template>
 
@@ -60,7 +62,10 @@ export default {
     return {
       taskId: '',
       taskInfo: {},
-      deviceLocation: ''
+      deviceLocation: '',
+      accountShow: false, // 操作人选择器
+      accountColumns: [],
+      accountIndex: [0]
     };
   },
   computed: {
@@ -69,6 +74,9 @@ export default {
     },
     projectList() {
       return this.$store.getters.projectList
+    },
+    userList() {
+      return this.$store.getters.userList
     }
   },
   onLoad(options) {
@@ -96,6 +104,20 @@ export default {
         const {data} = res
         this.deviceLocation = data.location
       })
+    },
+    // 选择操作人
+    bindAccount() {
+      this.accountShow = true
+    },
+    // 确认操作人
+    confirmAccount(e) {
+      const [item] = e.value
+      console.log(item)
+      this.accountShow = false
+    },
+    // 关闭选择器
+    bindClose() {
+      this.accountShow = false
     },
     // 扫码
     bindScan() {
