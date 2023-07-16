@@ -94,14 +94,6 @@ export default {
         }, 300)
       })
     },
-    // 扫码
-    bindScan() {
-      uni.scanCode({
-        success: (res) => {
-          console.log(res);
-        }
-      });
-    },
     // 选择操作人
     bindAccount() {
       this.accountShow = true

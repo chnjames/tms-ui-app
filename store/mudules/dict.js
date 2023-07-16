@@ -1,17 +1,20 @@
 import { getDictList } from '@/api/user'
 
+const DictDatasKey = 'dictDatas'
+
 const state = {
   /**
    * 数据字典 MAP
    * key：数据字典大类枚举值 dictType
    * dictValue：数据字典小类数值 {dictValue: '', dictLabel: ''} 的数组
    */
-  dictDatas: {}
+  dictDatas: uni.getStorageSync(DictDatasKey)
 }
 
 const mutations = {
   SET_DICT_DATAS: (state, dictDatas) => {
     state.dictDatas = dictDatas
+    uni.setStorageSync(DictDatasKey, dictDatas)
   }
 }
 

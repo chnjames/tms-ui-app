@@ -13,3 +13,5 @@ export const getStockPage = params => http.get('/warehouse/stock/list', {params}
 export const getLocationList = params => http.get('/warehouse/stock/location/list', {params})
 // 更新库存
 export const updateStock = data => http.put('/warehouse/stock/update', data)
+// 库位详情
+export const getLocationDetail = params => http.get('/warehouse/stock/location/get', {params})

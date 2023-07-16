@@ -40,3 +40,7 @@ export const createTaskAttachment = data => http.post('/operations/task/attachme
 export const getTemplate = params => http.get('/operations/template/get', { params })
 // 修改责任人
 export const updateTaskOwner = data => http.post('/operations/task/blame/change', data)
+// 获取任务附件列表
+export const getTaskAttachmentList = params => http.get('/operations/task/attachment/list', { params })
+// 删除任务附件列表
+export const deleteTaskAttachment = data => http.delete('/operations/task/attachment/delete', data)

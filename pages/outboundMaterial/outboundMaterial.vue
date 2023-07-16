@@ -18,7 +18,7 @@
       <u-gap height="40rpx"></u-gap>
       <view class="layout">
         <u--text color="#aaaaaa" text="出库数量"></u--text>
-        <u-number-box v-model="item.qty" :min="0" :max="item.stockQty"></u-number-box>
+        <u-number-box v-model="item.qty" :min="0" :max="item.stockQty" :disablePlus="item.disablePlus"></u-number-box>
       </view>
       <u-gap height="60rpx"></u-gap>
     </view>
@@ -41,10 +41,12 @@ export default {
   watch: {
     outboundList: {
       handler(val) {
-        // 监听出库数量qty的变化 出库数量的总和必须等于需求数量quantity
+        // 监听出库数量qty的变化 出库数量的总和必须等于需求数量quantity，同时避免无限循环
         const total = val.reduce((total, item) => total + item.qty, 0)
-        if (total === this.quantity) {
-          this.outboundList = val.map(item => ({...item, isDisabled: true}))
+        if (total === this.quantity && !this.isOutboundListDisabled(val)) {
+          this.outboundList = val.map(item => ({...item, disablePlus: true}))
+        } else if (total !== this.quantity && this.isOutboundListDisabled(val)) {
+          this.outboundList = val.map(item => ({...item, disablePlus: false}))
         }
       },
       immediate: true,
@@ -59,6 +61,9 @@ export default {
     this.getStockPage(materialId)
   },
   methods: {
+    isOutboundListDisabled(list) {
+      return list.every(item => item.disablePlus);
+    },
     // 获取物料基础数据
     getMaterialBaseData(id) {
       getMaterialBaseData({id}).then(res => {

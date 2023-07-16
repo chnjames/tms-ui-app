@@ -139,13 +139,14 @@ export default {
     },
     // 扫码
     bindScan() {
-      // 与taskInfo.deviceId比较，如果不一致，提示用户
-      uni.navigateTo({
-        url: `/pages/replaceTask/replaceTask?taskId=${this.taskId}`,
-      });
       uni.scanCode({
         success: (res) => {
-          console.log(res);
+          const {result} = res;
+          const id = parseInt(result)
+          if (id !== this.taskInfo.deviceId) {
+            uni.$u.toast('设备不匹配')
+            return
+          }
           uni.navigateTo({
             url: `/pages/replaceTask/replaceTask?taskId=${this.taskId}`,
           });

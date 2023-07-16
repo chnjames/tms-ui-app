@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import {getStockList, putInStorage} from "@/api/stock";
+import {getStockList, putInStorage, getLocationDetail} from "@/api/stock";
 import {getMaterialBaseData} from "@/api/warehouse";
 import {handleTree} from "@/utils/tree";
 
@@ -82,6 +82,7 @@ export default {
   },
   computed: {
     isSubmit() {
+      console.log(this.inboundInfo)
       return !this.inboundInfo.materialId || !this.inboundInfo.storeAreaId
     },
     materialList() {
@@ -127,23 +128,32 @@ export default {
         this.inboundInfo.materialSpecs = data.specs
       })
     },
+    // 获取库位详情
+    getLocationDetail(areaId, location) {
+      getLocationDetail({areaId, location}).then(res => {
+        const {data} = res
+        this.inboundInfo.storeAreaDesc = `${data.storeName} ${data.areaName} ${data.location}`
+        this.inboundInfo.storeAreaId = data.areaId
+        this.inboundInfo.location = data.location
+      })
+    },
     // 扫码库位编码
     bindMaterialScan() {
-      this.inboundInfo.storeAreaDesc = `012303 原材料仓 01号库位`
-      this.inboundInfo.storeAreaId = 25
-      this.inboundInfo.location = '1-1-1'
       uni.scanCode({
         success: (res) => {
-          console.log(res)
+          const {result} = res
+          const {areaId, location} = JSON.parse(result)
+          this.getLocationDetail(areaId, location)
         }
       });
     },
     // 扫码基础数据
     bindBaseScan() {
-      // this.getMaterialBaseData()
       uni.scanCode({
         success: (res) => {
-          console.log(res)
+          const {result} = res
+          const id = parseInt(result)
+          this.getMaterialBaseData(id)
         }
       });
     },
@@ -178,13 +188,11 @@ export default {
     // 确认库位
     confirmLocation(e) {
       const [arr1, arr2, arr3] = e.value
-      if (!arr1?.id || !arr2?.id || !arr3?.id) {
+      if (!arr1?.id || !arr2?.id || !arr3?.id || arr3?.type !== 2) {
         uni.$u.toast('请选择库位')
         return
       }
-      this.inboundInfo.storeAreaDesc = `${arr1.name} ${arr2.name} ${arr3.name}`
-      this.inboundInfo.storeAreaId = arr3.parentId
-      this.inboundInfo.location = arr3.location
+      this.getLocationDetail(arr3.parentId, arr3.location)
       this.locationShow = false
     },
     // 关闭选择器
@@ -199,7 +207,7 @@ export default {
         // 返回上一页
         setTimeout(() => {
           uni.navigateBack()
-        }, 2000)
+        }, 300)
       })
     },
     // 物料数量

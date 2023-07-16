@@ -140,14 +140,16 @@ export default {
     // 扫码
     bindScan() {
       const {taskInfo, templateInfo, taskId} = this;
-      uni.navigateTo({
-        url: `/pages/executeTask/executeTask?taskId=${taskId}&deviceId=${taskInfo.deviceId}&templateId=${templateInfo.id}&projectId=${taskInfo.projectId}`,
-      });
       uni.scanCode({
         success: (res) => {
-          console.log(res);
+          const {result} = res;
+          const id = parseInt(result)
+          if (id !== this.taskInfo.deviceId) {
+            uni.$u.toast('设备不匹配')
+            return
+          }
           uni.navigateTo({
-            url: `/pages/executeTask/executeTask`,
+            url: `/pages/executeTask/executeTask?taskId=${taskId}&deviceId=${taskInfo.deviceId}&templateId=${templateInfo.id}&projectId=${taskInfo.projectId}`
           });
         }
       });

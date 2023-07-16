@@ -80,11 +80,12 @@
       },
       // 扫码库位编码
       bindScan() {
-        // this.getMaterialBaseData(13)
-        // this.getStockPage(13)
         uni.scanCode({
           success: (res) => {
-            console.log(res)
+            const {result} = res
+            const id = parseInt(result)
+            this.getMaterialBaseData(id)
+            this.getStockPage(id)
           }
         });
       },

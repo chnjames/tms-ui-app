@@ -24,13 +24,16 @@
         <u-gap height="40rpx"></u-gap>
 
         <u-form-item v-if="currentModeIndex === 0" labelWidth="60" borderBottom ref="item-password">
-          <u-input :type="inputType" prefixIconStyle="color:#cccccc" maxlength="16" v-model="formData.password"
+          <u-input type="password" v-show="inputType === 'password'" prefixIconStyle="color:#cccccc" maxlength="16" v-model="formData.password"
             prefixIcon="lock-fill" placeholder="请填写密码" border="none">
             <template slot="suffix">
-              <u-icon v-show="inputType === 'password'" size="20" color="#cccccc" name="eye-fill"
-                @click="inputType = 'text'"></u-icon>
-              <u-icon v-show="inputType === 'text'" size="20" color="#cccccc" name="eye-off"
-                @click="inputType = 'password'"></u-icon>
+              <u-icon size="20" color="#cccccc" name="eye-fill" @click="inputType = 'text'"></u-icon>
+            </template>
+          </u-input>
+          <u-input type="text" v-show="inputType === 'text'" prefixIconStyle="color:#cccccc" maxlength="16" v-model="formData.password"
+                   prefixIcon="lock-fill" placeholder="请填写密码" border="none">
+            <template slot="suffix">
+              <u-icon size="20" color="#cccccc" name="eye-off" @click="inputType = 'password'"></u-icon>
             </template>
           </u-input>
         </u-form-item>
@@ -51,9 +54,9 @@
       </u--form>
     </view>
     <!-- 忘记密码 -->
-    <view class="auth-footer">
-      <u--text color="#214579" @click="bindForgot" align="center" text="忘记密码"></u--text>
-    </view>
+<!--    <view class="auth-footer">-->
+<!--      <u&#45;&#45;text color="#214579" @click="bindForgot" align="center" text="忘记密码"></u&#45;&#45;text>-->
+<!--    </view>-->
   </view>
 </template>
 

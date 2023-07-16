@@ -96,16 +96,16 @@ export default {
       })
     },
     // 完成任务
-    bindReceive() {
+    async bindReceive() {
       const urls = this.fileList.map(item => item.url);
-      createTaskAttachment({ taskId: this.taskId, urls }).then(() => {
-        return missionTask({ taskId: this.taskId });
-      }).then(() => {
-        uni.$u.toast('任务完成');
-        setTimeout(() => {
-          uni.navigateBack();
-        }, 300);
-      })
+      if (urls.length > 0) {
+        await createTaskAttachment({ taskId: this.taskId, urls });
+      }
+      await missionTask({ taskId: this.taskId });
+      uni.$u.toast('任务完成');
+      setTimeout(() => {
+        uni.navigateBack();
+      }, 300);
     }
   }
 }

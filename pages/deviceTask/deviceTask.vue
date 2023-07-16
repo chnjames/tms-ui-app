@@ -115,7 +115,7 @@ export default {
     getDeviceDetail(deviceId) {
       getDeviceDetail({deviceId}).then(res => {
         const {data} = res
-        this.deviceDesc = `${data.code}/${data.name}`
+        this.taskInfo.deviceName = `${data.code}/${data.name}`
         this.deviceLocation = data.location
         this.taskInfo.projectId = data?.projectId || ''
         data.projectId && this.getProjectFollowers(data.projectId)
@@ -168,7 +168,10 @@ export default {
     bindScan() {
       uni.scanCode({
         success: (res) => {
-          console.log(res);
+          const {result} = res
+          const id = parseInt(result)
+          this.taskInfo.deviceId = id
+          this.getDeviceDetail(id)
         }
       });
     },
@@ -179,7 +182,6 @@ export default {
     // 改变设备
     bindDeviceChange(e) {
       const {columnIndex, index, picker = this.$refs.deviceRef} = e
-      console.log(columnIndex, index, picker)
       // 根据列的索引值，判断当前改变的是哪一列，然后改变对应的列数据
       if (columnIndex === 0) {
         this.deviceColumns[1] = this.deviceArr[index]?.children || []

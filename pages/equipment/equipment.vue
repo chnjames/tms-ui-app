@@ -151,11 +151,12 @@ export default {
     },
     // 扫码
     bindScan() {
-      // this.deviceId = 19
-      // this.getDeviceDetail(19)
       uni.scanCode({
         success: (res) => {
-          console.log(res)
+          const {result} = res
+          const id = parseInt(result)
+          this.deviceId = id
+          this.getDeviceDetail(id)
         }
       });
     },
@@ -165,9 +166,7 @@ export default {
     },
     // 改变设备
     bindDeviceChange(e) {
-      console.log(e)
       const {columnIndex, index, picker = this.$refs.deviceRef} = e
-      console.log(columnIndex, index, picker)
       // 根据列的索引值，判断当前改变的是哪一列，然后改变对应的列数据
       if (columnIndex === 0) {
         this.deviceColumns[1] = this.deviceArr[index]?.children || []

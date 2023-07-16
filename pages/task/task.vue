@@ -1,13 +1,13 @@
 <template>
   <view class="container">
-    <u-sticky bgColor="#F5F5F5">
-      <u-tabs itemStyle="width: 140rpx;height: 90rpx" lineColor="#214579" activeStyle="color: #214579"
+    <view class="fixed">
+      <u-tabs itemStyle="width: 140rpx;height: 90rpx" :scrollable="false" lineColor="#214579" activeStyle="color: #214579"
               inactiveStyle="color: #666666" :list="tabList" keyName="label" @change="bindTab"></u-tabs>
-    </u-sticky>
-<!--    <view class="sticky" bgColor="#F5F5F5">
-      <u-tabs itemStyle="width: 140rpx;height: 90rpx" lineColor="#214579" activeStyle="color: #214579"
-              inactiveStyle="color: #666666" :list="tabList" keyName="label" @change="bindTab"></u-tabs>
-    </view>-->
+    </view>
+<!--    <u-sticky bgColor="#F5F5F5" customNavHeight="0">-->
+<!--      <u-tabs itemStyle="width: 140rpx;height: 90rpx" :scrollable="false" lineColor="#214579" activeStyle="color: #214579"-->
+<!--              inactiveStyle="color: #666666" :list="tabList" keyName="label" @change="bindTab"></u-tabs>-->
+<!--    </u-sticky>-->
     <!-- 我的任务 -->
     <view class="task">
       <u-list @scrolltolower="scrollToLower" height="100%" :preLoadScreen="pageCount * 4">
@@ -38,22 +38,20 @@
 </template>
 
 <script>
-import {getMyTaskPage} from "../../api/task";
-import {timestampToTime} from "../../utils/utils";
-import {DICT_TYPE, getDictDatas} from "../../utils/dict";
-import {getProjectSimpleList} from "../../api/project";
+import {getMyTaskPage} from "@/api/task";
+import {timestampToTime} from "@/utils/utils";
+import {DICT_TYPE, getDictDatas} from "@/utils/dict";
 
 export default {
   data() {
     return {
-      offsetTop: 0,
       pageCount: 1,
       total: 0,
       loadMoreStatus: 'loading',
       taskInfo: {
         pageNo: 1,
         pageSize: 10,
-        tab: 0
+        tab: '0'
       },
       tabList: getDictDatas(DICT_TYPE.APP_MY_TASK_TAB),
       taskTypeList: getDictDatas(DICT_TYPE.OPERATIONS_TASK_TYPE),
@@ -64,13 +62,6 @@ export default {
     projectList() {
       return this.$store.getters.projectList
     }
-  },
-  created() {
-    uni.getSystemInfo({
-      success: (e) => {
-        this.offsetTop = e.statusBarHeight;
-      }
-    });
   },
   onShow() {
     this.loadMoreStatus = 'loading';
@@ -131,8 +122,9 @@ export default {
     },
     // 任务详情
     bindTask(item) {
-      console.log('item', item);
       const {taskTypeStr, taskId} = item;
+      const {tab} = this.taskInfo;
+      if (tab === '2' || tab === '3') return;
       switch (taskTypeStr) {
         // 设备快速&&快速&&采购&&回款任务
         case 'simple':
@@ -184,17 +176,6 @@ export default {
       uni.navigateTo({
         url: '/pages/deviceTask/deviceTask'
       });
-      // 允许从相机和相册扫码
-      // uni.scanCode({
-      //   autoDecodeCharset: false,
-      //   success: function(res) {
-      //     console.log('条码类型：' + res.scanType);
-      //     console.log('条码内容：' + res.result);
-      //   },
-      //   fail: function(err) {
-      //     console.log('err', err)
-      //   }
-      // });
     }
   }
 }
@@ -204,6 +185,15 @@ export default {
 .container {
   // -webkit-overflow-scrolling: touch;
   // overflow: scroll;
+  .fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background-color: #F5F5F5;
+    height: 90rpx;
+  }
   .sticky {
     position: sticky;
     top: 0;
@@ -240,7 +230,7 @@ export default {
 
 // 任务列表
 .task {
-  padding: 30rpx;
+  padding: 110rpx 30rpx 120rpx;
   -webkit-overflow-scrolling: touch;
   overflow-y: scroll;
 }

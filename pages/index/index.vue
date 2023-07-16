@@ -1,19 +1,30 @@
 <template>
   <view class="container">
-    <!-- 金刚区 -->
-    <u-sticky>
-      <view class="sticky">
-        <view class="district" blurEffect="light">
-          <u-row justify="space-between" gutter="10">
-            <u-col span="3" v-for="(item, index) in districtList" :key="index" align="center" textAlign="center"
-                   @click="bindDistrict(item)">
-              <view class="icon-text">{{ item.iconText }}</view>
-              <view class="district-name">{{ item.name }}</view>
-            </u-col>
-          </u-row>
-        </view>
+    <view class="fixed">
+      <view class="district" blurEffect="light">
+        <u-row justify="space-between" gutter="10">
+          <u-col span="3" v-for="(item, index) in districtList" :key="index" align="center" textAlign="center"
+                 @click="bindDistrict(item)">
+            <view class="icon-text">{{ item.iconText }}</view>
+            <view class="district-name">{{ item.name }}</view>
+          </u-col>
+        </u-row>
       </view>
-    </u-sticky>
+    </view>
+    <!-- 金刚区 -->
+<!--    <u-sticky zIndex="100" customNavHeight="0">-->
+<!--      <view class="sticky">-->
+<!--        <view class="district" blurEffect="light">-->
+<!--          <u-row justify="space-between" gutter="10">-->
+<!--            <u-col span="3" v-for="(item, index) in districtList" :key="index" align="center" textAlign="center"-->
+<!--                   @click="bindDistrict(item)">-->
+<!--              <view class="icon-text">{{ item.iconText }}</view>-->
+<!--              <view class="district-name">{{ item.name }}</view>-->
+<!--            </u-col>-->
+<!--          </u-row>-->
+<!--        </view>-->
+<!--      </view>-->
+<!--    </u-sticky>-->
     <u-gap height="30rpx"></u-gap>
     <!-- 任务列表 -->
     <view class="task">
@@ -40,8 +51,8 @@
 </template>
 
 <script>
-import {getCommonTaskPage, ignoreCommonTask, receiveCommonTask} from '../../api/task'
-import  {timestampToTime} from '../../utils/utils'
+import {getCommonTaskPage, ignoreCommonTask, receiveCommonTask} from '@/api/task'
+import  {timestampToTime} from '@/utils/utils'
 
 export default {
   components: {},
@@ -144,14 +155,24 @@ export default {
     bindIgnoreTask(taskId) {
       ignoreCommonTask({ taskId }).then(() => {
         uni.$u.toast('忽略成功')
-        this.getCommonTaskPage()
+        setTimeout(() => {
+          this.loadMoreStatus = 'loading';
+          this.pageInfo.pageNo = 1;
+          this.taskList = [];
+          this.getCommonTaskPage()
+        }, 300)
       })
     },
     // 领取任务
     bindReceiveTask(taskId) {
       receiveCommonTask({ taskId }).then(() => {
         uni.$u.toast('领取成功')
-        this.getCommonTaskPage()
+        setTimeout(() => {
+          this.loadMoreStatus = 'loading';
+          this.pageInfo.pageNo = 1;
+          this.taskList = [];
+          this.getCommonTaskPage()
+        }, 300)
       })
     },
     // 金刚区
@@ -185,13 +206,23 @@ export default {
   //height: 100vh;
 }
 
+.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background-color: #F5F5F5;
+  padding: 30rpx 30rpx 0;
+}
+
 .sticky {
   padding: 30rpx;
   background-color: #F5F5F5;
 }
 
 .task {
-  padding: 0 30rpx;
+  padding: 232rpx 30rpx 120rpx;
 }
 
 .district {

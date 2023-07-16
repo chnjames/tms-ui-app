@@ -178,6 +178,8 @@ export default {
     },
     // 光标聚焦步进器
     bindQuantityFocus(type) {
+      // 取消默认系统键盘弹起
+      uni.hideKeyboard()
       this.quantityFocus = type
     },
     // 键盘输入
@@ -196,7 +198,7 @@ export default {
     bindBackspace(e) {
       // 改变工时
       if (this.taskType === 'project') {
-        this.workingHours = Number(this.workingHours.toString().slice(0, -1))
+        this.workingHours = Number(this.workingHours.toString().slice(0, -1)) || 0.5
       } else {
         if (this.quantityFocus === 1) {
           this.quantity = Number(this.quantity.toString().slice(0, -1))
@@ -223,6 +225,8 @@ export default {
       const {taskId, workingHours, taskInfo} = this
       const workMinute = taskInfo.consumedWorkMinute + workingHours * 60
       const params = {taskId, workMinute}
+      console.log(params)
+      debugger
       workTimeRegister(params).then(() => {
         uni.$u.toast('登记成功')
         setTimeout(() => {
@@ -283,16 +287,16 @@ export default {
       })
     },
     // 完成任务
-    bindReceive() {
+    async bindReceive() {
       const urls = this.fileList.map(item => item.url);
-      createTaskAttachment({ taskId: this.taskId, urls }).then(() => {
-        return missionTask({ taskId: this.taskId });
-      }).then(() => {
-        uni.$u.toast('任务完成');
-        setTimeout(() => {
-          uni.navigateBack();
-        }, 300);
-      })
+      if (urls.length > 0) {
+        await createTaskAttachment({ taskId: this.taskId, urls });
+      }
+      await missionTask({ taskId: this.taskId });
+      uni.$u.toast('任务完成');
+      setTimeout(() => {
+        uni.navigateBack();
+      }, 300);
     }
   },
 }

@@ -50,7 +50,7 @@ export function getGroupByPinyin(arr, key = 'name') {
  * @returns {String} 返回自定义日期格式
  */
 export function timestampToTime(timestamp, fmt = "yyyy-MM-dd hh:mm:ss") {
-if (!timestamp) return;
+if (!timestamp) return '';
   let date = new Date(timestamp);
   let ret;
   let opt = {
@@ -71,4 +71,11 @@ if (!timestamp) return;
     }
   }
   return fmt;
+}
+/**
+ * 分钟转成小时(x.xxh)
+ * @param {Number} minute 分钟
+ */
+export function formatMinuteToHour(minute) {
+  return `${(minute / 60).toFixed(2)}`;
 }

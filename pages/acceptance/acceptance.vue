@@ -37,6 +37,7 @@ export default {
   data() {
     return {
       PNShow: false, // 操作人选择器
+      pnCodeList: [],
       PNColumns: [],
       buyingId: '',
       pnCode: '',
@@ -50,6 +51,7 @@ export default {
     // 待验收列表
     getAcceptanceList() {
       getAcceptanceList().then(res => {
+        this.pnCodeList = res.data || []
         this.PNColumns = [res.data || []]
       })
     },
@@ -78,7 +80,11 @@ export default {
     bindScan() {
       uni.scanCode({
         success: (res) => {
-          console.log(res)
+          const {result} = res
+          const buyingId = parseInt(result)
+          this.buyingId = buyingId
+          this.pnCode = this.pnCodeList.find(item => item.buyingId === buyingId).pnCode
+          this.getAcceptanceDetail(result)
         }
       });
     },
@@ -88,7 +94,6 @@ export default {
     },
     // 选择采购单号
     bindPN() {
-      console.log(this.PNColumns)
       if (this.PNColumns.length > 0) {
         this.PNShow = true;
       } else {

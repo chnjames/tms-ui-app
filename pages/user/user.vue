@@ -13,10 +13,10 @@
     <u-gap height="10" bgColor="#f3f3f3"></u-gap>
 
     <u-cell-group class="fun-list">
-      <u-cell class="fun-item" icon="integral" title="任务绩效" value="111111分"></u-cell>
-      <u-cell class="fun-item" icon="order" title="本月/累计完成任务总数" value="231/8374条"></u-cell>
-      <u-cell class="fun-item" icon="hourglass" title="本月/累计工时投入" value="12/193h"></u-cell>
-      <u-cell class="fun-item" :border="false" icon="calendar" title="入职日期" value="2022/01/21"></u-cell>
+      <u-cell class="fun-item" icon="integral" title="累计分数" :value="`${userInfo.kpi}分`"></u-cell>
+      <u-cell class="fun-item" icon="order" title="本月/累计完成任务总数" :value="`${userInfo.totalCompletedTaskQty || 0}/${userInfo.curMonthCompletedTaskQty || 0}条`"></u-cell>
+      <u-cell class="fun-item" icon="hourglass" title="本月/累计工时投入" :value="`${formatMinuteToHour(userInfo.curMonthConsumedWorkMinute || 0)}/${formatMinuteToHour(userInfo.totalConsumedWorkMinute || 0)}h`"></u-cell>
+      <u-cell class="fun-item" :border="false" icon="calendar" title="入职日期" :value="`${timestampToTime(userInfo.entryTime, 'yyyy-MM-dd')}`"></u-cell>
       <u-gap height="10" bgColor="#f3f3f3"></u-gap>
       <u-cell class="fun-item" :border="false" icon="edit-pen" title="休假设置" @click="pageRouter" isLink>
         <text slot="value" class="leave-name">{{proxyUserName}}</text>
@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import {formatMinuteToHour, timestampToTime} from '@/utils/utils'
 export default {
   data() {
     return {
@@ -49,9 +50,13 @@ export default {
     if (this.userInfo.proxyUserId) {
       const proxyUser = this.userList.find(item => item.id === this.userInfo.proxyUserId)
       this.proxyUserName = proxyUser ? proxyUser.nickname : ''
+    } else {
+      this.proxyUserName = ''
     }
   },
   methods: {
+    formatMinuteToHour,
+    timestampToTime,
     pageRouter() {
       if (this.userInfo.proxyUserId) {
         uni.navigateTo({

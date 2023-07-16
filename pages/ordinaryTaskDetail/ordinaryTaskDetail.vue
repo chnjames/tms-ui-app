@@ -60,8 +60,8 @@ export default {
       return this.$store.getters.userList
     }
   },
-  created() {
-    const {taskId} = this.$route.query;
+  onLoad(options) {
+    const {taskId} = options;
     this.taskId = taskId;
     this.accountColumns = [this.userList];
     this.getTaskDetail(this.taskId)
