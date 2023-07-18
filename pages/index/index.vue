@@ -214,6 +214,14 @@ export default {
   z-index: 999;
   background-color: #F5F5F5;
   padding: 30rpx 30rpx 0;
+  -webkit-transition: .3s;
+  -moz-transition: .3s;
+  -o-transition: .3s;
+  transition: .3s;
+  -webkit-transform: translate3d(0,0,0);
+  -ms-transform: translate3d(0,0,0);
+  -o-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
 }
 
 .sticky {
