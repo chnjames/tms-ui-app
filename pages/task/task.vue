@@ -13,7 +13,7 @@
       <u-list @scrolltolower="scrollToLower" height="100%" :preLoadScreen="pageCount * 4">
         <u-list-item v-for="(item, index) in mineTaskList" :key="index">
           <view class="task-item" @click="bindTask(item)">
-            <u--text size="28rpx" color="#666666" :text="`${item.urgentType} ${item.projectName}`"></u--text>
+            <u--text size="28rpx" bold color="#666666" :text="`${item.urgentType} ${item.projectName}`"></u--text>
             <u-gap height="10rpx"></u-gap>
             <u--text size="28rpx" color="#666666" :text="item.taskName"></u--text>
             <u-gap height="20rpx"></u-gap>

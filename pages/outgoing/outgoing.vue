@@ -30,7 +30,7 @@
         <u-gap height="40rpx"></u-gap>
         <view class="layout">
           <u--text color="#aaaaaa" text="出库数量"></u--text>
-          <u-number-box v-model="item.qty" :min="1" :max="item.stockQty"></u-number-box>
+          <u-number-box v-model="item.qty" :min="0" :max="item.stockQty"></u-number-box>
         </view>
         <u-gap height="60rpx"></u-gap>
       </view>
@@ -114,17 +114,24 @@
             storeAreaId: item.storeAreaId,
             location: item.location,
             stockQty: item.qty,
-            qty: 1
+            qty: 0
           })) || [];
         })
       },
       // 出库
       bindOutBound() {
+        // 校验出库数量
+        const isPass = this.outboundList.every(item => item.qty > 0 && item.qty <= item.stockQty)
+        if (!isPass) {
+          uni.$u.toast('出库数量不正确')
+          return
+        }
         outOfStorage(this.outboundList).then(res => {
           uni.$u.toast('出库成功')
-          setTimeout(() => {
-            uni.navigateBack()
-          }, 1000)
+          // setTimeout(() => {
+          //   uni.navigateBack()
+          // }, 1000)
+          // 刷新当前页面
         })
       }
     }

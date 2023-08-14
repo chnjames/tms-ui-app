@@ -90,6 +90,10 @@ export default {
         blameId
       }).then(() => {
         uni.$u.toast('修改成功')
+        // 返回上一页刷新页面
+        setTimeout(() => {
+          uni.navigateBack()
+        }, 300)
       })
     },
     // 完成任务

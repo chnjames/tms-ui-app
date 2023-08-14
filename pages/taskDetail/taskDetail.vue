@@ -46,7 +46,7 @@
         <u-button text="完成任务" color="#aaaaaa" shape="circle" @click="bindReceive"></u-button>
       </u-col>
       <u-col span="3">
-        <u-button text="结果登记" color="#214579" shape="circle" @click="bindRegistration"></u-button>
+        <u-button :text="taskTypeDesc" color="#214579" shape="circle" @click="bindRegistration"></u-button>
       </u-col>
       <u-col span="3">
         <u-button text="添加附件" color="#aaaaaa" shape="circle" @click="bindPhoto"></u-button>
@@ -64,17 +64,21 @@
           <!-- 工时登记 -->
           <view v-if="taskType === 'project'" class="register">
             <view class="qualified">请输入(h)：</view>
-            <u-number-box :min="0.5" :step="0.5" v-model="workingHours"></u-number-box>
+            <u-number-box :min="0.5" :step="0.5" v-model="workingHours">
+              <text class="number-input" slot="input">{{workingHours}}</text>
+            </u-number-box>
           </view>
           <!-- 数量登记 -->
           <view class="quantity" v-else>
             <view class="quantity-item">
               <view class="qualified">合格：</view>
-              <u-number-box integer :min="0" v-model="quantity" @focus="bindQuantityFocus(1)"></u-number-box>
+              <u-number-box integer :min="0" v-model="quantity" disabledInput @focus="bindQuantityFocus(1)">
+                <u--text slot="input" text="1111"></u--text>
+              </u-number-box>
             </view>
             <view class="quantity-item">
               <view class="unqualified">不合格：</view>
-              <u-number-box integer :min="0" color="#fa3534" v-model="unQuantity" @focus="bindQuantityFocus(2)"></u-number-box>
+              <u-number-box integer :min="0" color="#fa3534" disabledInput v-model="unQuantity" @focus="bindQuantityFocus(2)"></u-number-box>
             </view>
           </view>
         </view>
@@ -94,6 +98,7 @@ export default {
       taskInfo: {},
       boardList: [],
       isKeyBoard: false, // 键盘
+      keyboardInput: '', // 用于临时键盘输入
       taskType: '',
       quantityFocus: 1, // 数量登记
       workingHours: 3.5, // 工时 => 3.5h => 3.5h * 60m => 210m
@@ -102,12 +107,14 @@ export default {
       accountShow: false, // 操作人选择器
       accountColumns: [],
       accountIndex: [0],
-      fileList: []
+      fileList: [],
+      taskTypeDesc: '结果登记'
     };
   },
   onLoad(options) {
     const {taskId, taskType} = options;
     this.taskType = taskType;
+    this.taskTypeDesc = taskType === 'project' ? '工时登记' : '结果登记';
     this.taskId = taskId;
     this.accountColumns = [this.userList]
     this.getTaskDetail(this.taskId)
@@ -148,6 +155,10 @@ export default {
         blameId
       }).then(() => {
         uni.$u.toast('修改成功')
+        // 返回上一页刷新页面
+        setTimeout(() => {
+          uni.navigateBack()
+        }, 300)
       })
     },
     // 获取任务记录
@@ -184,8 +195,14 @@ export default {
     },
     // 键盘输入
     bindKeyBoard(e) {
+      // this.keyboardInput = e
+      // 小数点后面只能输入一位，即e=.的时候，后面只能输入一个数字
+      this.keyboardInput += e
+      console.log(this.keyboardInput)
       if (this.taskType === 'project') {
-        this.workingHours = Number(this.workingHours.toString() + e)
+        // 使用键盘输入工时，覆盖原有this.workingHours的值，然后拼接键盘输入的值
+        // this.workingHours = Number(this.workingHours.toString() + e)
+        this.workingHours = Number(this.keyboardInput)
       } else {
         if (this.quantityFocus === 1) {
           this.quantity = Number(this.quantity.toString() + e)
@@ -403,6 +420,21 @@ export default {
   .u-icon {
     margin-left: 20rpx;
   }
+}
+
+// 自定义步进器
+.number-input {
+  background-color: #EBECEE;
+  height: 60rpx;
+  width: 70rpx;
+  margin: 0 4rpx;
+  position: relative;
+  text-align: center;
+  font-size: 30rpx;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /deep/ .u-cell__body {
