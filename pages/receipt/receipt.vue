@@ -129,8 +129,8 @@ export default {
       })
     },
     // 获取库位详情
-    getLocationDetail(areaId, location) {
-      getLocationDetail({areaId, location}).then(res => {
+    getLocationDetail({ areaId, location, locationCode = '' }) {
+      getLocationDetail({ areaId, location, locationCode }).then(res => {
         const {data} = res
         this.inboundInfo.storeAreaDesc = `${data.storeName} ${data.areaName} ${data.location}`
         this.inboundInfo.storeAreaId = data.areaId
@@ -140,11 +140,9 @@ export default {
     // 扫码库位编码
     bindMaterialScan() {
       uni.scanCode({
-        success: (res) => {
-          const {result} = res
-          const {areaId, location} = JSON.parse(result)
-          this.getLocationDetail(areaId, location)
-        }
+        success: ({ result }) => {
+          this.getLocationDetail({ locationCode: result });
+        },
       });
     },
     // 扫码基础数据
@@ -152,8 +150,7 @@ export default {
       uni.scanCode({
         success: (res) => {
           const {result} = res
-          const id = parseInt(result)
-          this.getMaterialBaseData(id)
+          this.getMaterialBaseData(result)
         }
       });
     },
@@ -192,7 +189,7 @@ export default {
         uni.$u.toast('请选择库位')
         return
       }
-      this.getLocationDetail(arr3.parentId, arr3.location)
+      this.getLocationDetail({ areaId: arr3.parentId, location: arr3.location });
       this.locationShow = false
     },
     // 关闭选择器

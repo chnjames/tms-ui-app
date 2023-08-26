@@ -11,9 +11,9 @@
     </view>
     <u-gap height="80rpx"></u-gap>
     <view v-if="deviceId">
-      <u--text color="#aaaaaa" text="物料名称"></u--text>
+      <u--text color="#aaaaaa" text="设备名称"></u--text>
       <u-gap height="20rpx"></u-gap>
-      <u--text size="28rpx" color="#666666" :text="deviceName"></u--text>
+      <u--text size="28rpx" color="#666666" :text="deviceDesc"></u--text>
       <u-gap height="20rpx"></u-gap>
       <u--text color="#aaaaaa" text="所在位置"></u--text>
       <u-gap height="20rpx"></u-gap>
@@ -31,7 +31,7 @@
                 <!--<view class="task-abnormal-desc">{{ item.description }}</view>-->
               </view>
             </view>
-            <u-album :urls="item.imgList" singleMode="scaleToFill" multipleSize="60" singleSize="60" :maxCount="2" :rowCount="2"></u-album>
+            <u-album v-if="item.imgList" :urls="item.imgList" singleMode="scaleToFill" multipleSize="60" singleSize="60" :maxCount="2" :rowCount="2"></u-album>
           </view>
         </view>
       </view>
@@ -94,7 +94,7 @@ export default {
     getDeviceDetail(deviceId) {
       getDeviceDetail({deviceId}).then(res => {
         const {data} = res
-        this.deviceDesc = `${data.code}`
+        this.deviceDesc = `${data.code}/${data.name}`
         this.deviceName = data.name
         this.deviceLocation = data.location
         this.taskInfo.projectId = data.projectId
