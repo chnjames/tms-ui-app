@@ -117,6 +117,7 @@ export default {
     bindPhoto() {
       uni.chooseImage({
         count: 1,
+        sizeType: ['compressed'],
         sourceType: ['camera'],
         success: (res) => {
           this.uploadFile(res.tempFiles[0])

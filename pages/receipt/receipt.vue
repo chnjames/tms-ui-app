@@ -82,7 +82,6 @@ export default {
   },
   computed: {
     isSubmit() {
-      console.log(this.inboundInfo)
       return !this.inboundInfo.materialId || !this.inboundInfo.storeAreaId
     },
     materialList() {
@@ -96,6 +95,8 @@ export default {
   methods: {
     // 获取所有库位及其父集列表
     getStockList() {
+      this.locationArr = []
+      this.locationColumns = [[],[],[]]
       getStockList().then(res => {
         this.locationArr = handleTree(res.data)
         this.locationArr.forEach((item) => {
@@ -201,15 +202,29 @@ export default {
     bindInStorage() {
       putInStorage(this.inboundInfo).then(res => {
         uni.$u.toast('入库成功')
-        // 返回上一页
-        setTimeout(() => {
-          uni.navigateBack()
-        }, 300)
+        // 入库成功后直接刷新当前页面
+        this.refresh()
       })
     },
     // 物料数量
     bindQuantity(e) {
       this.inboundInfo.qty = e.value
+    },
+    // 重置当前页面数据
+    refresh() {
+      this.inboundInfo = {
+        materialId: '', // 物料ID
+        materialName: '', // 物料名称
+        materialSpecs: '', // 物料规格
+        materialDesc: '', // 物料描述
+        storeAreaId: '', // 库区ID => 对应parentId
+        storeAreaDesc: '', // 库区描述
+        location: '', // 库位码
+        qty: 1
+      }
+      this.locationIndex = [0, 0, 0] // 库位选择器索引
+      this.materialIndex = [0] // 物料选择器索引
+      this.getStockList()
     }
   }
 }

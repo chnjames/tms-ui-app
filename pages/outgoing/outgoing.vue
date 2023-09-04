@@ -106,6 +106,7 @@
       },
       // 获取库存列表
       getStockPage(materialId) {
+        this.outboundList = []
         getStockPage({materialId}).then(res => {
           const {data} = res
           this.outboundList = data?.map(item => ({
@@ -128,11 +129,16 @@
         }
         outOfStorage(this.outboundList).then(res => {
           uni.$u.toast('出库成功')
-          // setTimeout(() => {
-          //   uni.navigateBack()
-          // }, 1000)
-          // 刷新当前页面
+          this.refresh()
         })
+      },
+      // 重置当前页面数据
+      refresh() {
+        this.materialDesc = ''
+        this.materialSpecs = ''
+        this.materialName = ''
+        this.materialIndex = [0]
+        this.outboundList = []
       }
     }
   }

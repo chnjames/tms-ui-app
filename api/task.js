@@ -44,3 +44,5 @@ export const updateTaskOwner = data => http.post('/operations/task/blame/change'
 export const getTaskAttachmentList = params => http.get('/operations/task/attachment/list', { params })
 // 删除任务附件列表
 export const deleteTaskAttachment = data => http.delete('/operations/task/attachment/delete', data)
+// 我的任务数量
+export const getMyTaskQty = params => http.get('/operations/task/qty', { params })

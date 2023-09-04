@@ -1,13 +1,9 @@
 <template>
   <view class="container">
     <view class="fixed">
-      <u-tabs itemStyle="width: 140rpx;height: 90rpx" :scrollable="false" lineColor="#214579" activeStyle="color: #214579"
+      <u-tabs itemStyle="width: 140rpx;height: 90rpx;position: relative" :scrollable="false" lineColor="#214579" activeStyle="color: #214579"
               inactiveStyle="color: #666666" :list="tabList" keyName="label" @change="bindTab"></u-tabs>
     </view>
-<!--    <u-sticky bgColor="#F5F5F5" customNavHeight="0">-->
-<!--      <u-tabs itemStyle="width: 140rpx;height: 90rpx" :scrollable="false" lineColor="#214579" activeStyle="color: #214579"-->
-<!--              inactiveStyle="color: #666666" :list="tabList" keyName="label" @change="bindTab"></u-tabs>-->
-<!--    </u-sticky>-->
     <!-- 我的任务 -->
     <view class="task">
       <u-list @scrolltolower="scrollToLower" height="100%" :preLoadScreen="pageCount * 4">
@@ -38,7 +34,7 @@
 </template>
 
 <script>
-import {getMyTaskPage} from "@/api/task";
+import {getMyTaskPage, getMyTaskQty} from "@/api/task";
 import {timestampToTime} from "@/utils/utils";
 import {DICT_TYPE, getDictDatas} from "@/utils/dict";
 
@@ -62,6 +58,9 @@ export default {
     projectList() {
       return this.$store.getters.projectList
     }
+  },
+  onLoad() {
+    this.getMyTaskQty();
   },
   onShow() {
     this.loadMoreStatus = 'loading';
@@ -88,6 +87,13 @@ export default {
         const { total, list } = res.data
         this.pageCount = Math.ceil(total / this.taskInfo.pageSize)
         this.total = total
+        const qty = total > 99 ? '99+' : total
+        for (let i = 0; i < this.tabList.length; i++) {
+          if (this.taskInfo.tab === i.toString()) {
+            this.tabList[i].badge.value = qty;
+            break;
+          }
+        }
         list.forEach(item => {
           item.taskTypeStr = this.taskTypeList.find(task => parseInt(task?.value) === item?.taskType)?.cssClass || ''
           item.urgentType = item?.urgent === 1 ? '紧急' : ''
@@ -102,6 +108,33 @@ export default {
         } else {
           this.loadMoreStatus = 'loading'
         }
+      })
+    },
+    // 获取我的任务数量
+    getMyTaskQty() {
+      getMyTaskQty().then(res => {
+        const { data } = res
+        const { runningTaskQty = 0, timeoutTaskQty = 0, completedTaskQty = 0, myFollowTaskQty = 0 } = data
+        this.tabList.forEach(tab => {
+          switch (tab.value) {
+            case '0':
+              const runningQty = runningTaskQty > 99 ? '99+' : runningTaskQty
+              tab.badge = {value: runningQty}
+              break;
+            case '1':
+              const timeoutQty = timeoutTaskQty > 99 ? '99+' : timeoutTaskQty
+              tab.badge = {value: timeoutQty}
+              break;
+            case '2':
+              const completedQty = completedTaskQty > 99 ? '99+' : completedTaskQty
+              tab.badge = {value: completedQty}
+              break;
+            case '3':
+              const myFollowQty = myFollowTaskQty > 99 ? '99+' : myFollowTaskQty
+              tab.badge = {value: myFollowQty}
+              break;
+          }
+        })
       })
     },
     scrollToLower() {
@@ -193,6 +226,12 @@ export default {
     z-index: 999;
     background-color: #F5F5F5;
     height: 90rpx;
+
+    /deep/ .u-badge {
+      position: absolute;
+      top: 10rpx;
+      right: 10rpx;
+    }
   }
   .sticky {
     position: sticky;
