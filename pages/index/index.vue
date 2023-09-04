@@ -137,9 +137,10 @@ export default {
         } else {
           this.loadMoreStatus = 'loading'
         }
+        const totalStr = total > 99 ? '99+' : total.toString()
         uni.setTabBarBadge({
           index: 0,
-          text: total
+          text: totalStr
         })
       })
     },

@@ -1,6 +1,5 @@
 {
   "pages": [
-    //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
     {
       "path": "pages/index/index",
       "style": {
@@ -47,7 +46,6 @@
       "path": "pages/user/user",
       "style": {
         "navigationBarTitleText": ""
-        // "navigationStyle": "custom"
       }
     },
     {
@@ -268,9 +266,8 @@
       }
     },
     {
-      "path" : "pages/quickDeviceTask/quickDeviceTask",
-      "style" :
-      {
+      "path": "pages/quickDeviceTask/quickDeviceTask",
+      "style": {
         "navigationBarTitleText": "快速创建任务[设备]",
         "enablePullDownRefresh": false
       }

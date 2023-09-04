@@ -12,8 +12,8 @@
     <u-gap height="120rpx"></u-gap>
     <u-cell-group class="user" :border="false">
       <u-cell icon="account-fill" :border="false" iconStyle="color: #aaaaaa;">
-        <view class="title" slot="title" @click="bindAccount">
-          <text class="title">{{taskInfo.blameName}}</text>
+        <view class="title" slot="title">
+          <text class="attention">{{taskInfo.blameName}}</text>
         </view>
       </u-cell>
       <u-cell icon="share-fill" :border="false" iconStyle="color: #aaaaaa;">
