@@ -9,7 +9,7 @@
       <view class="btn" v-if="item.status === 1" @click="bindOutbound(item)">出 库</view>
     </view>
     <!-- 完成任务 -->
-    <u-button class="receive" :disabled="isAllOutbound" text="完成任务" color="#214579" shape="circle" @click="bindReceive"></u-button>
+    <u-button v-if="isTab" class="receive" :disabled="isAllOutbound" text="完成任务" color="#214579" shape="circle" @click="bindReceive"></u-button>
   </view>
 </template>
 
@@ -20,17 +20,22 @@ export default {
   data() {
     return {
       taskId: '',
-      taskList: []
+      taskList: [],
+      tabType: ''
     };
   },
   computed: {
     isAllOutbound() {
       return this.taskList.map(item => item.status !== 1).includes(false);
+    },
+    isTab() {
+      return this.tabType !== '2' && this.tabType !== '3'
     }
   },
   onLoad(options) {
-    const {taskId} = options;
+    const {taskId, tab} = options;
     this.taskId = taskId;
+    this.tabType = tab;
   },
   onShow() {
     this.getTaskDetail(this.taskId);
@@ -40,7 +45,6 @@ export default {
     getTaskDetail(taskId) {
       getTaskDetail({taskId}).then(res => {
         const {data} = res;
-        console.log(data.extra)
         const {bomIds} = data.extra;
         const bomIdsStr = bomIds.join(',');
         this.getBomDemandList(bomIdsStr);

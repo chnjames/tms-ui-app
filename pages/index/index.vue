@@ -118,6 +118,10 @@ export default {
         list.forEach(item => {
           item.date = timestampToTime(item.endTime, 'MM月dd日截止')
           item.projectName = this.projectList.find(pro => pro?.id === item?.projectId)?.name || ''
+          // 快速任务和快速设备任务
+          if (item.taskType === 50 || item.taskType === 22) {
+            item.projectName = `临时任务 ${item.projectName}`;
+          }
           item.urgentType = item.urgent === 1 ? '紧急' : ''
           item.options = [{
             text: '立即领取',

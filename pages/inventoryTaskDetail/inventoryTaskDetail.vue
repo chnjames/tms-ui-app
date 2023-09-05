@@ -2,7 +2,7 @@
   <view class="container">
     <view @click="bindInventory(item)" :class="['inventory-item', item.status ? 'active' : '']"
           v-for="(item, index) in indexList" :key="index">{{ item.storeDesc }}</view>
-    <u-button class="receive" text="完成任务" color="#214579" shape="circle" @click="bindReceive"></u-button>
+    <u-button v-if="isTab" :disabled="isReceive" class="receive" text="完成任务" color="#214579" shape="circle" @click="bindReceive"></u-button>
   </view>
 </template>
 
@@ -13,13 +13,23 @@ export default {
   data() {
     return {
       indexList: [],
-      taskId: ''
+      taskId: '',
+      tabType: ''
     };
   },
   onLoad(options) {
-    const {taskId} = options;
+    const {taskId, tab} = options;
     this.taskId = taskId;
+    this.tabType = tab;
     this.getTaskDetail(this.taskId);
+  },
+  computed: {
+    isReceive() {
+      return this.indexList.some(item => !item.status)
+    },
+    isTab() {
+      return this.tabType !== '2' && this.tabType !== '3'
+    }
   },
   methods: {
     // 获取任务详情

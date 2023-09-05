@@ -24,8 +24,17 @@
         </view>
       </u-cell>
     </u-cell-group>
+    <u-gap height="200rpx"></u-gap>
+    <!-- 附件列表 -->
+    <view class="file-list" v-if="taskInfo.attachments.length > 0">
+      <view class="file-item" v-for="(item, index) in taskInfo.attachments" :key="index">
+        <view class="file-src">
+          <u--image @click="bindImage" :showLoading="true" shape="circle" :src="item" width="90rpx" height="90rpx"></u--image>
+        </view>
+      </view>
+    </view>
     <!-- 完成任务 -->
-    <u-button class="receive" text="完成任务" color="#214579" shape="circle" @click="bindReceive"></u-button>
+    <u-button v-if="isTab" class="receive" text="完成任务" color="#214579" shape="circle" @click="bindReceive"></u-button>
     <!-- 操作人选择器 -->
     <u-picker :show="accountShow" :columns="accountColumns" :defaultIndex="accountIndex" keyName="nickname" cancelColor="#aaaaaa" confirmColor="#214579" @cancel="bindClose" @close="bindClose"
               @confirm="confirmAccount"></u-picker>
@@ -39,7 +48,9 @@ export default {
   data() {
     return {
       taskId: '',
-      taskInfo: {},
+      taskInfo: {
+        attachments: []
+      },
       show: false,
       value: 2,
       isRegister: true,
@@ -49,7 +60,8 @@ export default {
       accountShow: false, // 操作人选择器
       isBoard: false, // 是否显示底部工时登记
       accountColumns: [],
-      accountIndex: [0]
+      accountIndex: [0],
+      tabType: ''
     };
   },
   computed: {
@@ -58,13 +70,17 @@ export default {
     },
     userList() {
       return this.$store.getters.userList
+    },
+    isTab() {
+      return this.tabType !== '2' && this.tabType !== '3'
     }
   },
   onLoad(options) {
-    const {taskId} = options;
+    const {taskId, tab} = options;
     this.taskId = taskId;
+    this.tabType = tab;
     this.accountColumns = [this.userList];
-    this.getTaskDetail(this.taskId)
+    this.getTaskDetail(this.taskId);
   },
   methods: {
     // 获取任务详情
@@ -120,6 +136,12 @@ export default {
     // 关闭选择器
     bindClose() {
       this.accountShow = false
+    },
+    // 查看图片
+    bindImage() {
+      uni.previewImage({
+        urls: this.taskInfo.attachments
+      })
     }
   },
 }
@@ -177,6 +199,20 @@ export default {
   transform: translateX(-50%);
   bottom: 200rpx;
   width: 200rpx;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx;
+  background-color: #e7e6e6;
+  border-radius: 10rpx;
+  margin-bottom: 20rpx;
+
+  .u-icon {
+    margin-left: 20rpx;
+  }
 }
 </style>
 

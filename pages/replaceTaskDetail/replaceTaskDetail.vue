@@ -32,23 +32,25 @@
     <u-gap height="20rpx"></u-gap>
     <u--text size="28rpx" color="#214579" :text="deviceLocation"></u--text>
     <u-gap height="60rpx"></u-gap>
-    <u--text color="#aaaaaa" text="设备编码"></u--text>
-    <u-gap height="20rpx"></u-gap>
-    <!-- #ifndef APP-NVUE -->
-    <u-input class="device" readonly color="#214579" shape="circle" placeholder="请扫码设备编码">
+    <view v-if="isTab">
+      <u--text color="#aaaaaa" text="设备编码"></u--text>
+      <u-gap height="20rpx"></u-gap>
+      <!-- #ifndef APP-NVUE -->
+      <u-input class="device" readonly color="#214579" shape="circle" placeholder="请扫码设备编码">
+        <!-- #endif -->
+        <!-- #ifdef APP-NVUE -->
+        <u--input class="device" readonly color="#214579" placeholder="请扫码设备编码">
+          <!-- #endif -->
+          <template slot="suffix">
+            <u-icon name="scan" color="#214579" size="28" @click="bindScan"></u-icon>
+          </template>
+          <!-- #ifndef APP-NVUE -->
+      </u-input>
       <!-- #endif -->
       <!-- #ifdef APP-NVUE -->
-      <u--input class="device" readonly color="#214579" placeholder="请扫码设备编码">
-        <!-- #endif -->
-        <template slot="suffix">
-          <u-icon name="scan" color="#214579" size="28" @click="bindScan"></u-icon>
-        </template>
-        <!-- #ifndef APP-NVUE -->
-    </u-input>
-    <!-- #endif -->
-    <!-- #ifdef APP-NVUE -->
-    </u--input>
-    <!-- #endif -->
+      </u--input>
+      <!-- #endif -->
+    </view>
     <!-- 操作人选择器 -->
     <u-picker :show="accountShow" :columns="accountColumns" :defaultIndex="accountIndex" keyName="nickname" confirmColor="#214579" @cancel="bindClose" @close="bindClose" @confirm="confirmAccount"></u-picker>
   </view>
@@ -66,7 +68,8 @@ export default {
       deviceLocation: '',
       accountShow: false, // 操作人选择器
       accountColumns: [],
-      accountIndex: [0]
+      accountIndex: [0],
+      tabType: ''
     };
   },
   computed: {
@@ -78,11 +81,15 @@ export default {
     },
     userList() {
       return this.$store.getters.userList
+    },
+    isTab() {
+      return this.tabType !== '2' && this.tabType !== '3'
     }
   },
   onLoad(options) {
-    const {taskId} = options;
+    const {taskId, tab} = options;
     this.taskId = taskId;
+    this.tabType = tab;
     this.accountColumns = [this.userList]
     this.getTaskDetail(this.taskId);
   },

@@ -43,7 +43,7 @@
     </view>
     <u-row class="btn-group" gutter="20rpx" justify="space-around">
       <u-col span="3">
-        <u-button text="立即创建" color="#214579" shape="circle" @click="createTask"></u-button>
+        <u-button :disabled="isCreateTask" text="立即创建" color="#214579" shape="circle" @click="createTask"></u-button>
       </u-col>
       <u-col span="3">
         <u-button text="添加附件" color="#aaaaaa" shape="circle" @click="bindPhoto"></u-button>
@@ -113,6 +113,10 @@ export default {
     },
     userList() {
       return this.$store.getters.userList
+    },
+    isCreateTask() {
+      const {name, deviceId} = this.taskInfo
+      return !name || !deviceId
     }
   },
   methods: {

@@ -101,6 +101,10 @@ export default {
           item.taskTypeStr = this.taskTypeList.find(task => parseInt(task?.value) === item?.taskType)?.cssClass || ''
           item.urgentType = item?.urgent === 1 ? '紧急' : ''
           item.projectName = this.projectList.find(pro => pro?.id === item?.projectId)?.name || ''
+          // 快速任务和快速设备任务
+          if (item.taskType === 50 || item.taskType === 22) {
+            item.projectName = `临时任务 ${item.projectName}`;
+          }
           item.task = item?.taskName
           item.time = timestampToTime(item?.endTime, 'MM月dd日截止')
           item.progress = item?.rate + '%'
@@ -160,43 +164,43 @@ export default {
     bindTask(item) {
       const {taskTypeStr, taskId} = item;
       const {tab} = this.taskInfo;
-      if (tab === '2' || tab === '3') return;
+      // if (tab === '2' || tab === '3') return;
       switch (taskTypeStr) {
         // 设备快速&&快速&&采购&&回款任务
         case 'simple':
           uni.navigateTo({
-            url: `/pages/ordinaryTaskDetail/ordinaryTaskDetail?taskId=${taskId}`
+            url: `/pages/ordinaryTaskDetail/ordinaryTaskDetail?taskId=${taskId}&tab=${tab}`
           });
           break;
         // 项目&&生产任务
         case 'project':
         case 'produce':
           uni.navigateTo({
-            url: `/pages/taskDetail/taskDetail?taskId=${taskId}&taskType=${taskTypeStr}`
+            url: `/pages/taskDetail/taskDetail?taskId=${taskId}&taskType=${taskTypeStr}&tab=${tab}`
           });
           break;
         // 设备管理任务
         case 'check':
           uni.navigateTo({
-            url: `/pages/deviceTaskDetail/deviceTaskDetail?taskId=${taskId}`
+            url: `/pages/deviceTaskDetail/deviceTaskDetail?taskId=${taskId}&tab=${tab}`
           });
           break;
         // 更换备件任务
         case 'part':
           uni.navigateTo({
-            url: `/pages/replaceTaskDetail/replaceTaskDetail?taskId=${taskId}`
+            url: `/pages/replaceTaskDetail/replaceTaskDetail?taskId=${taskId}&tab=${tab}`
           });
           break;
         // 物料盘点任务
         case 'stocktaking':
           uni.navigateTo({
-            url: `/pages/inventoryTaskDetail/inventoryTaskDetail?taskId=${taskId}`
+            url: `/pages/inventoryTaskDetail/inventoryTaskDetail?taskId=${taskId}&tab=${tab}`
           });
           break;
         // 出库任务
         case 'outbound':
           uni.navigateTo({
-            url: `/pages/outboundTask/outboundTask?taskId=${taskId}`
+            url: `/pages/outboundTask/outboundTask?taskId=${taskId}&tab=${tab}`
           });
           break;
       }

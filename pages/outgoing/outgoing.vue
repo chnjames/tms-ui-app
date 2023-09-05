@@ -109,14 +109,16 @@
         this.outboundList = []
         getStockPage({materialId}).then(res => {
           const {data} = res
-          this.outboundList = data?.map(item => ({
-            materialId: item.materialId,
-            storeDesc: `${item.storeName} ${item.storeAreaName} ${item.location}`,
-            storeAreaId: item.storeAreaId,
-            location: item.location,
-            stockQty: item.qty,
-            qty: 0
-          })) || [];
+          this.outboundList = data
+            ?.filter(item => item.qty !== 0)
+            .map(item => ({
+              materialId: item.materialId,
+              storeDesc: `${item.storeName} ${item.storeAreaName} ${item.location}`,
+              storeAreaId: item.storeAreaId,
+              location: item.location,
+              stockQty: item.qty,
+              qty: 0
+            })) || [];
         })
       },
       // 出库

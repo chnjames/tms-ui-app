@@ -41,7 +41,7 @@
     <u-gap height="20rpx"></u-gap>
     <u--text v-for="item in boardList" :key="item.id" type="info" margin="10rpx 0" size="24rpx" :text="item.description"></u--text>
     <u-gap height="20rpx"></u-gap>
-    <u-row class="btn-group" gutter="20rpx" justify="space-around">
+    <u-row v-if="isTab" class="btn-group" gutter="20rpx" justify="space-around">
       <u-col span="3">
         <u-button text="完成任务" color="#aaaaaa" shape="circle" @click="bindReceive"></u-button>
       </u-col>
@@ -110,12 +110,14 @@ export default {
       accountColumns: [],
       accountIndex: [0],
       fileList: [],
-      taskTypeDesc: '结果登记'
+      taskTypeDesc: '结果登记',
+      tabType: ''
     };
   },
   onLoad(options) {
-    const {taskId, taskType} = options;
+    const {taskId, taskType, tab} = options;
     this.taskType = taskType;
+    this.tabType = tab;
     this.taskTypeDesc = taskType === 'project' ? '工时登记' : '结果登记';
     this.taskId = taskId;
     this.accountColumns = [this.userList]
@@ -131,6 +133,9 @@ export default {
     },
     userList() {
       return this.$store.getters.userList
+    },
+    isTab() {
+      return this.tabType !== '2' && this.tabType !== '3'
     }
   },
   methods: {
