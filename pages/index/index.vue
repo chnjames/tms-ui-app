@@ -138,6 +138,12 @@ export default {
           this.loadMoreStatus = 'loading'
         }
         const totalStr = total > 99 ? '99+' : total.toString()
+        if (total === 0) {
+          uni.removeTabBarBadge({
+            index: 0
+          })
+          return
+        }
         uni.setTabBarBadge({
           index: 0,
           text: totalStr

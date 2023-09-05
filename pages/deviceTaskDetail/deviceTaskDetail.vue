@@ -29,10 +29,10 @@
     <u--text color="#aaaaaa" text="设备编码"></u--text>
     <u-gap height="20rpx"></u-gap>
     <!-- #ifndef APP-NVUE -->
-    <u-input class="device" readonly color="#214579" shape="circle" placeholder="请扫码设备编码">
+    <u-input class="device" @blur="bindDevice" color="#214579" shape="circle" placeholder="请扫码设备编码">
       <!-- #endif -->
       <!-- #ifdef APP-NVUE -->
-      <u--input class="device" readonly color="#214579" placeholder="请扫码设备编码">
+      <u--input class="device" @blur="bindDevice" color="#214579" placeholder="请扫码设备编码">
         <!-- #endif -->
         <template slot="suffix">
           <u-icon name="scan" color="#214579" size="28" @click="bindScan"></u-icon>
@@ -148,7 +148,7 @@ export default {
         success: (res) => {
           const {result} = res;
           const id = parseInt(result)
-          if (id !== this.taskInfo.deviceId) {
+          if (id !== taskInfo.deviceId) {
             uni.$u.toast('设备不匹配')
             return
           }
@@ -158,6 +158,18 @@ export default {
         }
       });
     },
+    // 失焦触发
+    bindDevice(val) {
+      const {taskInfo, templateInfo, taskId} = this;
+      const id = parseInt(val)
+      if (id !== taskInfo.deviceId) {
+        uni.$u.toast('设备不匹配')
+        return
+      }
+      uni.navigateTo({
+        url: `/pages/executeTask/executeTask?taskId=${taskId}&deviceId=${taskInfo.deviceId}&templateId=${templateInfo.id}&projectId=${taskInfo.projectId}`
+      });
+    }
   },
 }
 </script>

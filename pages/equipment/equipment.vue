@@ -43,9 +43,6 @@
         </view>
       </view>
     </view>
-    <!-- 设备选择器 -->
-    <!--<u-picker :show="deviceShow" ref="deviceRef" keyName="name" :columns="deviceColumns" confirmColor="#214579" @confirm="confirmDevice" @cancel="bindClose"-->
-    <!--          @close="bindClose" @change="bindDeviceChange"></u-picker>-->
     <!--AUI设备选择器-->
     <aui-picker ref="picker" :title="auiPicker.title" :layer="auiPicker.layer" :data="auiPicker.data" @callback="pickerCallback"></aui-picker>
   </view>
@@ -68,10 +65,7 @@ export default {
       deviceDesc: '',
       deviceName: '',
       deviceLocation: '',
-      deviceShow: false, // 设备选择器
       deviceArr: [],
-      deviceIndex: [0, 0, 0],
-      deviceColumns: [[],[],[]],
       taskInfo: {
         pageNo: 1,
         pageSize: 10,
@@ -105,38 +99,20 @@ export default {
     getDeviceDetail(deviceId) {
       getDeviceDetail({deviceId}).then(res => {
         const {data} = res
-        this.deviceDesc = `${data.code}/${data.name}`
-        this.deviceName = data.name
-        this.deviceLocation = data.location
-        this.taskInfo.projectId = data.projectId
-        this.docInfo.projectId = data.projectId
-        this.getTaskPage()
-        this.getProjectDocList()
+        const {code, name, location, projectId} = data
+        this.deviceDesc = `${code}/${name}`
+        this.deviceName = name
+        this.deviceLocation = location
+        this.taskInfo.projectId = projectId
+        this.docInfo.projectId = projectId
+        projectId && this.getTaskPage()
+        projectId && this.getProjectDocList()
       })
     },
     // 获取设备精简列表
     getDeviceSimpleList() {
       getDeviceSimpleList().then(res => {
         this.deviceArr = handleTree(res.data)
-        console.log('this.deviceArr', this.deviceArr)
-        this.deviceArr.forEach((item) => {
-          this.deviceColumns[0].push({ ...item });
-        });
-        if (this.deviceArr[0]?.children?.length > 0) {
-          this.deviceArr[0].children.forEach((item) => {
-            this.deviceColumns[1].push({ ...item });
-          });
-          if (this.deviceArr[0].children[0]?.children?.length > 0) {
-            this.deviceArr[0].children[0].children.forEach((item) => {
-              this.deviceColumns[2].push({ ...item });
-            });
-          } else {
-            this.deviceColumns[2] = [];
-          }
-        } else {
-          this.deviceColumns[1] = [];
-          this.deviceColumns[2] = [];
-        }
       })
     },
     // 获取设备履历
@@ -175,79 +151,10 @@ export default {
     // 打开设备选择器
     bindDevice() {
       const _this = this;
-      _this.deviceShow = true
       _this.auiPicker.data = _this.deviceArr;
-      // _this.auiPicker.data=[{
-      //   id: "1001",
-      //   name: "一级菜单1",
-      //   children: [{
-      //     id: "1002",
-      //     name: "二级菜单1-1",
-      //     children: [{
-      //       id: "1003",
-      //       name: "三级菜单1-1",
-      //       children: [{
-      //         id: "1004",
-      //         name: "四级菜单1-1"
-      //       }]
-      //     }]
-      //   }]
-      // },
-      //   {
-      //     id: "1005",
-      //     name: "一级菜单2",
-      //     children: [{
-      //       id: "1006",
-      //       name: "二级菜单2-1",
-      //       children: [{
-      //         id: "1007",
-      //         name: "三级菜单2-1",
-      //         children: [{
-      //           id: "1008",
-      //           name: "四级菜单2-1",
-      //           children: [{
-      //             id: "1009",
-      //             name: "五级菜单2-1"
-      //           }]
-      //         }]
-      //       }]
-      //     }]
-      //   }];
-      _this.$refs.picker.open().then(function(){
-        console.log('picker打开');
+      _this.$refs.picker.open().then(function() {
+        console.log('打开成功');
       });
-    },
-    // 改变设备
-    bindDeviceChange(e) {
-      const {columnIndex, index, picker = this.$refs.deviceRef} = e
-      // 根据列的索引值，判断当前改变的是哪一列，然后改变对应的列数据
-      if (columnIndex === 0) {
-        this.deviceColumns[1] = this.deviceArr[index]?.children || []
-        picker.setColumnValues(1, this.deviceColumns[1])
-        this.deviceColumns[2] = this.deviceArr[index]?.children?.[0]?.children || []
-        picker.setColumnValues(2, this.deviceColumns[2])
-      } else if (columnIndex === 1) {
-        this.deviceColumns[2] = this.deviceArr[this.deviceIndex[0]]?.children[index]?.children || []
-        picker.setColumnValues(2, this.deviceColumns[2])
-      }
-    },
-    // 确认设备
-    confirmDevice(e) {
-      const [arr1, arr2, arr3] = e.value
-      console.log(e.value)
-      if (!arr1?.id || !arr2?.id || !arr3?.id) {
-        uni.$u.toast('请选择设备')
-        return
-      }
-      this.deviceId = arr3.id
-      this.getDeviceDetail(arr3.id)
-      this.deviceShow = false
-    },
-    // 关闭选择器
-    bindClose() {
-      this.deviceShow = false
-      this.calendarShow = false
-      this.accountShow = false
     },
     // tab切换
     bindTab({name, index}) {
@@ -270,26 +177,12 @@ export default {
         }
       })
     },
-    //picker多级联动回调
-    pickerCallback(e){
-      const _this = this;
-      console.log(e);
-      let result = '';
-      e.data.forEach(function(item, index){
-        result += item.name + '   ';
-      });
-      console.log('result', result)
-      uni.showModal({
-        title: '提示',
-        content: result,
-        success: function (res) {
-          if (res.confirm) {
-            console.log('用户点击确定');
-          } else if (res.cancel) {
-            console.log('用户点击取消');
-          }
-        }
-      });
+    // picker多级联动回调
+    pickerCallback(e) {
+      const {data} = e;
+      const lastItem = data[data.length - 1];
+      this.deviceId = lastItem.id;
+      this.getDeviceDetail(lastItem.id);
     }
   }
 }

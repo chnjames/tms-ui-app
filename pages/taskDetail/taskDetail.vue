@@ -72,13 +72,15 @@
           <view class="quantity" v-else>
             <view class="quantity-item">
               <view class="qualified">合格：</view>
-              <u-number-box integer :min="0" v-model="quantity" disabledInput @focus="bindQuantityFocus(1)">
-                <u--text slot="input" text="1111"></u--text>
+              <u-number-box integer :min="0" v-model="quantity">
+                <text :class="['number-input', quantityFocus === 1 ? 'active': '']" slot="input" @click="bindQuantityFocus(1)">{{quantity}}</text>
               </u-number-box>
             </view>
             <view class="quantity-item">
               <view class="unqualified">不合格：</view>
-              <u-number-box integer :min="0" color="#fa3534" disabledInput v-model="unQuantity" @focus="bindQuantityFocus(2)"></u-number-box>
+              <u-number-box integer :min="0" color="#fa3534" v-model="unQuantity">
+                <text :class="['number-input', quantityFocus === 2 ? 'active': '']" slot="input" @click="bindQuantityFocus(2)">{{unQuantity}}</text>
+              </u-number-box>
             </view>
           </view>
         </view>
@@ -189,40 +191,39 @@ export default {
     },
     // 光标聚焦步进器
     bindQuantityFocus(type) {
-      // 取消默认系统键盘弹起
-      uni.hideKeyboard()
       this.quantityFocus = type
     },
     // 键盘输入
     bindKeyBoard(e) {
-      // this.keyboardInput = e
-      // 小数点后面只能输入一位，即e=.的时候，后面只能输入一个数字
-      this.keyboardInput += e
-      console.log(this.keyboardInput)
+      if (e === '.') {
+        if (!this.keyboardInput.includes('.')) {
+          this.keyboardInput += e;
+        }
+      } else if (/^\d+(\.\d?)?$/.test(this.keyboardInput + e)) {
+        this.keyboardInput += e;
+      }
       if (this.taskType === 'project') {
-        // 使用键盘输入工时，覆盖原有this.workingHours的值，然后拼接键盘输入的值
-        // this.workingHours = Number(this.workingHours.toString() + e)
-        this.workingHours = Number(this.keyboardInput)
+        this.workingHours = parseFloat(this.keyboardInput) || 0.5;
       } else {
         if (this.quantityFocus === 1) {
-          this.quantity = Number(this.quantity.toString() + e)
+          this.quantity = parseFloat(this.keyboardInput);
         } else {
-          this.unQuantity = Number(this.unQuantity.toString() + e)
+          this.unQuantity = parseFloat(this.keyboardInput);
         }
       }
     },
     // 键盘删除
     bindBackspace(e) {
-      // 改变工时
       if (this.taskType === 'project') {
-        this.workingHours = Number(this.workingHours.toString().slice(0, -1)) || 0.5
+        this.workingHours = parseFloat(this.workingHours.toString().slice(0, -1)) || 0.5;
       } else {
         if (this.quantityFocus === 1) {
-          this.quantity = Number(this.quantity.toString().slice(0, -1))
+          this.quantity = parseFloat(this.quantity.toString().slice(0, -1));
         } else {
-          this.unQuantity = Number(this.unQuantity.toString().slice(0, -1))
+          this.unQuantity = parseFloat(this.unQuantity.toString().slice(0, -1));
         }
       }
+      this.keyboardInput = ''; // 清空键盘输入
     },
     // 键盘确认
     bindKeyConfirm() {
@@ -425,16 +426,20 @@ export default {
 // 自定义步进器
 .number-input {
   background-color: #EBECEE;
-  height: 60rpx;
-  width: 70rpx;
+  height: 30px;
+  width: 35px;
   margin: 0 4rpx;
+  padding: 0 5rpx;
   position: relative;
   text-align: center;
-  font-size: 30rpx;
-  padding: 0;
+  font-size: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  &.active {
+    background-color: #ecf5ff;
+  }
 }
 
 /deep/ .u-cell__body {

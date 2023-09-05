@@ -2,7 +2,7 @@
   <view class="container">
     <view class="fixed">
       <u-tabs itemStyle="width: 140rpx;height: 90rpx;position: relative" :scrollable="false" lineColor="#214579" activeStyle="color: #214579"
-              inactiveStyle="color: #666666" :list="tabList" keyName="label" @change="bindTab"></u-tabs>
+              inactiveStyle="color: #666666" :list="tabsList" keyName="label" @change="bindTab"></u-tabs>
     </view>
     <!-- 我的任务 -->
     <view class="task">
@@ -50,6 +50,7 @@ export default {
         tab: '0'
       },
       tabList: getDictDatas(DICT_TYPE.APP_MY_TASK_TAB),
+      tabsList: [],
       taskTypeList: getDictDatas(DICT_TYPE.OPERATIONS_TASK_TYPE),
       mineTaskList: []
     }
@@ -83,14 +84,16 @@ export default {
   methods: {
     // 获取我的任务列表
     getMyTaskPage() {
+      const newTabList = this.tabList
       getMyTaskPage(this.taskInfo).then(res => {
         const { total, list } = res.data
         this.pageCount = Math.ceil(total / this.taskInfo.pageSize)
         this.total = total
         const qty = total > 99 ? '99+' : total
-        for (let i = 0; i < this.tabList.length; i++) {
+        for (let i = 0; i < newTabList.length; i++) {
           if (this.taskInfo.tab === i.toString()) {
-            this.tabList[i].badge.value = qty;
+            newTabList[i].badge = {value: qty} || ''
+            this.tabsList = newTabList
             break;
           }
         }

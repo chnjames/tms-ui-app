@@ -49,9 +49,8 @@
         <u-button text="添加附件" color="#aaaaaa" shape="circle" @click="bindPhoto"></u-button>
       </u-col>
     </u-row>
-    <!-- 设备选择器 -->
-    <u-picker :show="deviceShow" ref="deviceRef" keyName="name" :columns="deviceColumns" confirmColor="#214579" @confirm="confirmDevice" @cancel="bindClose"
-      @close="bindClose" @change="bindDeviceChange"></u-picker>
+    <!--AUI设备选择器-->
+    <aui-picker ref="picker" :title="auiPicker.title" :layer="auiPicker.layer" :data="auiPicker.data" @callback="pickerCallback"></aui-picker>
     <!-- 日期选择器 -->
     <u-datetime-picker :show="calendarShow" v-model="taskInfo.endTime" mode="date" @confirm="confirmCalendar" confirmColor="#214579" @cancel="bindClose" @close="bindClose"></u-datetime-picker>
     <!-- 操作人选择器 -->
@@ -60,6 +59,7 @@
 </template>
 
 <script>
+import auiPicker from '@/components/aui-picker/aui-picker.vue';
 import {getDeviceDetail, getDeviceSimpleList} from "@/api/device";
 import {handleTree} from "@/utils/tree";
 import {createTask} from "@/api/task";
@@ -67,16 +67,16 @@ import {uploadFile} from "@/api/auth";
 import {getProjectFollowers} from "@/api/project";
 
 export default {
+  components: {
+    auiPicker
+  },
   data() {
     return {
-      deviceShow: false, // 设备选择器
       calendarShow: false, // 日期选择器
       accountShow: false, // 操作人选择器
       accountColumns: [],
       accountIndex: [0],
       deviceArr: [],
-      deviceIndex: [0, 0, 0],
-      deviceColumns: [[],[],[]],
       taskInfo: {
         name: '', // 任务名称
         projectId: '', // 项目id
@@ -90,7 +90,12 @@ export default {
         endTimeStr: '', // 截止时间
         attachments: [] // 附件
       },
-      fileList: []
+      fileList: [],
+      auiPicker: {
+        title: '',
+        layer: null,
+        data: []
+      }
     }
   },
   onLoad() {
@@ -144,24 +149,6 @@ export default {
     getDeviceSimpleList() {
       getDeviceSimpleList().then(res => {
         this.deviceArr = handleTree(res.data)
-        this.deviceArr.forEach((item) => {
-          this.deviceColumns[0].push({ ...item });
-        });
-        if (this.deviceArr[0]?.children?.length > 0) {
-          this.deviceArr[0].children.forEach((item) => {
-            this.deviceColumns[1].push({ ...item });
-          });
-          if (this.deviceArr[0].children[0]?.children?.length > 0) {
-            this.deviceArr[0].children[0].children.forEach((item) => {
-              this.deviceColumns[2].push({ ...item });
-            });
-          } else {
-            this.deviceColumns[2] = [];
-          }
-        } else {
-          this.deviceColumns[1] = [];
-          this.deviceColumns[2] = [];
-        }
       })
     },
     // 扫码
@@ -177,33 +164,11 @@ export default {
     },
     // 打开设备选择器
     bindDevice() {
-      this.deviceShow = true
-    },
-    // 改变设备
-    bindDeviceChange(e) {
-      const {columnIndex, index, picker = this.$refs.deviceRef} = e
-      // 根据列的索引值，判断当前改变的是哪一列，然后改变对应的列数据
-      if (columnIndex === 0) {
-        this.deviceColumns[1] = this.deviceArr[index]?.children || []
-        picker.setColumnValues(1, this.deviceColumns[1])
-        this.deviceColumns[2] = this.deviceArr[index]?.children?.[0]?.children || []
-        picker.setColumnValues(2, this.deviceColumns[2])
-      } else if (columnIndex === 1) {
-        this.deviceColumns[2] = this.deviceArr[this.deviceIndex[0]]?.children[index]?.children || []
-        picker.setColumnValues(2, this.deviceColumns[2])
-      }
-    },
-    // 确认设备
-    confirmDevice(e) {
-      const [arr1, arr2, arr3] = e.value
-      if (!arr1?.id || !arr2?.id || !arr3?.id) {
-        uni.$u.toast('请选择设备')
-        return
-      }
-      this.taskInfo.deviceName = `${arr3.name}`
-      this.taskInfo.deviceId = arr3.id
-      this.getDeviceDetail(arr3.id)
-      this.deviceShow = false
+      const _this = this;
+      _this.auiPicker.data = _this.deviceArr;
+      _this.$refs.picker.open().then(function() {
+        console.log('打开成功');
+      });
     },
     // 选择操作人
     bindAccount() {
@@ -227,7 +192,6 @@ export default {
     },
     // 关闭选择器
     bindClose() {
-      this.deviceShow = false
       this.calendarShow = false
       this.accountShow = false
     },
@@ -258,6 +222,14 @@ export default {
       }).finally(() => {
         uni.hideLoading();
       })
+    },
+    // picker多级联动回调
+    pickerCallback(e) {
+      const {data} = e;
+      const lastItem = data[data.length - 1];
+      this.taskInfo.deviceName = `${lastItem.name}`
+      this.taskInfo.deviceId = lastItem.id
+      this.getDeviceDetail(lastItem.id)
     }
   },
 }

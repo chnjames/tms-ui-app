@@ -5,7 +5,7 @@
       <view class="aui-picker-header">
         <view class="aui-picker-header-icon" @click.stop="close">取消</view>
         <view class="aui-picker-title" v-if="title">{{ title }}</view>
-        <view class="aui-picker-header-icon aui-picker-confirm">确认</view>
+        <view class="aui-picker-header-icon aui-picker-confirm" @click.stop="_confirm">确认</view>
       </view>
       <view class="aui-picker-nav">
         <view class="aui-picker-navitem"
@@ -206,10 +206,19 @@ export default {
             _this.navBorderLeft = data.left + 20;
           }).exec();
         }, 100)
-      } else { //无下级数据
+      } else { //无下级数据且最后一级数据的type为1时，则可以确认关闭
+        _this._confirm();
+      }
+    },
+    _confirm() {
+      const _this = this;
+      const lastItem = _this.result[_this.result.length - 1];
+      if (lastItem && lastItem.type === 1) {
         _this.close().then(() => {
           _this.$emit("callback", {status: 0, data: _this.result});
         });
+      } else {
+        uni.$u.toast('请选择设备')
       }
     },
     //递归遍历——将树形结构数据转化为数组格式
